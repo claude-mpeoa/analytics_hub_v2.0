@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virgin Active | Vision 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .tab-button.active { background-color: white; color: #ef4444; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        
+        /* Floating Bubble Transitions */
+        #daily-pulse-container { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        #daily-pulse-container.minimized { transform: translateY(calc(100% - 50px)); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 pb-12">
+
+    <!-- Header -->
+    <header class="bg-white border-b sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-red-600 p-2 rounded-lg text-white">
+                    <i data-lucide="activity"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight">Virgin Active | Vision 2026</h1>
+                    <p class="text-sm text-slate-500 font-medium">Data Strategy & Performance Roadmap</p>
+                </div>
+            </div>
+            <nav class="flex bg-slate-100 p-1 rounded-xl">
+                <button onclick="switchTab('overview')" class="tab-button active px-4 py-2 rounded-lg text-sm font-semibold capitalize transition-all">Overview</button>
+                <button onclick="switchTab('interdependencies')" class="tab-button px-4 py-2 rounded-lg text-sm font-semibold capitalize transition-all">Interdependencies</button>
+                <button onclick="switchTab('impact')" class="tab-button px-4 py-2 rounded-lg text-sm font-semibold capitalize transition-all">Impact</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 mt-8">
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active space-y-8 animate-in fade-in">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Left Column: Q1 Sprints -->
+                <div class="lg:col-span-2 space-y-8">
+                    <section>
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-bold flex items-center gap-2 text-slate-800">
+                                <i data-lucide="calendar" class="w-5 h-5 text-red-500"></i>
+                                Q1 Critical Sprints (Stabilization)
+                            </h2>
+                            <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold uppercase tracking-wider">High Priority</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-white p-5 rounded-2xl border shadow-sm hover:shadow-md transition-shadow">
+                                <h3 class="font-bold flex items-center gap-2 mb-3 text-slate-800">
+                                    <i data-lucide="activity" class="w-4 h-4 text-red-500"></i> Measurement Tracking
+                                </h3>
+                                <ul class="text-sm space-y-2 text-slate-600">
+                                    <li class="flex items-start gap-2">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5"></div>
+                                        Fix and standardise all event tracking (Page/Tag level)
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5"></div>
+                                        Implement BQ for reliable Dataflow
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5"></div>
+                                        Automated exception checks (Early Warning)
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-2xl border shadow-sm hover:shadow-md transition-shadow">
+                                <h3 class="font-bold flex items-center gap-2 mb-3 text-slate-800">
+                                    <i data-lucide="target" class="w-4 h-4 text-orange-500"></i> UTM & Targeting
+                                </h3>
+                                <ul class="text-sm space-y-2 text-slate-600">
+                                    <li class="flex items-start gap-2">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-orange-400 mt-1.5"></div>
+                                        Launch UTM Generation Tool for team use
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-orange-400 mt-1.5"></div>
+                                        Dynamic Target Models (Actual vs Expected)
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-orange-400 mt-1.5"></div>
+                                        Automate platform-based target updates
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-5 rounded-2xl border shadow-sm hover:shadow-md transition-shadow md:col-span-2 border-l-4 border-l-purple-500">
+                                <h3 class="font-bold flex items-center gap-2 mb-3 text-slate-800">
+                                    <i data-lucide="link-2" class="w-4 h-4 text-purple-500"></i> Cross-Reporting Integration
+                                </h3>
+                                <p class="text-sm text-slate-500 mb-3">Breaking silos: Spend + Sales + Cancellations</p>
+                                <div class="flex gap-4">
+                                    <div class="flex-1 bg-slate-50 rounded-lg p-3 text-xs font-mono">
+                                        <span class="text-purple-600 font-bold block mb-1 uppercase tracking-tighter">Current State</span>
+                                        Manual CSV stitching, 48h delay, inconsistent IDs.
+                                    </div>
+                                    <div class="flex-1 bg-purple-50 rounded-lg p-3 text-xs font-mono">
+                                        <span class="text-purple-600 font-bold block mb-1 uppercase tracking-tighter">FY26 Vision</span>
+                                        BQ Unified View, Real-time dashboards, Apple-to-Apple.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-bold flex items-center gap-2 text-slate-800">
+                                <i data-lucide="trending-up" class="w-5 h-5 text-blue-500"></i> Ongoing Evolution
+                            </h2>
+                        </div>
+                        <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50 border-b">
+                                    <tr>
+                                        <th class="px-6 py-3 font-semibold text-slate-600 uppercase text-[10px] tracking-wider">Strategic Pillar</th>
+                                        <th class="px-6 py-3 font-semibold text-slate-600 uppercase text-[10px] tracking-wider">Action Item</th>
+                                        <th class="px-6 py-3 font-semibold text-slate-600 uppercase text-[10px] tracking-wider">Focus</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y">
+                                    <tr>
+                                        <td class="px-6 py-4 font-medium">Governance</td>
+                                        <td class="px-6 py-4 text-slate-600">Analytics Framework & Data Dictionary</td>
+                                        <td class="px-6 py-4"><span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-[10px] font-bold">QUALITY</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 font-medium">Operations</td>
+                                        <td class="px-6 py-4 text-slate-600">Ad-hoc Request & Web Dev Prioritisation</td>
+                                        <td class="px-6 py-4"><span class="px-2 py-1 bg-green-100 text-green-700 rounded text-[10px] font-bold">PROCESS</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 font-medium">Scaling</td>
+                                        <td class="px-6 py-4 text-slate-600">Tech/People/Process Roadmap</td>
+                                        <td class="px-6 py-4"><span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-[10px] font-bold">FUTURE</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Right Column: Sidebars -->
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-2xl border border-yellow-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i data-lucide="book-open" class="w-6 h-6 text-orange-600"></i>
+                            <h2 class="font-bold text-orange-900">Claude's Kitchen</h2>
+                        </div>
+                        <p class="text-sm text-orange-800 mb-4 leading-relaxed italic">
+                            "I may need to start implementing a data literacy training plan once we’re happy with progress..."
+                        </p>
+                        <div class="bg-white p-3 rounded-lg border border-orange-200">
+                            <span class="text-[10px] font-bold text-orange-600 uppercase">Current Priority:</span>
+                            <div class="flex items-center justify-between mt-1">
+                                <span class="text-sm font-bold">Strategic Delay</span>
+                                <span class="text-xs text-slate-500">Post-Q1</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full mt-2">
+                                <div class="bg-orange-400 h-1.5 rounded-full w-[30%]"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                        <h3 class="font-bold flex items-center gap-2 mb-4 text-slate-800">
+                            <i data-lucide="users" class="w-5 h-5 text-blue-600"></i> Resource Planning
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="p-3 bg-blue-50 rounded-xl border border-blue-100">
+                                <p class="text-xs text-blue-800 font-medium">Strategy:</p>
+                                <p class="text-sm text-blue-900 leading-snug font-medium">Moving to <strong>Shared Deliverable Maps</strong>.</p>
+                            </div>
+                            <div class="text-xs text-slate-500">
+                                <p class="font-bold mb-2 uppercase tracking-tight text-slate-400">Key Stakeholders:</p>
+                                <ul class="space-y-2">
+                                    <li class="flex justify-between border-b border-slate-50 pb-1"><span>IT / Data Engineering</span> <span class="text-blue-600 font-bold">BQ Lead</span></li>
+                                    <li class="flex justify-between border-b border-slate-50 pb-1"><span>Web Development</span> <span class="text-blue-600 font-bold">UX/UI Lead</span></li>
+                                    <li class="flex justify-between"><span>Regional Marketing</span> <span class="text-blue-600 font-bold">Heads Of</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 p-6 rounded-2xl text-white shadow-xl">
+                        <div class="flex items-center gap-2 mb-4">
+                            <i data-lucide="shield-check" class="w-5 h-5 text-green-400"></i>
+                            <h3 class="font-bold">Early Warning System</h3>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center text-xs">
+                                <span>Site Uptime Visibility</span>
+                                <span class="text-red-400 font-bold flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-red-400"></div>NO DATA</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs">
+                                <span>Tracking Health (Events)</span>
+                                <span class="text-yellow-400 font-bold flex items-center gap-1"><div class="w-1.5 h-1.5 rounded-full bg-yellow-400"></div>IN PROGRESS</span>
+                            </div>
+                            <button class="w-full py-2 bg-white/10 hover:bg-white/20 transition-colors rounded-lg text-xs font-bold mt-2">
+                                Configure Alerts
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interdependencies Tab -->
+        <div id="interdependencies" class="tab-content space-y-8">
+            <div class="bg-white p-8 rounded-2xl border shadow-sm overflow-x-auto">
+                <h2 class="text-2xl font-bold mb-6 text-slate-800">Cross-Team Dependency Matrix</h2>
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b-2 border-slate-100">
+                            <th class="py-4 px-4 font-bold text-slate-400 uppercase text-xs">Pillar</th>
+                            <th class="py-4 px-4 font-bold text-slate-800 bg-slate-50/50">Core Objective</th>
+                            <th class="py-4 px-4 font-bold text-slate-800">Dependencies</th>
+                            <th class="py-4 px-4 font-bold text-slate-800">Impact On Daily Task</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-50">
+                        <tr>
+                            <td class="py-6 px-4 font-bold text-red-600">TRACKING</td>
+                            <td class="py-6 px-4 bg-slate-50/50">
+                                <p class="font-bold text-sm">Measurement Stabilization</p>
+                                <p class="text-xs text-slate-500 mt-1 italic">Tagging, Events, Page Tracking</p>
+                            </td>
+                            <td class="py-6 px-4">
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-2 py-1 bg-slate-100 rounded text-[10px] font-bold">WEB DEV</span>
+                                    <span class="px-2 py-1 bg-slate-100 rounded text-[10px] font-bold">DATA ENG</span>
+                                </div>
+                            </td>
+                            <td class="py-6 px-4 text-sm text-slate-600">Removes manual "is it working?" morning audits.</td>
+                        </tr>
+                        <tr>
+                            <td class="py-6 px-4 font-bold text-blue-600">PIPELINES</td>
+                            <td class="py-6 px-4 bg-slate-50/50">
+                                <p class="font-bold text-sm">BQ to Dashboard</p>
+                                <p class="text-xs text-slate-500 mt-1 italic">Cost & Refresh Scalability</p>
+                            </td>
+                            <td class="py-6 px-4">
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-2 py-1 bg-slate-100 rounded text-[10px] font-bold">CLOUD OPS</span>
+                                    <span class="px-2 py-1 bg-slate-100 rounded text-[10px] font-bold">REGIONS</span>
+                                </div>
+                            </td>
+                            <td class="py-6 px-4 text-sm text-slate-600">Eliminates dashboard timeouts; data ready by 8 AM.</td>
+                        </tr>
+                        <tr>
+                            <td class="py-6 px-4 font-bold text-purple-600">UNIFIED</td>
+                            <td class="py-6 px-4 bg-slate-50/50">
+                                <p class="font-bold text-sm">Silo Connectivity</p>
+                                <p class="text-xs text-slate-500 mt-1 italic">Spend + Sales + Cancellation</p>
+                            </td>
+                            <td class="py-6 px-4">
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-2 py-1 bg-slate-100 rounded text-[10px] font-bold">FINANCE</span>
+                                    <span class="px-2 py-1 bg-slate-100 rounded text-[10px] font-bold">SALES</span>
+                                </div>
+                            </td>
+                            <td class="py-6 px-4 text-sm text-slate-600">Provides "One Truth" for daily performance checks.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Impact Tab -->
+        <div id="impact" class="tab-content space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                    <h3 class="font-bold text-slate-800 mb-2">Manual vs Strategic Effort</h3>
+                    <p class="text-sm text-slate-500 mb-6 font-medium">Shifting focus from reporting to management.</p>
+                    <div class="h-[300px]">
+                        <canvas id="effortChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border shadow-sm">
+                    <h3 class="font-bold text-slate-800 mb-2">Data Reliability Target</h3>
+                    <p class="text-sm text-slate-500 mb-6 font-medium">98% target with BigQuery implementation.</p>
+                    <div class="h-[300px]">
+                        <canvas id="reliabilityChart"></canvas>
+                    </div>
+                </div>
+                <div class="md:col-span-2 bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden">
+                    <div class="flex flex-col md:flex-row gap-8 items-center relative z-10">
+                        <div class="flex-1">
+                            <h3 class="text-2xl font-bold mb-4 tracking-tight">The "Apple-to-Apple" Benchmark</h3>
+                            <p class="text-slate-400 leading-relaxed mb-8 max-w-2xl text-lg">
+                                By standardising structures globally, we move from regional guesswork to a unified view. Spot success in SA and deploy to UK/AUS with validated logic in days.
+                            </p>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-8">
+                                <div>
+                                    <div class="text-3xl font-bold text-green-400">-40%</div>
+                                    <div class="text-[10px] uppercase text-slate-500 font-bold mt-1">Reporting Cost</div>
+                                </div>
+                                <div>
+                                    <div class="text-3xl font-bold text-blue-400">+60%</div>
+                                    <div class="text-[10px] uppercase text-slate-500 font-bold mt-1">Refresh Rate</div>
+                                </div>
+                                <div>
+                                    <div class="text-3xl font-bold text-red-400">100%</div>
+                                    <div class="text-[10px] uppercase text-slate-500 font-bold mt-1">UTM Hygiene</div>
+                                </div>
+                                <div>
+                                    <div class="text-3xl font-bold text-purple-400">0</div>
+                                    <div class="text-[10px] uppercase text-slate-500 font-bold mt-1">Data Silos</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Daily Task Overlay -->
+    <footer id="daily-pulse-container" class="fixed bottom-6 right-6 z-50 overflow-hidden">
+        <div class="bg-white border shadow-2xl rounded-2xl p-5 max-w-xs w-full">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>
+                    <h4 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Daily Command Pulse</h4>
+                </div>
+                <button onclick="togglePulse()" class="p-1 hover:bg-slate-100 rounded-lg transition-colors text-slate-400">
+                    <i id="pulse-toggle-icon" data-lucide="chevron-down" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <div id="pulse-content" class="transition-all duration-300 opacity-100">
+                <ul class="space-y-3">
+                    <li class="flex items-center gap-3 text-xs font-bold text-slate-700">
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-red-500"></i> Is Tracking Health checked?
+                    </li>
+                    <li class="flex items-center gap-3 text-xs font-bold text-slate-700">
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-red-500"></i> Ad-hoc vs Roadmap alignment?
+                    </li>
+                    <li class="flex items-center gap-3 text-xs font-bold text-slate-700">
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-red-500"></i> Stakeholder training ready?
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Navigation Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            if(tabId === 'impact') {
+                renderCharts();
+            }
+        }
+
+        // Pulse Toggle Logic
+        function togglePulse() {
+            const container = document.getElementById('daily-pulse-container');
+            const content = document.getElementById('pulse-content');
+            const icon = document.getElementById('pulse-toggle-icon');
+            
+            container.classList.toggle('minimized');
+            
+            if (container.classList.contains('minimized')) {
+                content.style.opacity = '0';
+                icon.setAttribute('data-lucide', 'chevron-up');
+            } else {
+                content.style.opacity = '1';
+                icon.setAttribute('data-lucide', 'chevron-down');
+            }
+            lucide.createIcons();
+        }
+
+        // Charts Logic
+        let chartsCreated = false;
+        function renderCharts() {
+            if (chartsCreated) return;
+            
+            // Effort Chart
+            const ctxEffort = document.getElementById('effortChart').getContext('2d');
+            new Chart(ctxEffort, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Mar', 'Jun', 'Sep', 'Dec'],
+                    datasets: [{
+                        label: 'Manual Reporting (Hrs)',
+                        data: [100, 80, 40, 15, 5],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }, {
+                        label: 'Strategic Focus (Hrs)',
+                        data: [20, 45, 85, 120, 160],
+                        borderColor: '#22c55e',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            // Reliability Chart
+            const ctxReliability = document.getElementById('reliabilityChart').getContext('2d');
+            new Chart(ctxReliability, {
+                type: 'bar',
+                data: {
+                    labels: ['Current (Reactive)', 'Q1 Post-Fix', 'FY26 Target'],
+                    datasets: [{
+                        data: [45, 75, 98],
+                        backgroundColor: ['#ef4444', '#f59e0b', '#22c55e'],
+                        borderRadius: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, max: 100 } }
+                }
+            });
+
+            chartsCreated = true;
+        }
+    </script>
+</body>
+</html>
