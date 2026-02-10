@@ -624,7 +624,34 @@
             <iframe src="marketing_task_manager.html" frameborder="0" class="embedded-dashboard-iframe" title="Marketing Task Manager"></iframe>
         </div>
         
-        <div id="view-sales-reports" class="view-container"><div class="content-card"><h2>Sales Intelligence</h2></div></div>
+        <div id="view-sales-reports" class="view-container"><div class="content-card"><h2>Sales Intelligence</h2>
+        
+
+
+<p style="color: var(--slate-600); margin-bottom: 1.5rem; font-size: 0.9rem;">Select a report card to launch the interactive data dashboard in full-screen view.</p>
+                
+                <div class="report-grid">
+                    <div class="report-card" onclick="openReportModal('Daily Sales Dashboard', '#')">
+                        <img
+                            src="resources/img/DailySalesReport.png"
+                            alt="Daily Dashboard Preview"
+                            class="card-image"
+                        >
+                        <div class="card-title">Daily Sales Dashboard</div>
+                        <div class="card-desc">Daily performance view of Leads, Sales and conversion KPI's at a tactic level.</div>
+                    </div>
+                    <div class="report-card" onclick="openReportModal('Marketing Performance Dashboard', 'https://lookerstudio.google.com/embed/reporting/a268f8cc-104e-4134-8e4b-c5641003affb/page/p_ocx1mx7qyd')">
+                        <img
+                            src="resources/img/SalesAttribution.png"
+                            alt="Daily Dashboard Preview"
+                            class="card-image"
+                        >                        <div class="card-title">Sales Attribution Analytics</div>
+                        <div class="card-desc">Manual Sales Attribution using data from our Azure Database and the Sales Listing SQL Logic.</div>
+                    </div>
+        
+        </div>
+        
+        </div>
         <div id="view-power-bi" class="view-container"><div class="content-card"><h2>Power BI Reports</h2></div></div>
 
         <!-- VIEW: SALES CRM LAUNCHER -->
