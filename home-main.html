@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics Hub - Dashboard</title>
+    <title>COE Analytics Hub - Dashboard</title>
 <style>
     /* --- DESIGN TOKENS --- */
     :root {
@@ -424,7 +424,7 @@
  <aside class="sidebar" id="sidebar">
         <div class="brand-section">
             <span style="color:var(--primary)">◆</span>
-            <span class="brand-text">ANALYTICS HUB</span>
+            <span class="brand-text">GROWTH MARKETING COE ANALYTICS HUB</span>
         </div>
         <nav class="nav-container">
             <div class="nav-category">Main Menu</div>
@@ -502,7 +502,7 @@
         <!-- VIEW CONTAINERS -->
         <div id="view-home" class="view-container active">
              <div class="content-card">
-                <h2 style="margin-bottom: 1rem;">Analytics Hub Overview</h2>
+                <h2 style="margin-bottom: 1rem;">COE Analytics Hub Overview</h2>
                 <p style="color: var(--slate-600); line-height: 1.6; margin-bottom: 2rem;">
                     Welcome to the centralized portal for all data initiatives. This hub serves as the single source of truth for the organization's intelligence assets, integrating live Looker Studio reports, planning documents, and cross-functional resource libraries to drive data-driven decision making.
                     <br><br>
@@ -756,7 +756,7 @@
 
         // --- THE CRM EXTERNAL HANDLER ---
         function openCRMExternal() {
-            const crmUrl = "https://www.c-ssolutions.co.za/crm/index.php";
+            const crmUrl = "#"; <!-- Add CRM Url here -->
             const newWindow = window.open(crmUrl, '_blank');
             
             if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
@@ -805,4 +805,5 @@
 </body>
 
 </html>
+
 
