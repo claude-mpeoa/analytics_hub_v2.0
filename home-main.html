@@ -646,11 +646,11 @@
                             alt="Daily Dashboard Preview"
                             class="card-image"
                         >                        <div class="card-title">Sales Attribution Analytics</div>
-                        <div class="card-desc">Manual Sales Attribution using data from our Azure Database and the Sales Listing SQL Logic.</div>
-                    </div>
-        
-        </div>
-        
+                        <div class="card-desc">Manual Sales Attribution using data from our Azure Database and the Sales Listing SQL Logic.
+                   		 </div>
+        			</div>
+        		</div>
+        	</div>
         </div>
         <div id="view-power-bi" class="view-container"><div class="content-card"><h2>Power BI Reports</h2></div></div>
 
@@ -756,7 +756,7 @@
 
         // --- THE CRM EXTERNAL HANDLER ---
         function openCRMExternal() {
-            const crmUrl = "#"; <!-- Add CRM Url here -->
+            const crmUrl = "";  // Add CRM Url here
             const newWindow = window.open(crmUrl, '_blank');
             
             if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
@@ -805,5 +805,6 @@
 </body>
 
 </html>
+
 
 
