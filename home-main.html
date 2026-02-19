@@ -628,7 +628,7 @@
         
 
 
-<p style="color: var(--slate-600); margin-bottom: 1.5rem; font-size: 0.9rem;">Select a report card to launch the interactive data dashboard in full-screen view.</p>
+		<p style="color: var(--slate-600); margin-bottom: 1.5rem; font-size: 0.9rem;">Select a report card to launch the interactive data dashboard in full-screen view.</p>
                 
                 <div class="report-grid">
                     <div class="report-card" onclick="openReportModal('Daily Sales Dashboard', '#')">
@@ -652,7 +652,26 @@
         		</div>
         	</div>
         </div>
-        <div id="view-power-bi" class="view-container"><div class="content-card"><h2>Power BI Reports</h2></div></div>
+        <div id="view-power-bi" class="view-container"><div class="content-card"><h2>Power BI Reports</h2></div>
+
+					<p style="color: var(--slate-600); margin-bottom: 1.5rem; font-size: 0.9rem;">Select a report card to launch the interactive data dashboard.</p>
+                
+                <div class="report-grid">
+
+                    <div class="report-card" onclick="openReportModal('LMS Leads Report (PBI)', 'https://app.powerbi.com/reportEmbed?reportId=1c8e1a68-92ba-4140-97f5-f98c7a33028c&autoAuth=true&ctid=fe1a59dc-36c7-4f22-ade2-ebd7d1d4b3be')">
+                        <img
+                            src="resources/img/lmsreportpbi.png"
+                            alt="Leads Report Power BI"
+                            class="card-image"
+                        >                        
+						<div class="card-title">LMS Leads Report (PBI)</div>
+                        <div class="card-desc">LMS Report/Dashboard Developed in Power BI by the BI and Analytics Team.
+                   		 </div>
+        			</div>
+        		</div>
+        	</div>
+		
+		</div>
 
         <!-- VIEW: SALES CRM LAUNCHER -->
         <div id="view-sales-crm" class="view-container">
@@ -805,6 +824,7 @@
 </body>
 
 </html>
+
 
 
 
