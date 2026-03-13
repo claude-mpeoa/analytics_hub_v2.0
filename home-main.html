@@ -702,7 +702,30 @@
         </div>
         
         <div id="view-ad-hoc" class="view-container">
-            <iframe src="adhoc_task_manager.html" frameborder="0" class="embedded-dashboard-iframe" title="Ad Hoc Tasks"></iframe>
+			<!-- AD Hoc Tasks Container -->
+    <div id="view-sales-reports" class="view-container">
+			<div class="content-card"><h2>All Ad Hoc Reporting Requests</h2>
+        
+		<p style="color: var(--slate-600); margin-bottom: 1.5rem; font-size: 0.9rem;">Select a report card to launch the resource.</p>
+                
+                <div class="report-grid">
+
+					
+                    <div class="report-card" onclick="openReportModal('Branch Performance Gap Analysis', 'ad-hoc_branch_performance_gap_analysis.html')">
+                        <img
+                            src="resources/img/PerformanceGapAnalysis.png"
+                            alt="Branch performance gap analysis"
+                            class="card-image"
+                        >                        
+						<div class="card-title">Branch Performance Gap Analysis</div>
+                        <div class="card-desc">Ad Hoc Performance analysis showing top 10 and bottom 10 performing branches and regions. Suggestions and summaries included, this is a V1.
+                   		 </div>
+        			</div>
+
+					
+        		</div>
+        	</div>
+        </div>
 	</div>
 
 
@@ -765,7 +788,7 @@
                 'marketing-tasks': 'Task Management', 'marketing-reports': 'Insights Repository',
                 'sales-reports': 'Sales Performance', 'power-bi': 'Advanced Analytics',
                 'sales-crm': 'CRM Insights', 'budgeting': 'Financial Planning',
-                'vision': 'Strategic Roadmap', 'ad-hoc': 'Request Queue',
+                'vision': 'Strategic Roadmap', 'ad-hoc': 'Ad Hoc & AI Reports',
                 'eventscalendar': 'Marketing Calendar', 'terms': 'Terms of use'
             };
             document.getElementById('viewSubtitle').textContent = viewTitleMap[viewId] || 'Analytics Hub';
@@ -823,6 +846,7 @@
 </body>
 
 </html>
+
 
 
 
