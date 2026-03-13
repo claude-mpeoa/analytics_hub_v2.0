@@ -1,0 +1,318 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branded Visibility Audit</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif; 
+            -webkit-font-smoothing: antialiased;
+        }
+        .chart-container { 
+            position: relative; 
+            height: 400px; 
+            width: 100%; 
+        }
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-900 p-4 md:p-10">
+
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+            <div class="space-y-1">
+                <div class="flex items-center gap-2 text-indigo-600 mb-1">
+                    <i data-lucide="history" class="w-4 h-4"></i>
+                    <span class="text-xs font-bold uppercase tracking-widest">Year-Over-Year Performance</span>
+                </div>
+                <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">Branded Visibility Audit</h1>
+                <p class="text-slate-500 text-sm font-medium">Comparison: Jan-Feb 2026 vs Jan-Feb 2025 Baseline</p>
+            </div>
+            
+        </header>
+
+        <!-- YoY KPIs -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+            <!-- Clicks -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm transition-transform hover:scale-[1.02]">
+                <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Clicks (YoY Change)</p>
+                <p id="kpi-clicks" class="text-2xl font-bold text-slate-900">0</p>
+                <div id="growth-clicks" class="mt-2 text-[11px] font-bold flex items-center gap-1">
+                    <!-- Dynamic -->
+                </div>
+            </div>
+            <!-- Impressions -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm transition-transform hover:scale-[1.02]">
+                <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Impression Delta</p>
+                <p id="kpi-impressions" class="text-2xl font-bold text-slate-900">0</p>
+                <div id="growth-impressions" class="mt-2 text-[11px] font-bold flex items-center gap-1">
+                    <!-- Dynamic -->
+                </div>
+            </div>
+            <!-- Position -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm transition-transform hover:scale-[1.02]">
+                <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Avg Position Drop</p>
+                <p id="kpi-pos" class="text-2xl font-bold text-rose-600">0.0</p>
+                <div id="sub-pos" class="mt-2 text-[11px] text-rose-500 font-bold">
+                    <!-- Dynamic -->
+                </div>
+            </div>
+            <!-- Efficiency -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm transition-transform hover:scale-[1.02]">
+                <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">CTR Efficiency</p>
+                <p id="kpi-ctr" class="text-2xl font-bold text-amber-500">0.0%</p>
+                <div class="mt-2 text-[11px] text-rose-500 font-bold flex items-center gap-1">
+                    -21.4% Efficiency Loss
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chart -->
+        <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 mb-8">
+            <div class="mb-8">
+                <h2 class="text-lg font-bold text-slate-800">Historical Transition Timeline</h2>
+                <p class="text-xs text-slate-400 italic">Visualizing the October 2025 "Pivot Point" when Position (Orange Line) diverged from Click performance</p>
+            </div>
+            <div class="chart-container">
+                <canvas id="mainChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Context & Forecast -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="md:col-span-2 bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden">
+                 <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                   <i data-lucide="alert-circle" class="text-amber-400"></i> Critical Year-over-Year Insight
+                 </h2>
+                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div class="space-y-3">
+                       <h3 class="text-indigo-300 text-[10px] font-bold uppercase tracking-widest">The "Efficiency Gap"</h3>
+                       <p class="text-sm text-slate-300 leading-relaxed">
+                         In Jan/Feb 2025, you averaged <span class="text-white font-bold">103k clicks</span> per month. In Jan/Feb 2026, despite <span class="text-white font-bold">similar brand volume</span>, you dropped to <span class="text-white font-bold">86k clicks</span>. This is a direct loss of <span class="text-amber-400 font-bold">16,000 potential visitors</span> monthly due to the lower search rank.
+                       </p>
+                    </div>
+                    <div class="space-y-3">
+                       <h3 class="text-indigo-300 text-[10px] font-bold uppercase tracking-widest">Root Cause Correlation</h3>
+                       <p class="text-sm text-slate-300 leading-relaxed">
+                         The October '25 shifts (Agency onboarding + CRO/Form logic changes) coincide exactly with the start of the position slide. The data suggests the "Form-Flipping" may have introduced site-speed or UX friction.
+                       </p>
+                    </div>
+                 </div>
+            </div>
+
+            <div class="bg-indigo-900 text-white rounded-3xl p-8 flex flex-col justify-between shadow-xl border border-indigo-700">
+                 <div>
+                    <h3 class="text-indigo-200 font-bold text-sm mb-4 flex items-center gap-2">
+                      <i data-lucide="calendar" class="w-4 h-4"></i> March 2026 Forecast
+                    </h3>
+                    <div class="space-y-4">
+                       <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                          <p class="text-[10px] text-indigo-300 uppercase font-bold">Estimated Clicks</p>
+                          <p id="forecast-clicks" class="text-3xl font-bold">0</p>
+                       </div>
+                       <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                          <p class="text-[10px] text-indigo-300 uppercase font-bold">Estimated CTR</p>
+                          <p class="text-2xl font-bold text-emerald-400">17.1%</p>
+                       </div>
+                    </div>
+                 </div>
+                 <p class="text-[10px] text-indigo-400 mt-6 italic">
+                   Forecast derived from 2025 seasonal decline ratio applied to current 2026 momentum.
+                 </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data and Logic from React Source
+        const fullData = [
+            { date: '01/04/2024', impressions: 239492, clicks: 40403, ctr: 0.17, pos: 1.78 },
+            { date: '01/05/2024', impressions: 344573, clicks: 59680, ctr: 0.17, pos: 1.77 },
+            { date: '01/06/2024', impressions: 337083, clicks: 53621, ctr: 0.16, pos: 1.73 },
+            { date: '01/07/2024', impressions: 361180, clicks: 59815, ctr: 0.17, pos: 1.68 },
+            { date: '01/08/2024', impressions: 362075, clicks: 67131, ctr: 0.19, pos: 1.66 },
+            { date: '01/09/2024', impressions: 372018, clicks: 70291, ctr: 0.19, pos: 1.7 },
+            { date: '01/10/2024', impressions: 372093, clicks: 77202, ctr: 0.21, pos: 1.74 },
+            { date: '01/11/2024', impressions: 363026, clicks: 65687, ctr: 0.18, pos: 1.67 },
+            { date: '01/12/2024', impressions: 448152, clicks: 80661, ctr: 0.18, pos: 1.63 },
+            { date: '01/01/2025', impressions: 569622, clicks: 112984, ctr: 0.2, pos: 1.66 },
+            { date: '01/02/2025', impressions: 396500, clicks: 94765, ctr: 0.24, pos: 1.73 },
+            { date: '01/03/2025', impressions: 396629, clicks: 85615, ctr: 0.22, pos: 1.76 },
+            { date: '01/04/2025', impressions: 386758, clicks: 77854, ctr: 0.2, pos: 1.75 },
+            { date: '01/05/2025', impressions: 364306, clicks: 81325, ctr: 0.22, pos: 1.81 },
+            { date: '01/06/2025', impressions: 373612, clicks: 79213, ctr: 0.21, pos: 1.83 },
+            { date: '01/07/2025', impressions: 378006, clicks: 86209, ctr: 0.23, pos: 1.88 },
+            { date: '01/08/2025', impressions: 376801, clicks: 84404, ctr: 0.22, pos: 1.83 },
+            { date: '01/09/2025', impressions: 365740, clicks: 75765, ctr: 0.21, pos: 1.77, event: "Manager Exit" },
+            { date: '01/10/2025', impressions: 371379, clicks: 70923, ctr: 0.19, pos: 2.5, event: "Agency Onboarding" },
+            { date: '01/11/2025', impressions: 370048, clicks: 66277, ctr: 0.18, pos: 2.79 },
+            { date: '01/12/2025', impressions: 443014, clicks: 70517, ctr: 0.16, pos: 2.93 },
+            { date: '01/01/2026', impressions: 552565, clicks: 104595, ctr: 0.19, pos: 3.37 },
+            { date: '01/02/2026', impressions: 413154, clicks: 68366, ctr: 0.17, pos: 3.02 },
+        ];
+
+        // Process KPIs
+        const jan26 = fullData.find(d => d.date === '01/01/2026');
+        const feb26 = fullData.find(d => d.date === '01/02/2026');
+        const jan25 = fullData.find(d => d.date === '01/01/2025');
+        const feb25 = fullData.find(d => d.date === '01/02/2025');
+        const mar25 = fullData.find(d => d.date === '01/03/2025');
+
+        const currentTotal = {
+            clicks: jan26.clicks + feb26.clicks,
+            impressions: jan26.impressions + feb26.impressions,
+            ctr: (jan26.ctr + feb26.ctr) / 2,
+            pos: (jan26.pos + feb26.pos) / 2
+        };
+
+        const priorTotal = {
+            clicks: jan25.clicks + feb25.clicks,
+            impressions: jan25.impressions + feb25.impressions,
+            ctr: (jan25.ctr + feb25.ctr) / 2,
+            pos: (jan25.pos + feb25.pos) / 2
+        };
+
+        const calculateGrowth = (curr, prev) => (((curr - prev) / prev) * 100).toFixed(1);
+
+        // Update DOM elements
+        document.getElementById('kpi-clicks').innerText = currentTotal.clicks.toLocaleString();
+        document.getElementById('kpi-impressions').innerText = currentTotal.impressions.toLocaleString();
+        document.getElementById('kpi-pos').innerText = currentTotal.pos.toFixed(1);
+        document.getElementById('kpi-ctr').innerText = (currentTotal.ctr * 100).toFixed(1) + '%';
+        
+        const cGrowth = calculateGrowth(currentTotal.clicks, priorTotal.clicks);
+        document.getElementById('growth-clicks').innerHTML = `<i data-lucide="arrow-down-right" class="w-3 h-3"></i> ${cGrowth}% YoY`;
+        document.getElementById('growth-clicks').className += ' text-rose-600';
+
+        const iGrowth = calculateGrowth(currentTotal.impressions, priorTotal.impressions);
+        document.getElementById('growth-impressions').innerHTML = `<i data-lucide="arrow-up-right" class="w-3 h-3"></i> ${iGrowth}% YoY`;
+        document.getElementById('growth-impressions').className += ' text-emerald-600';
+
+        document.getElementById('sub-pos').innerText = `Position ${priorTotal.pos.toFixed(1)} in '25`;
+
+        const march25Ratio = mar25.clicks / feb25.clicks;
+        const forecast = Math.round(feb26.clicks * march25Ratio);
+        document.getElementById('forecast-clicks').innerText = forecast.toLocaleString();
+
+        // Initialize Lucide
+        lucide.createIcons();
+
+        // Chart.js Implementation
+        const chartData = fullData.map(d => ({
+            label: d.date.split('/')[1] + '/' + d.date.split('/')[2].substring(2),
+            clicks: d.clicks,
+            pos: d.pos,
+            impressions: d.impressions,
+            event: d.event
+        }));
+
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        new Chart(ctx, {
+            data: {
+                labels: chartData.map(d => d.label),
+                datasets: [
+                    {
+                        type: 'line',
+                        label: 'Avg Position',
+                        data: chartData.map(d => d.pos),
+                        borderColor: '#f59e0b',
+                        borderWidth: 4,
+                        pointRadius: chartData.map(d => d.event ? 6 : 0),
+                        pointBackgroundColor: '#f59e0b',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        yAxisID: 'y1',
+                        tension: 0.3,
+                        order: 1
+                    },
+                    {
+                        type: 'bar',
+                        label: 'Clicks',
+                        data: chartData.map(d => d.clicks),
+                        backgroundColor: '#6366f1',
+                        borderRadius: 4,
+                        barThickness: 12,
+                        yAxisID: 'y',
+                        order: 2
+                    },
+                    {
+                        type: 'line',
+                        label: 'Impressions',
+                        data: chartData.map(d => d.impressions),
+                        backgroundColor: 'rgba(241, 245, 249, 0.4)',
+                        fill: true,
+                        borderColor: '#cbd5e1',
+                        borderWidth: 1,
+                        pointRadius: 0,
+                        yAxisID: 'y',
+                        order: 3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        titleColor: '#94a3b8',
+                        bodyColor: '#1e293b',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 12,
+                        boxPadding: 6,
+                        usePointStyle: true,
+                        callbacks: {
+                            afterTitle: (items) => {
+                                const evt = chartData[items[0].dataIndex].event;
+                                return evt ? `EVENT: ${evt}` : '';
+                            },
+                            label: (context) => {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y.toLocaleString();
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        position: 'left',
+                        grid: { color: '#f1f5f9' },
+                        ticks: { color: '#94a3b8', font: { size: 10 } }
+                    },
+                    y1: {
+                        position: 'right',
+                        reverse: true,
+                        min: 1,
+                        max: 4,
+                        grid: { display: false },
+                        ticks: { color: '#f59e0b', font: { size: 10, weight: 'bold' } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#94a3b8', font: { size: 10 } }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
