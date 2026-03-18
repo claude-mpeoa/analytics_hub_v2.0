@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The 2026 Fuel Shockwave Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 pb-20">
+
+    <!-- Header -->
+    <header class="bg-slate-900 text-white pt-12 pb-24 px-6 relative overflow-hidden">
+        <div class="max-w-6xl mx-auto relative z-10">
+            <div class="inline-flex items-center space-x-2 bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-6 border border-red-500/30">
+                <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i>
+                <span>Market Alert: April 1st Forecast & VASA Impact</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-black mb-4 tracking-tight">
+                The 2026 Fuel <span class="text-red-500 underline decoration-red-500/30 underline-offset-8">Shockwave</span>
+            </h1>
+            <p class="text-slate-400 max-w-2xl text-lg leading-relaxed">
+                A comprehensive analysis of the fuel surge impact on South African business operations, discretionary spend, and Virgin Active membership stability.
+            </p>
+            
+            <!-- Macro context strip -->
+            <div class="mt-8 flex flex-wrap gap-4">
+                <div class="flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
+                    <span class="text-yellow-400 text-xs font-bold uppercase">Brent Crude</span>
+                    <span class="text-white font-black">~$103/bbl</span>
+                    <span class="text-red-400 text-xs">↑ from $69 in Feb</span>
+                </div>
+                <div class="flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
+                    <span class="text-yellow-400 text-xs font-bold uppercase">ZAR/USD</span>
+                    <span class="text-white font-black">~R16.86/$</span>
+                    <span class="text-red-400 text-xs">↑ EM Flight</span>
+                </div>
+                <div class="flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl">
+                    <span class="text-yellow-400 text-xs font-bold uppercase">Under-Recovery</span>
+                    <span class="text-white font-black">R7.00/l</span>
+                    <span class="text-red-400 text-xs">Diesel (mid-month)</span>
+                </div>
+            </div>
+        </div>
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-red-600/10 to-transparent pointer-events-none"></div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 -mt-16 relative z-20">
+
+        <!-- April 1 Double Hit Banner -->
+        <div class="mb-6 bg-gradient-to-r from-red-900 to-orange-900 text-white p-6 rounded-2xl border border-red-700/50 shadow-lg">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-red-500/30 p-3 rounded-xl">
+                        <i data-lucide="flame" class="text-red-300 w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-black uppercase tracking-widest text-red-300 mb-0.5">⚠ The April 1 Double-Hit — New Intel</div>
+                        <p class="text-sm text-white/90 leading-relaxed max-w-2xl">
+                            Eskom's <strong>8.76% electricity tariff hike</strong> lands on the exact same day as the fuel surge — April 1, 2026. The simultaneous squeeze on both energy inputs represents the largest single-day disposable income shock in recent history.
+                        </p>
+                    </div>
+                </div>
+                <div class="shrink-0 text-right w-full md:w-auto">
+                    <div class="text-4xl font-black">8.76%</div>
+                    <div class="text-xs text-red-300 font-bold uppercase">Eskom Apr 1 Hike</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stat Cards Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+            <!-- Card 1 -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-shadow relative overflow-hidden">
+                <div class="absolute top-3 right-3 bg-red-500 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-widest">Updated</div>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-red-100 text-red-600">
+                    <i data-lucide="trending-up"></i>
+                </div>
+                <h3 class="text-slate-500 text-sm font-medium mb-1">Diesel Increase (50ppm)</h3>
+                <div class="text-2xl font-bold text-slate-900 mb-2">+R7.50/l</div>
+                <p class="text-slate-400 text-xs mt-auto italic">CEF mid-month; worst case >R8.00/l if trend holds.</p>
+            </div>
+            <!-- Card 2 -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-shadow relative overflow-hidden">
+                <div class="absolute top-3 right-3 bg-red-500 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-widest">Updated</div>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-orange-100 text-orange-600">
+                    <i data-lucide="trending-up"></i>
+                </div>
+                <h3 class="text-slate-500 text-sm font-medium mb-1">Petrol Increase (95 ULP)</h3>
+                <div class="text-2xl font-bold text-slate-900 mb-2">+R4.53/l</div>
+                <p class="text-slate-400 text-xs mt-auto italic">93 ULP: +R4.10/l. Worst case >R5/l by end of March.</p>
+            </div>
+            <!-- Card 3 -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-shadow relative overflow-hidden">
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-slate-100 text-slate-600">
+                    <i data-lucide="alert-triangle"></i>
+                </div>
+                <h3 class="text-slate-500 text-sm font-medium mb-1">Total Levy Hike</h3>
+                <div class="text-2xl font-bold text-slate-900 mb-2">21c/l</div>
+                <p class="text-slate-400 text-xs mt-auto italic">GFL (+9c), RAF (+7c), Carbon (+5c). GFL R4.10/l total.</p>
+            </div>
+            <!-- Card 4 -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col hover:shadow-md transition-shadow relative overflow-hidden">
+                <div class="absolute top-3 right-3 bg-red-500 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded-full tracking-widest">New</div>
+                <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-yellow-100 text-yellow-600">
+                    <i data-lucide="zap"></i>
+                </div>
+                <h3 class="text-slate-500 text-sm font-medium mb-1">Eskom Tariff Hike</h3>
+                <div class="text-2xl font-bold text-slate-900 mb-2">+8.76%</div>
+                <p class="text-slate-400 text-xs mt-auto italic">Effective April 1. Municipalities: +9.01% from July 1.</p>
+            </div>
+        </section>
+
+        <!-- Macro Trigger Row -->
+        <section class="mb-12 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                <div class="flex items-center space-x-2 mb-3">
+                    <i data-lucide="flame" class="text-orange-500 w-5 h-5"></i>
+                    <h4 class="font-bold text-sm">Middle East Escalation</h4>
+                </div>
+                <p class="text-xs text-slate-500 leading-relaxed">Brent crude surged from $69 in February to over $103/bbl in March, driven by US-Iran hostilities. Strait of Hormuz risks remain high.</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                <div class="flex items-center space-x-2 mb-3">
+                    <i data-lucide="activity" class="text-blue-500 w-5 h-5"></i>
+                    <h4 class="font-bold text-sm">Rand Weakness</h4>
+                </div>
+                <p class="text-xs text-slate-500 leading-relaxed">Safe-haven flight saw the rand slip to R16.86/$. Every 10c move in the exchange rate shifts the pump price by 6–10c/l.</p>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                <div class="flex items-center space-x-2 mb-3">
+                    <i data-lucide="shield" class="text-green-600 w-5 h-5"></i>
+                    <h4 class="font-bold text-sm">Civil Action Pressure</h4>
+                </div>
+                <p class="text-xs text-slate-500 leading-relaxed">Major civil action groups calling for a repeat of the 2022 R1.50/l temporary GFL reduction. Precedent exists, but no commitment yet.</p>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <div class="lg:col-span-2 space-y-8">
+
+                <!-- Business Operational Impact -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <i data-lucide="briefcase" class="text-blue-600"></i>
+                        <h2 class="text-2xl font-bold">Business Operational Impact</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-blue-50 p-2 rounded-lg text-blue-600 mt-1 shrink-0">
+                                    <i data-lucide="truck" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">The 30% Rule</h4>
+                                    <p class="text-sm text-slate-500">Logistics fuel accounts for ~35% of total ops. This hike increases segment costs by <span class="text-red-600 font-semibold">25–30% overnight</span>.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-orange-50 p-2 rounded-lg text-orange-600 mt-1 shrink-0">
+                                    <i data-lucide="clock" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">The 14-Day Surcharge</h4>
+                                    <p class="text-sm text-slate-500">Expect a 5%–10% fuel surcharge from couriers within 14 days of implementation.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-yellow-50 p-2 rounded-lg text-yellow-600 mt-1 shrink-0">
+                                    <i data-lucide="zap" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">The Electricity Multiplier</h4>
+                                    <p class="text-sm text-slate-500">The 8.76% hike will turbocharge inflation — goods produced via grid electricity absorb the cost immediately.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 text-white p-6 rounded-2xl relative overflow-hidden">
+                            <div class="relative z-10 h-full flex flex-col">
+                                <div class="flex items-center space-x-2 text-yellow-400 mb-2">
+                                    <i data-lucide="zap" class="w-4.5 h-4.5"></i>
+                                    <span class="text-xs font-bold uppercase">The Generator Tax</span>
+                                </div>
+                                <div class="text-3xl font-bold mb-1">+R140<span class="text-lg font-normal text-slate-400">/hr</span></div>
+                                <p class="text-sm text-slate-400 leading-snug">Extra fuel cost for standard 20L/hr generators during grid outages.</p>
+                                <div class="mt-auto pt-4 border-t border-white/10">
+                                    <div class="text-[10px] text-slate-400 italic">LPG tracks slower than diesel but remains highly sensitive to parity.</div>
+                                </div>
+                            </div>
+                            <div class="absolute bottom-[-20px] right-[-10px] opacity-10 pointer-events-none">
+                                <i data-lucide="zap" style="width: 120px; height: 120px;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VASA Membership -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <i data-lucide="user-minus" class="text-red-600"></i>
+                        <h2 class="text-2xl font-bold">VASA Membership Liquidation</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="font-bold text-slate-700 flex justify-between">
+                                    <span>Cancellation Spike</span>
+                                    <span class="text-red-600">8% — 12%</span>
+                                </h4>
+                                <p class="text-sm text-slate-500 mt-1 italic">Est. rise in "Affordability" cancellations within 60 days.</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                                <h5 class="font-bold text-sm mb-1 text-indigo-900">Value Migration</h5>
+                                <p class="text-xs text-slate-600">Projected 15% shift from "Premier" to single-club models to cut R300–R500 from monthly spend.</p>
+                            </div>
+                            <div class="p-4 bg-yellow-50 rounded-xl border border-yellow-100">
+                                <h5 class="font-bold text-sm mb-1 text-yellow-900">The Electricity Compressor</h5>
+                                <p class="text-xs text-yellow-800">Clubs face the same 8.76% hike. Operational pressure to either absorb margin or review fees in Q3.</p>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="font-bold text-slate-700 flex justify-between">
+                                    <span>New Uptake Rate</span>
+                                    <span class="text-orange-600">-22% Drop</span>
+                                </h4>
+                                <p class="text-sm text-slate-500 mt-1 italic">Below-average uptake due to "Wait-and-See" psychology.</p>
+                            </div>
+                            <div class="p-4 bg-red-50 rounded-xl border border-red-100">
+                                <h5 class="font-bold text-sm mb-1 text-red-900">The "Third Space" Fallacy</h5>
+                                <p class="text-xs text-red-800">R26+/l fuel turns the "Commute to Gym" loop into a financial barrier. Value proposition erodes when transport costs rise.</p>
+                            </div>
+                            <div class="p-4 bg-orange-50 rounded-xl border border-orange-100">
+                                <h5 class="font-bold text-sm mb-1 text-orange-900">KPMG Cascade Warning</h5>
+                                <p class="text-xs text-orange-800 italic">"Consumers will be worse off unless incomes rise" — gym spend is often first to go.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategic Recommendations -->
+                <div class="bg-indigo-600 text-white p-8 rounded-3xl shadow-lg relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h2 class="text-2xl font-bold mb-6">Strategic Recommendations</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10">
+                                <h4 class="font-bold mb-2 flex items-center text-sm"><i data-lucide="map-pin" class="mr-2 w-4 h-4"></i> Remote Work</h4>
+                                <p class="text-xs text-indigo-100">Review hybrid models to offset commute costs. Frame as a retention tool.</p>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10">
+                                <h4 class="font-bold mb-2 flex items-center text-sm"><i data-lucide="shopping-cart" class="mr-2 w-4 h-4"></i> Inventory</h4>
+                                <p class="text-xs text-indigo-100">Front-load stock orders BEFORE April 1st surcharges activate.</p>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10">
+                                <h4 class="font-bold mb-2 flex items-center text-sm"><i data-lucide="briefcase" class="mr-2 w-4 h-4"></i> Client Prep</h4>
+                                <p class="text-xs text-indigo-100">Issue adjustment notices now — don't wait for the mid-April squeeze.</p>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10">
+                                <h4 class="font-bold mb-2 flex items-center text-sm"><i data-lucide="zap" class="mr-2 w-4 h-4"></i> Solar Hedge</h4>
+                                <p class="text-xs text-indigo-100">Eskom hike improves solar ROI. Accelerate pending capex decisions.</p>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10">
+                                <h4 class="font-bold mb-2 flex items-center text-sm"><i data-lucide="shield" class="mr-2 w-4 h-4"></i> Watch Relief</h4>
+                                <p class="text-xs text-indigo-100">Lobbying for levy relief is high. A temporary GFL cut could pivot models.</p>
+                            </div>
+                            <div class="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10">
+                                <h4 class="font-bold mb-2 flex items-center text-sm"><i data-lucide="building-2" class="mr-2 w-4 h-4"></i> VASA Pricing</h4>
+                                <p class="text-xs text-indigo-100">Freeze fee reviews until Q4. Introduce home-club promos.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="space-y-8">
+                <!-- Consumer Squeeze -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <i data-lucide="shopping-cart" class="text-red-600"></i>
+                        <h2 class="text-xl font-bold">Consumer Squeeze</h2>
+                    </div>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-sm font-bold text-slate-700">Fuel Disp. Loss</span>
+                                <span class="text-xl font-bold text-red-600">+R700/mo</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                <div class="bg-red-500 h-full w-[85%]"></div>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-1 italic">Two 50L fills. One gym sub "lost".</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-sm font-bold text-slate-700">Electricity Add-on</span>
+                                <span class="text-xl font-bold text-yellow-600">+R250/mo</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                <div class="bg-yellow-400 h-full w-[35%]"></div>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-1 italic">Typical residential user estimate.</p>
+                        </div>
+                        <div class="p-4 bg-red-50 rounded-2xl border border-red-200">
+                            <h4 class="font-bold text-red-900 mb-1 text-sm">Combined April 1 Hit</h4>
+                            <div class="text-2xl font-black text-red-700">~R1,000<span class="text-sm font-normal text-red-500">/mo</span></div>
+                            <p class="text-[11px] text-red-700 mt-1">Squeeze on a typical household. Exceeds average gym cost by ~2x.</p>
+                        </div>
+                        <div class="p-4 bg-orange-50 rounded-2xl border border-orange-100">
+                            <h4 class="font-bold text-orange-900 mb-1 text-sm">The 14-Day Food Lag</h4>
+                            <p class="text-[11px] text-orange-800 leading-relaxed">Shelf prices track fuel with a 2–4 week delay. Mid-April will see food spike.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <h4 class="font-bold text-slate-900 mb-1 text-sm">Commuter Fare Spike</h4>
+                            <p class="text-[11px] text-slate-600 leading-relaxed">Taxi fares projected to rise <span class="font-bold">15%–20%</span> by mid-April.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event Impact -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <i data-lucide="calendar-x" class="text-purple-600"></i>
+                        <h2 class="text-xl font-bold">Luxury Buy Erosion</h2>
+                    </div>
+                    <div class="text-center py-6 bg-purple-50 rounded-2xl border border-purple-100 mb-6">
+                        <div class="text-xs font-bold text-purple-600 uppercase mb-2">Event Drop-off</div>
+                        <div class="text-5xl font-black text-purple-900">-35%</div>
+                        <p class="text-[11px] text-purple-700 mt-2 px-2 italic">Projected decline in Regional Games uptake.</p>
+                    </div>
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                        <h4 class="font-bold text-[10px] uppercase text-slate-400 mb-2">Impact Drivers</h4>
+                        <ul class="text-[11px] text-slate-600 space-y-2">
+                            <li class="flex items-start"><span class="text-purple-600 mr-2">•</span><span><strong>Travel Barrier:</strong> Venue travel becomes a "no".</span></li>
+                            <li class="flex items-start"><span class="text-purple-600 mr-2">•</span><span><strong>Priority:</strong> Core costs over elective experiences.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scenario Planning -->
+        <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 overflow-hidden relative mb-12">
+            <h2 class="text-2xl font-bold mb-2 text-center">6-Month Scenario Planning</h2>
+            <p class="text-center text-xs text-slate-400 mb-10 italic">Based on Strait of Hormuz risk and govt relief watch</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative">
+                <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-px bg-slate-100"></div>
+                
+                <div class="relative text-center md:text-right md:pr-12">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-600 mb-4">
+                        <i data-lucide="chevron-down" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-green-700 mb-2">Bear Case (Recovery)</h3>
+                    <p class="text-sm text-slate-500 mb-2">Ceasefire or OPEC output increase. Govt implements GFL relief.</p>
+                    <div class="text-4xl font-black text-slate-900">R18.50<span class="text-lg font-medium text-slate-400">/l</span></div>
+                    <div class="text-sm font-bold text-green-600 mt-1">(-R8.00 Reduction)</div>
+                </div>
+                
+                <div class="relative text-center md:text-left md:pl-12">
+                    <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-100 text-red-600 mb-4">
+                        <i data-lucide="chevron-up" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-red-700 mb-2">Bull Case (Escalation)</h3>
+                    <p class="text-sm text-slate-500 mb-2">Hormuz blockade; Rand breaches R18/$. Compound hikes confirmed.</p>
+                    <div class="text-4xl font-black text-slate-900">R30.00+<span class="text-lg font-medium text-slate-400">/l</span></div>
+                    <div class="text-sm font-bold text-red-600 mt-1">(+R4.00+ Further Hike)</div>
+                </div>
+            </div>
+            
+            <div class="mt-10 p-4 bg-amber-50 border border-amber-200 rounded-xl text-center">
+                <span class="text-[10px] font-black uppercase text-amber-700 tracking-wide">⚡ Watch: July 1 Secondary Shock</span>
+                <p class="text-xs text-amber-700 mt-1 font-medium">Municipal electricity tariffs (+9.01 avg.) kick in July 1, extending pressure into Q3 2026.</p>
+            </div>
+        </section>
+
+        <footer class="mt-12 text-center text-slate-400 text-[11px] leading-relaxed">
+            <p>Strategic Analysis Report | Virgin Active South Africa Focus | Data Source: CEF, IOL, Moneyweb, AutoTrader | March 18, 2026</p>
+        </footer>
+    </main>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
