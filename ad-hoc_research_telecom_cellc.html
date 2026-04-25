@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SA Telecom Market Research - Cell C Opportunity Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;600&family=Mulish:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f5f0e8;
+    --accent: #c8102e;
+    --accent2: #ff6b35;
+    --steel: #2a3a4a;
+    --muted: #6b7a89;
+    --rule: #d0c8ba;
+    --card: #fffdf8;
+    --vodacom: #e60000;
+    --mtn: #ffcb05;
+    --cellc: #0033a0;
+    --telkom: #3d9be9;
+    --rain: #1db954;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Mulish', sans-serif;
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  /* HEADER */
+  .masthead {
+    background: var(--steel);
+    color: #fff;
+    padding: 60px 0 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .masthead::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 340px; height: 340px;
+    border-radius: 50%;
+    background: rgba(200,16,46,0.18);
+  }
+  .masthead::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,107,53,0.12);
+  }
+  .masthead-inner { max-width: 900px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+  .masthead-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 18px;
+  }
+  .masthead h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 54px);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
+  .masthead h1 span { color: var(--accent2); }
+  .masthead-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.65);
+    max-width: 560px;
+    font-weight: 300;
+  }
+  .masthead-meta {
+    display: flex; gap: 28px; margin-top: 32px; flex-wrap: wrap;
+  }
+  .meta-item {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 1px;
+  }
+  .meta-item strong { color: #fff; }
+
+  /* NAV */
+  .toc-bar {
+    background: var(--ink);
+    padding: 0 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 2px solid var(--accent);
+  }
+  .toc-inner {
+    max-width: 900px; margin: 0 auto;
+    display: flex; gap: 0; overflow-x: auto;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .toc-inner::-webkit-scrollbar { display: none; }
+  .toc-inner a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    padding: 14px 16px;
+    white-space: nowrap;
+    transition: color 0.2s, border-bottom 0.2s;
+    border-bottom: 2px solid transparent;
+    display: block;
+  }
+  .toc-inner a:hover { color: var(--accent2); border-bottom-color: var(--accent2); }
+
+  /* CONTENT */
+  .content { max-width: 900px; margin: 0 auto; padding: 0 32px 80px; }
+
+  /* SECTION */
+  .section { padding: 64px 0 0; }
+  .section-header {
+    display: flex; align-items: baseline; gap: 16px; margin-bottom: 32px;
+    padding-bottom: 12px; border-bottom: 1px solid var(--rule);
+  }
+  .section-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; color: var(--accent); letter-spacing: 2px; font-weight: 600;
+  }
+  .section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 700;
+    color: var(--steel);
+  }
+
+  /* STAT CALLOUTS */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px; margin: 28px 0;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 20px 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .stat-card.red::before { background: var(--accent); }
+  .stat-card.orange::before { background: var(--accent2); }
+  .stat-card.steel::before { background: var(--steel); }
+  .stat-card.green::before { background: var(--rain); }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px; font-weight: 900; color: var(--ink); line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; }
+
+  /* FUNNEL */
+  .funnel {
+    margin: 32px 0;
+    position: relative;
+  }
+  .funnel-row {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 18px 24px;
+    margin-bottom: 4px;
+    display: flex; align-items: center; gap: 20px;
+    transition: transform 0.15s;
+    position: relative;
+  }
+  .funnel-row:hover { transform: translateX(4px); }
+  .funnel-bar-wrap { flex: 1; }
+  .funnel-bar {
+    height: 10px; border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+  .funnel-label { font-weight: 700; font-size: 14px; min-width: 160px; }
+  .funnel-val { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--muted); min-width: 90px; text-align: right; }
+
+  /* OPERATOR CARDS */
+  .op-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; margin: 28px 0; }
+  .op-card {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 0;
+    overflow: hidden;
+  }
+  .op-header {
+    padding: 18px 20px 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .op-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+  .op-name { font-weight: 700; font-size: 16px; }
+  .op-rank { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--muted); margin-left: auto; }
+  .op-body { padding: 0 20px 20px; }
+  .op-kv { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--rule); }
+  .op-kv:last-child { border-bottom: none; }
+  .op-k { font-size: 12px; color: var(--muted); }
+  .op-v { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; }
+
+  /* MARKET SHARE BAR */
+  .share-chart { margin: 28px 0; }
+  .share-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .share-name { width: 90px; font-weight: 700; font-size: 13px; }
+  .share-bar-wrap { flex: 1; background: #e8e0d4; border-radius: 2px; height: 26px; position: relative; overflow: hidden; }
+  .share-bar { height: 100%; border-radius: 2px; display: flex; align-items: center; padding-left: 10px; transition: width 1s ease; }
+  .share-bar span { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #fff; font-weight: 600; }
+  .share-pct { width: 40px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--muted); }
+
+  /* PRODUCT TABLE */
+  .table-wrap { overflow-x: auto; margin: 24px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    background: var(--steel); color: #fff;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 12px 14px; text-align: left; white-space: nowrap;
+  }
+  td { padding: 11px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tr:nth-child(even) td { background: rgba(0,0,0,0.025); }
+  tr:hover td { background: rgba(200,16,46,0.04); }
+  .badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 1px;
+    padding: 2px 7px; border-radius: 2px;
+    font-weight: 600;
+  }
+  .badge-green { background: #d4edda; color: #155724; }
+  .badge-red { background: #f8d7da; color: #721c24; }
+  .badge-blue { background: #cce5ff; color: #004085; }
+  .badge-orange { background: #fff3cd; color: #856404; }
+
+  /* INSIGHT BOXES */
+  .insight {
+    border-left: 3px solid var(--accent);
+    background: var(--card);
+    border-radius: 0 4px 4px 0;
+    padding: 18px 22px;
+    margin: 24px 0;
+  }
+  .insight-head {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
+  }
+  .insight p { font-size: 14px; color: var(--steel); }
+
+  .insight.opportunity {
+    border-left-color: var(--cellc);
+    background: #f0f4ff;
+  }
+  .insight.opportunity .insight-head { color: var(--cellc); }
+
+  /* OPPORTUNITY SECTION */
+  .opp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin: 24px 0; }
+  .opp-card {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--cellc);
+    border-radius: 4px;
+    padding: 20px;
+  }
+  .opp-icon { font-size: 24px; margin-bottom: 10px; }
+  .opp-title { font-weight: 700; font-size: 14px; margin-bottom: 8px; color: var(--steel); }
+  .opp-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* VERDICT */
+  .verdict {
+    background: var(--steel);
+    color: #fff;
+    border-radius: 6px;
+    padding: 40px;
+    margin: 48px 0 0;
+  }
+  .verdict h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px; margin-bottom: 16px;
+  }
+  .verdict p { color: rgba(255,255,255,0.75); font-size: 14px; margin-bottom: 14px; }
+  .verdict ul { list-style: none; padding: 0; }
+  .verdict ul li {
+    padding: 10px 0 10px 24px; border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.85); font-size: 14px; position: relative;
+  }
+  .verdict ul li:last-child { border-bottom: none; }
+  .verdict ul li::before { content: '→'; position: absolute; left: 0; color: var(--accent2); }
+
+  /* PROSE */
+  .prose p { margin-bottom: 16px; color: #2a2a2a; }
+  .prose strong { color: var(--ink); }
+
+  /* FOOTER */
+  footer {
+    margin-top: 80px;
+    border-top: 1px solid var(--rule);
+    padding: 28px 32px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; color: var(--muted); letter-spacing: 1px;
+    text-align: center;
+  }
+
+  @media (max-width: 600px) {
+    .masthead-meta { flex-direction: column; gap: 10px; }
+    .toc-inner a { padding: 14px 10px; font-size: 9px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-inner">
+    <div class="masthead-tag">// Market Research Report - South Africa Telecom</div>
+    <h1>The SA Telecom<br><span>Ceiling Problem</span><br>& Cell C's Opening</h1>
+    <p class="masthead-sub">A structured deep-dive into South Africa's mobile market: who the players are, what they sell, what customers actually buy and where Cell C can carve a lasting edge.</p>
+    <div class="masthead-meta">
+      <div class="meta-item"><strong>Scope:</strong> South Africa only</div>
+      <div class="meta-item"><strong>Focus:</strong> MNOs & Consumer Products</div>
+      <div class="meta-item"><strong>Data to:</strong> April 2026</div>
+      <div class="meta-item"><strong>Prepared for:</strong> Cell C Ad-Hoc by Claude Mpeoa</div>
+    </div>
+  </div>
+</div>
+
+<!-- STICKY NAV -->
+<nav class="toc-bar">
+  <div class="toc-inner">
+    <a href="#s1">01 · Population</a>
+    <a href="#s2">02 · Mobile Base</a>
+    <a href="#s3">03 · Market Share</a>
+    <a href="#s4">04 · Products</a>
+    <a href="#s5">05 · Pricing</a>
+    <a href="#s6">06 · Why Prepaid Wins</a>
+    <a href="#s7">07 · The Ceiling</a>
+    <a href="#s8">08 · Cell C Edge</a>
+  </div>
+</nav>
+
+<div class="content">
+
+<!-- SECTION 1: POPULATION FUNNEL -->
+<div class="section" id="s1">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>South Africa - The Population Funnel</h2>
+  </div>
+  <div class="prose">
+    <p>To understand how saturated the telecom market is, we start at the very top: the full South African population and work our way down to active paying subscribers. Every step down this funnel shows you where growth is still possible - and where it has already been claimed.</p>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card red">
+      <div class="stat-num">64.4M</div>
+      <div class="stat-label">Total Population (Jan 2025)</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-num">50.8M</div>
+      <div class="stat-label">Internet Users (78.9%)</div>
+    </div>
+    <div class="stat-card steel">
+      <div class="stat-num">124M</div>
+      <div class="stat-label">Active SIM Cards (193% of pop.)</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-num">~60M</div>
+      <div class="stat-label">Unique Mobile Subscribers</div>
+    </div>
+  </div>
+
+  <div class="funnel">
+    <div class="funnel-row">
+      <div class="funnel-label">🇿🇦 Total Population</div>
+      <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:100%"></div></div>
+      <div class="funnel-val">64.4 million</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-label">📱 Mobile Subscribers</div>
+      <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:93%"></div></div>
+      <div class="funnel-val">~60 million</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-label">🌐 Internet Users</div>
+      <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:79%"></div></div>
+      <div class="funnel-val">50.8 million</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-label">📲 Smartphone Users (est.)</div>
+      <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:27%"></div></div>
+      <div class="funnel-val">~17.5 million</div>
+    </div>
+    <div class="funnel-row">
+      <div class="funnel-label">💬 Social Media Users</div>
+      <div class="funnel-bar-wrap"><div class="funnel-bar" style="width:42%"></div></div>
+      <div class="funnel-val">26.7 million</div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-head">📖 What This Tells Us</div>
+    <p>The <strong>124 million SIM cards for 64.4 million people</strong> tells us SA is not a country running out of mobile subscribers - it's a country where people already own multiple SIMs. True growth must now come from upselling (more data, better plans, postpaid conversion) rather than just acquiring new first-time users. Smartphone penetration at ~27% as of end-2024 is the real untapped layer - nearly 3 in 4 mobile users still don't have a smartphone, meaning there is a genuine market to win below the premium tier.</p>
+  </div>
+</div>
+
+<!-- SECTION 2: MOBILE BASE TYPES -->
+<div class="section" id="s2">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>Types of Mobile Connections</h2>
+  </div>
+  <div class="prose">
+    <p>Not all 124 million connections are equal. They range from basic voice-only SIMs bought for R5 at a spaza shop, to high-value LTE postpaid contracts with embedded devices, home WiFi routers, and insurance. Understanding the mix is key to understanding what customers actually want.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr>
+        <th>Connection Type</th>
+        <th>Description</th>
+        <th>Est. % of Market</th>
+        <th>ARPU Range</th>
+        <th>Growth Direction</th>
+      </tr>
+      <tr>
+        <td><strong>Prepaid Voice + Data</strong></td>
+        <td>Buy-as-you-go SIM. No contract. Common in all LSMs.</td>
+        <td>~84%</td>
+        <td>R60 – R150/mo</td>
+        <td><span class="badge badge-green">STABLE</span></td>
+      </tr>
+      <tr>
+        <td><strong>Postpaid Contract</strong></td>
+        <td>Monthly fixed fee, usually with a handset subsidy. Higher-income bracket.</td>
+        <td>~12%</td>
+        <td>R250 – R700/mo</td>
+        <td><span class="badge badge-orange">SLOW GROWTH</span></td>
+      </tr>
+      <tr>
+        <td><strong>Mobile Broadband (MBB)</strong></td>
+        <td>Data-only SIM used in routers, tablets, Wi-Fi dongles. Home internet replacement.</td>
+        <td>~6–8%</td>
+        <td>R100 – R400/mo</td>
+        <td><span class="badge badge-blue">GROWING</span></td>
+      </tr>
+      <tr>
+        <td><strong>IoT / M2M</strong></td>
+        <td>Machine SIMs - fleet tracking, meters, alarms. B2B.</td>
+        <td>~2%</td>
+        <td>Low per unit</td>
+        <td><span class="badge badge-green">FASTEST GROWTH</span></td>
+      </tr>
+      <tr>
+        <td><strong>MVNO (Virtual Operators)</strong></td>
+        <td>FNB Connect, Capitec Connect, Standard Bank Connect - banks piggyback on MNO networks.</td>
+        <td>~3.9% of retail base</td>
+        <td>Varies</td>
+        <td><span class="badge badge-blue">RAPIDLY GROWING</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="insight">
+    <div class="insight-head">📖 The 4G / 5G Layer</div>
+    <p>As of 2025, <strong>97.5% of mobile connections can technically connect via 3G, 4G or 5G</strong>. 4G/LTE covers 97.7% of the population. 5G now covers over 50% of the population - but only around 9–13% of users are actually on 5G-capable devices. Mobile data traffic is surging: <strong>MTN reported a 23% surge in mobile data traffic in H1 2025</strong>; Vodacom saw 36.4% growth over its 2025 financial year. The infrastructure is there. The appetite is there. The constraint is affordability and device access.</p>
+  </div>
+</div>
+
+<!-- SECTION 3: MARKET SHARE -->
+<div class="section" id="s3">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>Operator Market Share - Who Owns What</h2>
+  </div>
+  <div class="prose">
+    <p>SA's mobile market is dominated by two giants, with Telkom making a dramatic comeback, and Cell C fighting to stabilise a shrinking base. Here's the picture as of late 2024 / early 2025:</p>
+  </div>
+
+  <div class="share-chart">
+    <div class="share-row">
+      <div class="share-name">Vodacom</div>
+      <div class="share-bar-wrap">
+        <div class="share-bar" style="width:41%; background: var(--vodacom);">
+          <span>50.7M subscribers</span>
+        </div>
+      </div>
+      <div class="share-pct">~41%</div>
+    </div>
+    <div class="share-row">
+      <div class="share-name">MTN</div>
+      <div class="share-bar-wrap">
+        <div class="share-bar" style="width:32%; background: #b8960a;">
+          <span>39.2M subscribers</span>
+        </div>
+      </div>
+      <div class="share-pct">~32%</div>
+    </div>
+    <div class="share-row">
+      <div class="share-name">Telkom</div>
+      <div class="share-bar-wrap">
+        <div class="share-bar" style="width:19%; background: var(--telkom);">
+          <span>24M subscribers</span>
+        </div>
+      </div>
+      <div class="share-pct">~19%</div>
+    </div>
+    <div class="share-row">
+      <div class="share-name">Cell C</div>
+      <div class="share-bar-wrap">
+        <div class="share-bar" style="width:7%; background: var(--cellc);">
+          <span>7.6–8.5M</span>
+        </div>
+      </div>
+      <div class="share-pct">~7%</div>
+    </div>
+    <div class="share-row">
+      <div class="share-name">Rain</div>
+      <div class="share-bar-wrap">
+        <div class="share-bar" style="width:1%; background: var(--rain);">
+          <span></span>
+        </div>
+      </div>
+      <div class="share-pct">~0.7%</div>
+    </div>
+  </div>
+
+  <div class="op-grid">
+    <div class="op-card">
+      <div class="op-header">
+        <div class="op-dot" style="background:var(--vodacom)"></div>
+        <div class="op-name">Vodacom</div>
+        <div class="op-rank">#1</div>
+      </div>
+      <div class="op-body">
+        <div class="op-kv"><span class="op-k">Subscribers</span><span class="op-v">50.7M</span></div>
+        <div class="op-kv"><span class="op-k">Market Share</span><span class="op-v">~41%</span></div>
+        <div class="op-kv"><span class="op-k">Blended ARPU</span><span class="op-v">R91/mo</span></div>
+        <div class="op-kv"><span class="op-k">5G Coverage</span><span class="op-v">Best 5G speeds</span></div>
+        <div class="op-kv"><span class="op-k">Parent</span><span class="op-v">Vodafone Group</span></div>
+        <div class="op-kv"><span class="op-k">Subscriber Trend</span><span class="op-v" style="color:#e60000">▼ -1.1% YoY</span></div>
+      </div>
+    </div>
+    <div class="op-card">
+      <div class="op-header">
+        <div class="op-dot" style="background:#b8960a"></div>
+        <div class="op-name">MTN</div>
+        <div class="op-rank">#2</div>
+      </div>
+      <div class="op-body">
+        <div class="op-kv"><span class="op-k">Subscribers</span><span class="op-v">39.2M</span></div>
+        <div class="op-kv"><span class="op-k">Market Share</span><span class="op-v">~32%</span></div>
+        <div class="op-kv"><span class="op-k">Blended ARPU</span><span class="op-v">R98/mo</span></div>
+        <div class="op-kv"><span class="op-k">5G Coverage</span><span class="op-v">Best 5G availability</span></div>
+        <div class="op-kv"><span class="op-k">Network Invest</span><span class="op-v">R10B in 2024</span></div>
+        <div class="op-kv"><span class="op-k">Download Speed</span><span class="op-v">82.48 Mbps avg</span></div>
+      </div>
+    </div>
+    <div class="op-card">
+      <div class="op-header">
+        <div class="op-dot" style="background:var(--telkom)"></div>
+        <div class="op-name">Telkom</div>
+        <div class="op-rank">#3</div>
+      </div>
+      <div class="op-body">
+        <div class="op-kv"><span class="op-k">Subscribers</span><span class="op-v">24M</span></div>
+        <div class="op-kv"><span class="op-k">Market Share</span><span class="op-v">~19%</span></div>
+        <div class="op-kv"><span class="op-k">Blended ARPU</span><span class="op-v">R92/mo</span></div>
+        <div class="op-kv"><span class="op-k">YoY Growth</span><span class="op-v" style="color:green">▲ 21.6% YoY</span></div>
+        <div class="op-kv"><span class="op-k">Data Subscribers</span><span class="op-v">14.9M (62.3%)</span></div>
+        <div class="op-kv"><span class="op-k">Tower Sale</span><span class="op-v">USD 371.5M</span></div>
+      </div>
+    </div>
+    <div class="op-card">
+      <div class="op-header">
+        <div class="op-dot" style="background:var(--cellc)"></div>
+        <div class="op-name">Cell C</div>
+        <div class="op-rank">#4</div>
+      </div>
+      <div class="op-body">
+        <div class="op-kv"><span class="op-k">Subscribers</span><span class="op-v">7.6–8.5M</span></div>
+        <div class="op-kv"><span class="op-k">Market Share</span><span class="op-v">~7%</span></div>
+        <div class="op-kv"><span class="op-k">Revenue H1 2025</span><span class="op-v">R6.7B (+13%)</span></div>
+        <div class="op-kv"><span class="op-k">EBITDA Margin</span><span class="op-v">26.6%</span></div>
+        <div class="op-kv"><span class="op-k">MVNO Subs (Capitec)</span><span class="op-v">1.5M & growing</span></div>
+        <div class="op-kv"><span class="op-k">Majority Shareholder</span><span class="op-v">Blue Label ~54%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-head">📖 The Duopoly Problem</div>
+    <p>MTN and Vodacom together control <strong>~70% of the market</strong> - a duopolistic grip so strong that the Competition Tribunal blocked Vodacom's attempted acquisition of Maziv in November 2024 specifically because of vertical integration concerns. The result: both giants are mature, costly, and defensive. Telkom is the scrappy insurgent stealing ground on affordability. Cell C's total subscriber base dropped from <strong>21 million in 2015 to under 8 million by 2024</strong> - but its EBITDA and revenue are now actually growing. The brand story is rebuilding, not collapsing.</p>
+  </div>
+</div>
+
+<!-- SECTION 4: PRODUCTS -->
+<div class="section" id="s4">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>What They Actually Sell - Product Comparison</h2>
+  </div>
+  <div class="prose">
+    <p>All four operators offer the same core product categories, but differ dramatically in how they position, bundle and price them. Here's a structured breakdown of what each operator leads with:</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr>
+        <th>Product Category</th>
+        <th>Vodacom</th>
+        <th>MTN</th>
+        <th>Telkom</th>
+        <th>Cell C</th>
+      </tr>
+      <tr>
+        <td><strong>Prepaid Airtime</strong></td>
+        <td>Extensive; R5–R500 recharges. Popular VodaBucks loyalty.</td>
+        <td>Wide range; MoMo Eazi app discounts. EasyLoad.</td>
+        <td>Competitive prepaid. Best value per rand at low tiers.</td>
+        <td>My Connecta Deals - competitive pricing. High prepaid ARPU.</td>
+      </tr>
+      <tr>
+        <td><strong>Prepaid Data Bundles</strong></td>
+        <td>Standard 1GB R89 (1.2GB). Night Owl bundles. YouTube bundles.</td>
+        <td>1GB R85. TikTok-specific bundles from R5. WhatsApp bundles R2/day.</td>
+        <td>1GB + 1GB Night Surfer R79. Best value at mid-large tiers. 60-day expiry.</td>
+        <td>1GB R65 (cheapest among MNOs). Connecta Deals. Double-bundle promos.</td>
+      </tr>
+      <tr>
+        <td><strong>Postpaid Contracts</strong></td>
+        <td>Comprehensive smartphone deals. R250–R2000/mo. VodaPay financial services bundled.</td>
+        <td>Device deals, insurance bundles. Partnered with MoMo mobile wallet.</td>
+        <td>Lower-cost contracts. Strong value offering for entry-level smartphones.</td>
+        <td>Contract Postpaid ARPU R305 (highest in market). Vodacom network for contract customers.</td>
+      </tr>
+      <tr>
+        <td><strong>Mobile Broadband (Home WiFi)</strong></td>
+        <td>4G/5G routers. Strong urban coverage. VodaHome fibre-adjacent bundles.</td>
+        <td>4G/5G home internet. 44% 5G population coverage. Strong in Gauteng.</td>
+        <td>LTE home internet plans. Very competitive pricing at larger GBs.</td>
+        <td>Postpaid broadband customers on Vodacom network. 5G launching 2025.</td>
+      </tr>
+      <tr>
+        <td><strong>MVNO / Wholesale</strong></td>
+        <td>Entering market (announced). Not yet live.</td>
+        <td>Active MVNO host. Growing challenge to Cell C.</td>
+        <td>Announced MVNO strategy. Still not fully live as of 2024.</td>
+        <td>Market leader. Hosts 19+ MVNOs. 95%+ of all MVNO SIMs in SA. Capitec, FNB, Standard Bank.</td>
+      </tr>
+      <tr>
+        <td><strong>Financial Services / Apps</strong></td>
+        <td>VodaPay super-app. Growing wallet users. Linked to Vodafone M-Pesa.</td>
+        <td>MTN MoMo wallet. Airtime advances. Insurance. Bill payments.</td>
+        <td>Limited. TV/streaming bundles (Netflix partnership).</td>
+        <td>Integrated with Blue Label distribution. Voucher ecosystem. Utility payments.</td>
+      </tr>
+      <tr>
+        <td><strong>5G</strong></td>
+        <td>Live since 2020. Best 5G download speeds nationally.</td>
+        <td>Live since 2020. Best 5G availability (12.4% time on 5G). 44% population coverage.</td>
+        <td>Live since 2022. Availability award winner (Opensignal 2025).</td>
+        <td>5G launching in 2025 via roaming on MTN/Vodacom. Late but no capex cost.</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="insight">
+    <div class="insight-head">📖 The MVNO Moat - Cell C's Hidden Weapon</div>
+    <p>This is the most underappreciated fact in SA telecom: <strong>Cell C carries over 95% of all MVNO SIMs in South Africa.</strong> In 2024 there were 19 live MVNOs, all mostly running on Cell C's core network. Capitec Connect alone gained <strong>1.5 million subscribers in just over two years</strong> - more than FNB Connect grew in nearly a decade. Every Capitec Connect, FNB Connect and Standard Bank Connect subscriber is effectively a Cell C subscriber. This is a wholesale revenue stream with zero retail distribution cost.</p>
+  </div>
+</div>
+
+<!-- SECTION 5: PRICING COMPARISON -->
+<div class="section" id="s5">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2>Pricing Comparison - Who's Actually Cheapest?</h2>
+  </div>
+  <div class="prose">
+    <p>Price per GB is the key battleground for prepaid consumers, who make up 84% of the market. The rankings shift depending on the bundle size and whether you count bonus night data.</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr>
+        <th>Bundle Size</th>
+        <th>Vodacom (R)</th>
+        <th>MTN (R)</th>
+        <th>Telkom (R)</th>
+        <th>Cell C (R)</th>
+        <th>Winner</th>
+      </tr>
+      <tr>
+        <td><strong>~1GB (once-off)</strong></td>
+        <td>R89 (1.2GB)</td>
+        <td>R85 (1GB)</td>
+        <td>R79 + 1GB Night</td>
+        <td>R65 (1GB)</td>
+        <td><span class="badge badge-blue">Cell C</span></td>
+      </tr>
+      <tr>
+        <td><strong>~2GB (30 day)</strong></td>
+        <td>R149</td>
+        <td>R159</td>
+        <td>R99 + 2GB Night</td>
+        <td>R175</td>
+        <td><span class="badge badge-orange">Telkom</span></td>
+      </tr>
+      <tr>
+        <td><strong>5GB+</strong></td>
+        <td>Higher per GB</td>
+        <td>Competitive</td>
+        <td>Best value</td>
+        <td>Competitive</td>
+        <td><span class="badge badge-orange">Telkom</span></td>
+      </tr>
+      <tr>
+        <td><strong>Avg price per GB (30-day prepaid)</strong></td>
+        <td>R96.75/GB</td>
+        <td>~R85/GB</td>
+        <td>R33.32/GB</td>
+        <td>~R65/GB</td>
+        <td><span class="badge badge-orange">Telkom</span></td>
+      </tr>
+      <tr>
+        <td><strong>Small bundle (100–200MB)</strong></td>
+        <td>Expensive</td>
+        <td>R30 for 220MB</td>
+        <td>Competitive</td>
+        <td>Cheaper than MTN/Vodacom</td>
+        <td><span class="badge badge-blue">Cell C</span></td>
+      </tr>
+      <tr>
+        <td><strong>Global affordability rank</strong></td>
+        <td colspan="4" style="text-align:center">SA ranks 136th out of 237 countries at USD 2.67/GB - not cheap by global standards</td>
+        <td><span class="badge badge-red">All fail</span></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="insight">
+    <div class="insight-head">📖 The Uncomfortable Pricing Truth</div>
+    <p>South Africa ranks <strong>136th globally for mobile data affordability at USD 2.67/GB</strong>. This is not a niche problem - it directly suppresses mass-market data adoption. The price gap between prepaid small bundles and large contract plans is enormous: a prepaid MTN customer pays R136/GB for 220MB, while a contract customer gets 100GB for R3.29/GB. <strong>Cell C consistently prices its 1GB bundle lower than Vodacom and MTN</strong>, but Telkom wins on larger bundles. Cell C needs to own the price-per-GB narrative at the 1GB–5GB range where most prepaid users shop.</p>
+  </div>
+</div>
+
+<!-- SECTION 6: WHY PREPAID WINS -->
+<div class="section" id="s6">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2>Why Prepaid Is King - And Always Will Be</h2>
+  </div>
+  <div class="prose">
+    <p>Prepaid subscriptions account for approximately <strong>84% of all mobile voice subscriptions</strong> in South Africa. This is not a developing-world quirk - it is a deeply structural feature of SA's income distribution, informal employment and financial literacy levels.</p>
+    <p>South Africa has a high rate of informal employment (estimated at 30–35% of working adults), meaning a large portion of the working population does not have fixed monthly income that could support a 24-month contract commitment. Add high rates of credit blacklisting (over 40% of credit-active consumers have impaired records), and the case for prepaid as the default product becomes airtight.</p>
+    <p>The practical reality: most South Africans are <strong>income-volatile buyers</strong>. They spend what they have when they have it. A R10 or R20 data bundle bought at a spaza shop or via USSD is far more aligned with this reality than a monthly debit order for a contract.</p>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card red">
+      <div class="stat-num">84%</div>
+      <div class="stat-label">of mobile subscriptions are prepaid</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-num">R305</div>
+      <div class="stat-label">Cell C contract (postpaid) ARPU - highest in SA</div>
+    </div>
+    <div class="stat-card steel">
+      <div class="stat-num">R65</div>
+      <div class="stat-label">Cell C cheapest 1GB prepaid bundle</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-num">27%</div>
+      <div class="stat-label">Smartphone penetration - room to grow</div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-head">📖 Prepaid = Volume; Postpaid = Value</div>
+    <p>This is why prepaid data bundles dominate purchase volume, but postpaid drives revenue per user. Interestingly, <strong>Cell C's prepaid ARPU is sometimes higher than its postpaid ARPU</strong> - an unusual dynamic that suggests its prepaid base includes higher-usage customers who cannot or will not commit to a contract. This is a growth lever: converting high-spend prepaid customers to contract.</p>
+  </div>
+</div>
+
+<!-- SECTION 7: THE CEILING -->
+<div class="section" id="s7">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2>The Ceiling Problem - Why the Industry Feels Stuck</h2>
+  </div>
+  <div class="prose">
+    <p>Your initial instinct - that SA telecom has hit a ceiling - is essentially correct. Here is the structural explanation broken into its parts:</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <tr>
+        <th>Ceiling Factor</th>
+        <th>What's Happening</th>
+        <th>Impact on Operators</th>
+      </tr>
+      <tr>
+        <td><strong>SIM Saturation</strong></td>
+        <td>124M SIMs for 64.4M people. Adding SIM #3 is meaningless revenue growth.</td>
+        <td>Subscriber count becomes vanity metric. Revenue per user matters more now.</td>
+      </tr>
+      <tr>
+        <td><strong>Voice Revenue Collapse</strong></td>
+        <td>WhatsApp, Telegram, and OTT apps have eaten traditional voice and SMS revenue. Voice minutes are in secular decline.</td>
+        <td>All operators scrambling to replace voice revenue with data. But data is commoditising too.</td>
+      </tr>
+      <tr>
+        <td><strong>Data Commoditisation</strong></td>
+        <td>Regulators, Competition Commission, and market pressure have forced 3 rounds of price cuts since 2005. Data prices will keep falling.</td>
+        <td>Revenue grows only if volume grows faster than price falls. Margins under pressure.</td>
+      </tr>
+      <tr>
+        <td><strong>Load Shedding OPEX</strong></td>
+        <td>Rolling blackouts force operators to spend heavily on diesel, batteries, generators. MTN spent $100M on backup power in 2025.</td>
+        <td>Capex that should fund growth is consumed by resilience. Margins compressed further.</td>
+      </tr>
+      <tr>
+        <td><strong>Infrastructure Theft</strong></td>
+        <td>Cable and tower theft is a rising crisis, adding unpredictable site disruptions and repair costs.</td>
+        <td>Customer experience suffers in affected areas. Brand trust erodes.</td>
+      </tr>
+      <tr>
+        <td><strong>Affordability Trap</strong></td>
+        <td>SA data is 136th cheapest globally. Many would-be heavy users simply cannot afford to use more data, even where coverage exists.</td>
+        <td>Usage gap: coverage exists but affordability blocks consumption. The market can't grow without cheaper data.</td>
+      </tr>
+      <tr>
+        <td><strong>5G ROI Timeline</strong></td>
+        <td>Vodacom and MTN have invested billions in 5G but only ~9–13% of devices can use it. Revenue from 5G is years away from justifying capex.</td>
+        <td>Heavy capex on a product most customers can't yet access. Balance sheet pressure.</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="insight">
+    <div class="insight-head">📖 The Sector Outlook</div>
+    <p>Total SA telecom revenue is projected to grow at only a <strong>2.7% CAGR through 2029</strong>. Mobile data specifically grows at 3% CAGR. These are modest numbers for a sector that was growing at double digits a decade ago. This is a maturing market in every meaningful sense. The winners will not be those who grow subscriber counts - they will be those who increase revenue per user, reduce cost per customer, and create switching costs through ecosystems (financial services, entertainment, loyalty).</p>
+  </div>
+</div>
+
+<!-- SECTION 8: CELL C OPPORTUNITY -->
+<div class="section" id="s8">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <h2>Cell C's Differentiation - What Can Make It an Easy Choice</h2>
+  </div>
+  <div class="prose">
+    <p>Cell C's turnaround story is real but fragile. Revenue and EBITDA are improving. The capex-light model is structurally smart. The MVNO business is genuinely leading the market. But the brand is still a punchline for many consumers who remember the network quality complaints of 2018–2021. Here is where the real opportunity sits:</p>
+  </div>
+
+  <div class="opp-grid">
+    <div class="opp-card">
+      <div class="opp-icon">💸</div>
+      <div class="opp-title">The Price Champion Position</div>
+      <div class="opp-desc">Cell C offers the cheapest 1GB bundle among all MNOs at R65 vs Vodacom's R89 and MTN's R85. Own this. Make it impossible for customers not to know it. A simple, consistent message - "Cheapest data. Real network." - anchored by the fact that Cell C now roams on both MTN AND Vodacom's towers (28,000+ sites) is a genuinely strong proposition.</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-icon">🏦</div>
+      <div class="opp-title">The Bank-Embedded Model</div>
+      <div class="opp-desc">Capitec Connect added 1.5M subscribers in 2 years. FNB Connect, Standard Bank Connect, and others run on Cell C. With 22 million Capitec banking customers as a potential funnel, Cell C's MVNO engine is a subscriber acquisition machine with no traditional marketing spend. Deepen these partnerships: exclusive features, better data offers for bank customers, co-branded plans.</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-icon">📡</div>
+      <div class="opp-title">Network Quality Narrative Reset</div>
+      <div class="opp-desc">nPerf's April 2025–March 2026 report places Cell C and MTN as JOINT leaders in overall mobile network performance in SA. Cell C leads MTN in latency and has led web browsing and video streaming for 5 consecutive years. This is powerful but unknown. The old "Cell C has bad signal" belief is outdated - and Cell C has hard data to prove it.</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-icon">📲</div>
+      <div class="opp-title">Smartphone Access as Entry Point</div>
+      <div class="opp-desc">Smartphone penetration is only 27.3%. The 3-in-4 non-smartphone users are Cell C's next frontier. Partnering with device manufacturers or banks (African Bank handset financing is already in play) for sub-R1,000 4G devices bundled with an affordable Cell C data plan could capture this segment before Vodacom or MTN wakes up to it.</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-icon">⚡</div>
+      <div class="opp-title">Asset-Light = Agility</div>
+      <div class="opp-desc">Because Cell C doesn't own towers, it doesn't have to spend R10B like MTN or carry load-shedding diesel costs at scale. This means Cell C can redirect savings into customer acquisition, better data pricing, or ecosystem features. The structural cost advantage is not just an efficiency metric - it's a strategic weapon to undercut on price sustainably.</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-icon">🔗</div>
+      <div class="opp-title">Blue Label Distribution Unlock</div>
+      <div class="opp-desc">Blue Label Telecoms (now Blu Label Unlimited) is the backbone of SA's prepaid voucher distribution - touching millions of spaza shops, retail stores, and informal traders. Cell C has barely begun integrating this into its go-to-market. Full alignment between Blue Label's distribution reach and Cell C's product range would make Cell C the easiest prepaid operator to buy from, at the most accessible points of sale in the country.</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-icon">🚀</div>
+      <div class="opp-title">Challenger Brand Energy</div>
+      <div class="opp-desc">Vodacom is the establishment. MTN is the premium aspirant. Telkom is the aggressive disruptor. Cell C has no clear identity. The opportunity: become the unambiguous challenger brand - "the one that's on your side." This means simpler products, honest pricing, no hidden time restrictions on bundles (after ICASA relaxed data-expiry rules in 2024), and a tone of voice that speaks directly to the 84% prepaid majority.</div>
+    </div>
+    <div class="opp-card">
+      <div class="opp-icon">📈</div>
+      <div class="opp-title">JSE Listing Momentum (2026)</div>
+      <div class="opp-desc">Cell C is targeting a JSE listing in 2026 following debt-for-equity restructuring. Post-listing, Cell C is projected to generate R2.5B EBITDA with ~R2B net profit, carry no long-term debt, and benefit from R28B in accumulated tax losses. A clean balance sheet and public market scrutiny will force marketing discipline and accountability - which can itself be a brand-building signal.</div>
+    </div>
+  </div>
+
+  <div class="insight opportunity">
+    <div class="insight-head">🎯 The One Thing Cell C Must Win</div>
+    <p>If Cell C had to do one thing to make itself the <strong>obvious, easy choice</strong> for customers, it is this: <strong>become the operator that people at the lower-middle income level trust and remember for cheap, reliable data that actually works</strong>. That means a consistent "1GB for R65, no tricks" campaign backed by the nPerf network quality data and the Blue Label distribution reach. No other operator can claim all three: lowest price, proven network quality, and widest informal retail access. That triple advantage is Cell C's moat - it just hasn't been built into a coherent brand yet.</p>
+  </div>
+
+  <div class="verdict">
+    <h3>Research Summary & Strategic Verdict</h3>
+    <p>Here is the full picture distilled into what matters most for Cell C:</p>
+    <ul>
+      <li>SA's mobile market is saturated at the SIM level (~193% penetration) but not at the value level - most users still buy too little data at too high a price because no operator has made it simple enough and cheap enough for the mass market.</li>
+      <li>Prepaid is 84% of the market and will stay dominant. Cell C's cheapest-1GB position is real and underutilised.</li>
+      <li>Cell C's MVNO business (carrying 95%+ of all MVNO SIMs) is a structural revenue moat with a 17% projected CAGR through 2029. The Capitec Connect growth rate (1.5M in 2 years) is extraordinary and should be the centrepiece of Cell C's investor and brand story.</li>
+      <li>Cell C's network quality is no longer a weakness - it is a strength that rivals MTN in independent testing, yet almost no consumers know this. Fixing the perception gap is worth more than any price cut.</li>
+      <li>The Blue Label distribution engine + Cell C pricing + MVNO ecosystem = a flywheel no competitor has. Vodacom and MTN are too heavy and too expensive to replicate it. Telkom lacks the distribution and the MVNO base.</li>
+      <li>The upcoming JSE listing is a forcing function: Cell C must show clean, consistent revenue growth, subscriber recovery, and a compelling brand position for institutional investors. All of the above feeds directly into that case.</li>
+      <li>Cell C's single biggest strategic risk is brand invisibility. You asked what could set Cell C apart and make it easy to remember. The answer is a relentlessly simple message, delivered everywhere Blue Label touches, backed by data that is inarguably cheaper than Vodacom and MTN.</li>
+    </ul>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<footer>
+  SOUTH AFRICA TELECOM MARKET RESEARCH - APRIL 2026 &nbsp;·&nbsp; DATA SOURCED FROM GSMA INTELLIGENCE, DATAREPORTAL, OPENSIGNAL, NPERF, MORDORINTELLIGENCE, CONNECTINGAFRICA, BUSINESSTECH, ITWEB &nbsp;·&nbsp; FOR INTERNAL STRATEGIC USE
+</footer>
+
+</body>
+</html>
