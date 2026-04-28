@@ -462,6 +462,11 @@
                 Sales CRM
             </button>
 
+            <button class="nav-link" onclick="showView('ask-ai')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                Ask AI
+            </button>
+			
             <div class="nav-category">Documents</div>
             <button class="nav-link" onclick="showView('budgeting')">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
@@ -663,6 +668,31 @@
         		</div>
         	</div>
         </div>
+
+		<!-- ASK AI -->
+		        <div id="view-ask-ai" class="view-container">
+			<div class="content-card"><h2>Marketing Performance AI Agents</h2>
+        
+		<p style="color: var(--slate-600); margin-bottom: 1.5rem; font-size: 0.9rem;">A suite of AI Agents ready to aid autonomously with your daily tasks, every agent is specialised, ensure to select the correct one.</p>
+                
+                <div class="report-grid">
+
+                    <div class="report-card" onclick="openReportModal('Marketing Performance Analytics Agent', 'https://chatgpt.com/agents/a/agt_69eb921eb53881918c8966cbaa1746b3')">
+                        <img
+                            src="resources/img/marketingperformanceai.png"
+                            alt="Marketing Performance Analytics Agent"
+                            class="card-image"
+                        >                        <div class="card-title">Sales Attribution Analytics</div>
+                        <div class="card-desc">This AI Agent provides performance based stats for the Marketing Team based on dashboard data within the hub.
+                   		 </div>
+        			</div>
+							
+        		</div>
+        	</div>
+        </div>
+
+
+
 		
         <div id="view-power-bi" class="view-container">
 			<div class="content-card"><h2>Power BI Reports</h2>
