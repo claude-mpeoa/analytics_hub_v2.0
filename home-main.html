@@ -923,19 +923,30 @@
 
 
 
-        // Session Check
-        const email = localStorage.getItem('userEmail');
-        if (!email) {
-            // Check for development environment or redirect
-            if(window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-                window.location.replace('index.html');
-            } else {
-                document.getElementById('userGreeting').textContent = "Welcome, Developer";
-            }
-        } else {
-            const name = email.split('.')[0];
-            document.getElementById('userGreeting').textContent = `Welcome back, ${name.charAt(0).toUpperCase() + name.slice(1)}`;
-        }
+        // --- Session Settings ---
+			const EIGHT_HOURS_IN_MS = 8 * 60 * 60 * 1000;
+			const email = localStorage.getItem('userEmail');
+			const loginTime = localStorage.getItem('loginTimestamp');
+			const currentTime = new Date().getTime();
+			
+			// --- The Logic ---
+			if (!email || !loginTime) {
+			    // No session data found
+			    redirectToLogin();
+			} else if (currentTime - loginTime > EIGHT_HOURS_IN_MS) {
+			    // Session has expired (8 hours passed)
+			    alert("Session expired. Please log in again.");
+			    localStorage.clear();
+			    redirectToLogin();
+			} else {
+			    // Session is valid
+			    const name = email.split('@')[0];
+			    document.getElementById('userGreeting').textContent = `Welcome back, ${name.charAt(0).toUpperCase() + name.slice(1)}`;
+			}
+			
+			function redirectToLogin() {
+			    window.location.replace('index.html');
+			}
 
     </script>
 </body>
