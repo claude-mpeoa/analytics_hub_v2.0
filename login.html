@@ -297,6 +297,9 @@
                     // Success logic
                     localStorage.setItem('userRole', user.role);
                     localStorage.setItem('userEmail', email);
+
+                    // NEW: Add the timestamp for the 8-hour countdown
+                    localStorage.setItem('loginTimestamp', new Date().getTime());
                     
                     // Animate out
                     loginCard.classList.add('fade-out');
