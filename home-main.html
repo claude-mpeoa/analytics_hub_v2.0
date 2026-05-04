@@ -923,30 +923,48 @@
 
 
 
-        // --- Session Settings ---
-			const EIGHT_HOURS_IN_MS = 8 * 60 * 60 * 1000;
-			const email = localStorage.getItem('userEmail');
-			const loginTime = localStorage.getItem('loginTimestamp');
-			const currentTime = new Date().getTime();
-			
-			// --- The Logic ---
-			if (!email || !loginTime) {
-			    // No session data found
-			    redirectToLogin();
-			} else if (currentTime - loginTime > EIGHT_HOURS_IN_MS) {
-			    // Session has expired (8 hours passed)
-			    alert("Session expired. Please log in again.");
-			    localStorage.clear();
-			    redirectToLogin();
-			} else {
-			    // Session is valid
-			    const name = email.split('@')[0];
-			    document.getElementById('userGreeting').textContent = `Welcome back, ${name.charAt(0).toUpperCase() + name.slice(1)}`;
-			}
-			
-			function redirectToLogin() {
-			    window.location.replace('index.html');
-			}
+// --- 1. SESSION SETTINGS ---
+        const EIGHT_HOURS_IN_MS = 8 * 60 * 60 * 1000;
+
+        // --- 2. THE CORE FUNCTIONS ---
+        function checkSession() {
+            const email = localStorage.getItem('userEmail');
+            const loginTime = localStorage.getItem('loginTimestamp');
+            const currentTime = new Date().getTime();
+
+            // Check if credentials exist
+            if (!email || !loginTime) {
+                forceLogout();
+                return;
+            }
+
+            // Check if 8 hours have passed
+            if (currentTime - loginTime > EIGHT_HOURS_IN_MS) {
+                alert("Your session has expired. You will be redirected to the login page.");
+                forceLogout();
+            }
+        }
+
+        function forceLogout() {
+            localStorage.clear();
+            window.location.replace('index.html');
+        }
+
+        // --- 3. THE EXECUTION ---
+
+        // Run immediately when the page opens
+        checkSession();
+
+        // Run every 1 minute to check for expiration while the page is open
+        setInterval(checkSession, 60000);
+
+        // Update the greeting UI
+        const email = localStorage.getItem('userEmail');
+        if (email) {
+            const name = email.split('@')[0];
+            const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
+            document.getElementById('userGreeting').textContent = `Welcome back, ${formattedName}`;
+        }
 
     </script>
 </body>
