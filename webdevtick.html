@@ -28,6 +28,16 @@
             to { transform: scale(1); opacity: 1; }
         }
         .animate-scale-in { animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        /* Documentation Timeline Line */
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: repeating-linear-gradient(to bottom, #cbd5e1, #cbd5e1 10px, transparent 10px, transparent 20px);
+        }
     </style>
 </head>
 <body class="min-h-screen text-slate-900">
@@ -48,6 +58,7 @@
                 <nav class="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-200">
                     <button onclick="switchTab('request')" id="tab-request" class="px-6 py-2 rounded-xl text-sm font-bold transition-all va-red text-white">Log Request</button>
                     <button onclick="switchTab('search')" id="tab-search" class="px-6 py-2 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-slate-800">My Tickets</button>
+                    <button onclick="switchTab('docs')" id="tab-docs" class="px-6 py-2 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-slate-800">Docs</button>
                     <button onclick="switchTab('admin')" id="tab-admin" class="px-6 py-2 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-slate-800">
                         Admin <span id="pending-badge" class="hidden ml-1 px-1.5 py-0.5 va-red text-white text-[10px] rounded-full">0</span>
                     </button>
@@ -60,11 +71,15 @@
         </header>
 
         <main>
+            <!-- LOG REQUEST SECTION -->
             <section id="section-request" class="tab-content">
                 <div class="grid md:grid-cols-3 gap-8">
                     <div class="md:col-span-2">
                         <div class="glass-panel p-8 rounded-3xl shadow-xl border-t-8 border-t-[#E10613]">
-                            <h2 class="text-2xl font-black mb-6 italic uppercase">Create Ticket</h2>
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-2xl font-black italic uppercase">Create Ticket</h2>
+                                <span class="text-[10px] font-black text-slate-300 uppercase tracking-widest">v1.2 Stable</span>
+                            </div>
                             <form id="ticketForm" class="space-y-6">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
@@ -113,37 +128,47 @@
                     <div class="space-y-6">
                         <div class="bg-slate-900 text-white p-8 rounded-3xl shadow-xl relative overflow-hidden">
                             <div class="relative z-10">
-                                <h3 class="text-xl font-black mb-4 italic uppercase">Dev Workflow</h3>
+                                <h3 class="text-xl font-black mb-4 italic uppercase text-white/90">Dev Sprint <span class="va-text-red">Protocol</span></h3>
                                 <p class="text-slate-400 text-xs mb-6 leading-relaxed font-bold tracking-wide">
-                                    Your request will be vetted by management before being assigned to a developer.
+                                    Your request will be vetted by management before being assigned to a developer. Ensure all technical specs are clear.
                                 </p>
                                 <div class="space-y-4">
                                     <div class="flex items-center gap-4">
                                         <div class="h-8 w-8 rounded-lg bg-white/10 flex items-center justify-center text-xs font-black">1</div>
-                                        <span class="text-xs font-bold uppercase tracking-wider">Ticket Logged</span>
+                                        <span class="text-xs font-bold uppercase tracking-wider">Log Ticket</span>
                                     </div>
                                     <div class="flex items-center gap-4">
                                         <div class="h-8 w-8 rounded-lg bg-white/10 flex items-center justify-center text-xs font-black">2</div>
-                                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Vetting Phase</span>
+                                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Claude Reviews</span>
                                     </div>
                                     <div class="flex items-center gap-4">
                                         <div class="h-8 w-8 rounded-lg bg-white/10 flex items-center justify-center text-xs font-black">3</div>
-                                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">In Sprint</span>
+                                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Dev Deployment</span>
                                     </div>
                                 </div>
                             </div>
                             <i class="fas fa-code absolute -bottom-4 -right-4 text-8xl text-white/5"></i>
                         </div>
+
+                        <div class="bg-white border border-slate-200 p-6 rounded-3xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <i class="fas fa-envelope-open-text va-text-red"></i>
+                                <h4 class="font-black text-xs uppercase tracking-widest">Direct Contact</h4>
+                            </div>
+                            <p class="text-[11px] font-medium text-slate-500 mb-3">For urgent escalations or extra file attachments:</p>
+                            <a href="mailto:claude.mpeoa@virginactive.co.za" class="text-xs font-black text-slate-900 border-b-2 border-[#E10613] pb-0.5">claude.mpeoa@virginactive.co.za</a>
+                        </div>
                     </div>
                 </div>
             </section>
 
+            <!-- TRACKING SECTION -->
             <section id="section-search" class="hidden tab-content">
                 <div class="max-w-2xl mx-auto">
                     <div class="glass-panel p-8 rounded-3xl shadow-xl mb-8 border-b-4 border-b-slate-900">
                         <h2 class="text-2xl font-black mb-6 text-center italic uppercase">Track Progress</h2>
                         <div class="relative">
-                            <input type="text" id="search-input" oninput="handleSearch()" placeholder="Enter any search criteria to start the search" class="w-full pl-12 pr-4 py-5 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-slate-900 outline-none shadow-inner font-bold">
+                            <input type="text" id="search-input" oninput="handleSearch()" placeholder="Enter Reference ID or Email..." class="w-full pl-12 pr-4 py-5 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-slate-900 outline-none shadow-inner font-bold">
                             <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 text-xl"></i>
                         </div>
                     </div>
@@ -151,6 +176,80 @@
                 </div>
             </section>
 
+            <!-- DOCUMENTATION SECTION -->
+            <section id="section-docs" class="hidden tab-content">
+                <div class="max-w-4xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-black italic uppercase tracking-tighter mb-4">System <span class="va-text-red">Process</span></h2>
+                        <p class="text-slate-500 font-bold uppercase tracking-widest text-xs">Standard Operating Procedure for Web Requests</p>
+                    </div>
+
+                    <!-- Flow Visualization -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative mb-20">
+                        <div class="hidden md:block timeline-line"></div>
+                        
+                        <!-- Step 1 -->
+                        <div class="relative bg-white p-8 rounded-[32px] shadow-sm border border-slate-100">
+                            <div class="va-red text-white h-12 w-12 rounded-2xl flex items-center justify-center font-black absolute -top-6 left-8 shadow-lg italic">01</div>
+                            <h3 class="text-xl font-black italic uppercase mb-4 mt-2">Log the Request</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed font-medium">
+                                Fill in your name, email, and define the priority. Ensure the category (Bug, Feature, Content) is accurate to help with sorting.
+                            </p>
+                            <div class="mt-4 flex items-center gap-2 text-[10px] font-black va-text-red uppercase tracking-widest">
+                                <i class="fas fa-paper-plane"></i> Submit Button
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="relative bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 md:mt-16">
+                            <div class="bg-slate-900 text-white h-12 w-12 rounded-2xl flex items-center justify-center font-black absolute -top-6 left-8 shadow-lg italic">02</div>
+                            <h3 class="text-xl font-black italic uppercase mb-4 mt-2">Notification</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed font-medium">
+                                Once submitted, <span class="font-bold text-slate-900">Claude Mpeoa</span> is instantly notified via the system. If your request is complex, email detailed briefs to his address directly.
+                            </p>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="relative bg-white p-8 rounded-[32px] shadow-sm border border-slate-100">
+                            <div class="bg-slate-900 text-white h-12 w-12 rounded-2xl flex items-center justify-center font-black absolute -top-6 left-8 shadow-lg italic">03</div>
+                            <h3 class="text-xl font-black italic uppercase mb-4 mt-2">Track & Search</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed font-medium">
+                                Use the <span class="font-bold text-slate-900">"My Tickets"</span> tab. Searching your ID or email provides a live summary of notes and technical status updates.
+                            </p>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="relative bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 md:mt-16">
+                            <div class="va-red text-white h-12 w-12 rounded-2xl flex items-center justify-center font-black absolute -top-6 left-8 shadow-lg italic">04</div>
+                            <h3 class="text-xl font-black italic uppercase mb-4 mt-2">Resolution</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed font-medium">
+                                The Admin updates the ticket status (Vetted, In Progress, Completed). Once marked as <span class="text-emerald-600 font-bold">Completed</span>, the fix is live.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Core Value Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-slate-900 text-white p-6 rounded-3xl text-center shadow-xl">
+                            <i class="fas fa-shield-alt text-2xl va-text-red mb-4"></i>
+                            <h4 class="font-black italic uppercase text-sm mb-2 tracking-tighter">Accountability</h4>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase leading-relaxed">Every request is time-stamped and assigned. No "lost" requests.</p>
+                        </div>
+                        <div class="bg-slate-900 text-white p-6 rounded-3xl text-center shadow-xl">
+                            <i class="fas fa-bolt text-2xl va-text-red mb-4"></i>
+                            <h4 class="font-black italic uppercase text-sm mb-2 tracking-tighter">Efficiency</h4>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase leading-relaxed">Minimises back-and-forth communication. One portal for everything.</p>
+                        </div>
+                        <div class="bg-slate-900 text-white p-6 rounded-3xl text-center shadow-xl">
+                            <i class="fas fa-eye text-2xl va-text-red mb-4"></i>
+                            <h4 class="font-black italic uppercase text-sm mb-2 tracking-tighter">Visibility</h4>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase leading-relaxed">Full audit trail for business stakeholders on dev progress.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ADMIN SECTION -->
             <section id="section-admin" class="hidden tab-content">
                 <!-- Admin Lock Screen -->
                 <div id="admin-lock-screen" class="max-w-md mx-auto text-center py-20">
@@ -219,7 +318,7 @@
                 <p id="success-ref" class="text-2xl font-black va-text-red tracking-widest">---</p>
             </div>
             <p class="text-slate-500 font-bold text-sm leading-relaxed mb-8">
-                Request Logged Successfully. If you need to track progress or check developer notes, head to the <span class="text-slate-900">"My Tickets"</span> tab and search for your ticket number or email address.
+                Request Logged Successfully. Claude Mpeoa has been notified. You can track progress in the <span class="text-slate-900">"My Tickets"</span> tab.
             </p>
             <button onclick="closeSuccessOverlay()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-black transition-all">
                 Got it, Thanks!
@@ -245,7 +344,6 @@
         let isAdminUnlocked = false;
 
         async function init() {
-            // Load local cache first for instant feedback
             const cached = localStorage.getItem('va_tickets_local');
             if (cached) {
                 allTickets = JSON.parse(cached);
@@ -286,7 +384,6 @@
             updateSyncStatus('syncing', 'Syncing Sheet...');
             localStorage.setItem('va_tickets_local', JSON.stringify(allTickets));
             try {
-                // Post to Google Apps Script
                 await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -361,7 +458,6 @@
         window.openTicketDetails = (id) => {
             const t = allTickets.find(x => x.id === id);
             const content = document.getElementById('modal-content');
-            
             const formatDate = (iso) => iso ? new Date(iso).toLocaleString('en-ZA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '---';
 
             content.innerHTML = `
@@ -406,13 +502,9 @@
                                 <span class="font-bold text-slate-500 uppercase">Logged</span>
                                 <span class="font-black">${formatDate(t.created_at)}</span>
                             </div>
-                            <div class="flex justify-between items-center text-xs border-b border-slate-100 pb-2">
-                                <span class="font-bold text-slate-500 uppercase">Vetted</span>
-                                <span class="font-black ${t.vetted_at ? 'text-slate-900' : 'text-slate-300'}">${formatDate(t.vetted_at)}</span>
-                            </div>
                             <div class="flex justify-between items-center text-xs">
-                                <span class="font-bold text-slate-500 uppercase">Completed</span>
-                                <span class="font-black ${t.completed_at ? 'va-text-red' : 'text-slate-300'}">${formatDate(t.completed_at)}</span>
+                                <span class="font-bold text-slate-500 uppercase">Status Update</span>
+                                <span class="font-black va-text-red italic underline">${t.status}</span>
                             </div>
                         </div>
                     </div>
@@ -427,84 +519,53 @@
 
         window.checkAdminPin = () => {
             const input = document.getElementById('admin-pin-input');
-            const error = document.getElementById('pin-error');
-            
             if (input.value === ADMIN_PIN) {
                 isAdminUnlocked = true;
                 document.getElementById('admin-lock-screen').classList.add('hidden');
                 document.getElementById('admin-dashboard').classList.remove('hidden');
-                error.classList.add('hidden');
                 refreshAllViews();
             } else {
-                error.classList.remove('hidden');
+                document.getElementById('pin-error').classList.remove('hidden');
                 input.value = '';
-                input.focus();
             }
         };
 
         window.openAdminManager = (id) => {
             const t = allTickets.find(x => x.id === id);
             const content = document.getElementById('modal-content');
-            
-            const getTAT = (start, end) => {
-                if (!start || !end) return "Pending";
-                const diff = new Date(end) - new Date(start);
-                const hours = Math.floor(diff / (1000 * 60 * 60));
-                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                return `${hours}h ${mins}m`;
-            };
-
             content.innerHTML = `
                 <div class="flex items-center gap-3 mb-6">
                     <div class="va-red p-2 rounded-lg text-white text-xs"><i class="fas fa-cog"></i></div>
                     <h3 class="text-2xl font-black italic uppercase">Manage <span class="va-text-red">${t.id}</span></h3>
                 </div>
-
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="bg-slate-50 p-3 rounded-xl">
-                        <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Time Logged to Vetted</p>
-                        <p class="text-sm font-bold">${getTAT(t.created_at, t.vetted_at)}</p>
-                    </div>
-                    <div class="bg-slate-50 p-3 rounded-xl">
-                        <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Time Vetted to Dev</p>
-                        <p class="text-sm font-bold">${getTAT(t.vetted_at, t.inprogress_at)}</p>
-                    </div>
-                </div>
-
                 <div class="space-y-4">
                     <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
                         <p class="text-[10px] font-black text-slate-400 uppercase mb-2">Request Context</p>
-                        <p class="text-sm font-medium text-slate-700 leading-relaxed italic">"${t.details}"</p>
+                        <p class="text-sm font-medium text-slate-700 italic">"${t.details}"</p>
                     </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Update Stage</label>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Update Stage</label>
                             <select id="manage-status" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-sm">
-                                <option value="Pending" ${t.status === 'Pending' ? 'selected' : ''}>Pending Review</option>
-                                <option value="Vetted" ${t.status === 'Vetted' ? 'selected' : ''}>Vetted / Sprint Ready</option>
-                                <option value="In Progress" ${t.status === 'In Progress' ? 'selected' : ''}>Active Development</option>
-                                <option value="Completed" ${t.status === 'Completed' ? 'selected' : ''}>Completed / Live</option>
-                                <option value="Declined" ${t.status === 'Declined' ? 'selected' : ''}>Declined / Cancelled</option>
+                                <option value="Pending" ${t.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="Vetted" ${t.status === 'Vetted' ? 'selected' : ''}>Vetted</option>
+                                <option value="In Progress" ${t.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="Completed" ${t.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                                <option value="Declined" ${t.status === 'Declined' ? 'selected' : ''}>Declined</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Priority</label>
-                            <div class="p-3 bg-slate-50 rounded-xl font-bold text-sm text-slate-600">${t.priority}</div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Priority</label>
+                            <div class="p-3 bg-slate-50 rounded-xl font-bold text-sm">${t.priority}</div>
                         </div>
                     </div>
-
                     <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Update for Requestor</label>
-                        <textarea id="manage-notes" rows="3" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm" placeholder="Provide notes for the requester to see...">${t.notes || ''}</textarea>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Notes for Requestor</label>
+                        <textarea id="manage-notes" rows="3" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm">${t.notes || ''}</textarea>
                     </div>
-
                     <div class="flex justify-end gap-3 mt-8">
-                        <button onclick="deleteTicketPrompt('${t.id}')" class="mr-auto text-[10px] font-black text-slate-300 hover:text-red-500 uppercase tracking-widest transition-colors">
-                            <i class="fas fa-trash-alt mr-1"></i> Delete Ticket
-                        </button>
                         <button onclick="closeModal()" class="px-6 py-3 font-bold text-slate-400 text-sm">Cancel</button>
-                        <button onclick="saveAdminUpdate('${t.id}')" class="va-red text-white px-10 py-4 rounded-2xl font-black shadow-lg uppercase italic text-sm">Update & Sync</button>
+                        <button onclick="saveAdminUpdate('${t.id}')" class="va-red text-white px-10 py-4 rounded-2xl font-black shadow-lg uppercase italic text-sm">Sync Changes</button>
                     </div>
                 </div>
             `;
@@ -513,72 +574,11 @@
 
         window.saveAdminUpdate = async (id) => {
             const index = allTickets.findIndex(x => x.id === id);
-            const newStatus = document.getElementById('manage-status').value;
-            const oldStatus = allTickets[index].status;
-
-            const now = new Date().toISOString();
-            if (newStatus !== oldStatus) {
-                if (newStatus === 'Vetted') allTickets[index].vetted_at = now;
-                if (newStatus === 'In Progress') allTickets[index].inprogress_at = now;
-                if (newStatus === 'Completed') allTickets[index].completed_at = now;
-            }
-
-            allTickets[index].status = newStatus;
+            allTickets[index].status = document.getElementById('manage-status').value;
             allTickets[index].notes = document.getElementById('manage-notes').value;
-
             closeModal();
             refreshAllViews();
             await pushToCloud();
-        };
-
-        window.deleteTicketPrompt = (id) => {
-            const content = document.getElementById('modal-content');
-            content.innerHTML = `
-                <div class="text-center py-6">
-                    <div class="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                        <i class="fas fa-exclamation-triangle text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-black uppercase italic mb-2">Confirm Deletion</h3>
-                    <p class="text-slate-500 text-xs font-bold mb-8 uppercase tracking-wider">This action is permanent and will remove ${id} from all systems.</p>
-                    
-                    <div class="space-y-4">
-                        <input type="password" id="delete-pin" placeholder="ENTER DELETE PIN" class="w-full px-4 py-4 rounded-2xl border-2 border-slate-100 text-center font-black tracking-[0.5em] focus:border-red-500 outline-none">
-                        <div id="delete-error" class="hidden text-[10px] font-black text-red-500 uppercase italic">Incorrect Authorization Code</div>
-                        
-                        <div class="flex flex-col gap-2 pt-4">
-                            <button onclick="executeDelete('${id}')" class="w-full bg-red-600 text-white py-4 rounded-2xl font-black uppercase italic shadow-lg hover:bg-red-700 transition-all">
-                                Authorize Destruction
-                            </button>
-                            <button onclick="openAdminManager('${id}')" class="w-full py-4 text-slate-400 font-bold text-xs uppercase tracking-widest">
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        };
-
-        window.executeDelete = async (id) => {
-            const pin = document.getElementById('delete-pin').value;
-            const DELETE_AUTH = "2057072"; // Using same admin pin for consistency, but as a separate check
-
-            if (pin === DELETE_AUTH) {
-                allTickets = allTickets.filter(t => t.id !== id);
-                closeModal();
-                refreshAllViews();
-                await pushToCloud();
-                
-                // Small notification
-                const msg = document.createElement('div');
-                msg.className = "fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black uppercase italic text-xs shadow-2xl z-[200] animate-bounce";
-                msg.innerText = "Ticket Purged Successfully";
-                document.body.appendChild(msg);
-                setTimeout(() => msg.remove(), 3000);
-            } else {
-                document.getElementById('delete-error').classList.remove('hidden');
-                document.getElementById('delete-pin').value = '';
-                document.getElementById('delete-pin').focus();
-            }
         };
 
         function refreshAllViews() {
@@ -592,16 +592,11 @@
             document.getElementById('stat-pending').innerText = allTickets.filter(t => t.status === 'Pending').length;
             document.getElementById('stat-dev').innerText = allTickets.filter(t => t.status === 'In Progress').length;
             document.getElementById('stat-done').innerText = allTickets.filter(t => t.status === 'Completed').length;
-            
             const pCount = allTickets.filter(t => t.status === 'Pending').length;
             const badge = document.getElementById('pending-badge');
             if (badge) {
-                if (pCount > 0) {
-                    badge.innerText = pCount;
-                    badge.classList.remove('hidden');
-                } else {
-                    badge.classList.add('hidden');
-                }
+                if (pCount > 0) { badge.innerText = pCount; badge.classList.remove('hidden'); }
+                else { badge.classList.add('hidden'); }
             }
         }
 
@@ -614,16 +609,10 @@
                         <div class="font-black italic uppercase text-sm">${t.name}</div>
                         <div class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">${t.id}</div>
                     </td>
-                    <td class="px-6 py-5">
-                        <div class="text-xs font-bold text-slate-500 truncate max-w-[200px]">${t.details}</div>
-                    </td>
-                    <td class="px-6 py-5">
-                        <span class="status-pill status-${t.status.toLowerCase().replace(' ', '')}">${t.status}</span>
-                    </td>
+                    <td class="px-6 py-5 truncate max-w-[200px] text-xs font-bold text-slate-500">${t.details}</td>
+                    <td class="px-6 py-5"><span class="status-pill status-${t.status.toLowerCase().replace(' ', '')}">${t.status}</span></td>
                     <td class="px-6 py-5 text-right">
-                        <button onclick="openAdminManager('${t.id}')" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all">
-                            Manage
-                        </button>
+                        <button onclick="openAdminManager('${t.id}')" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase opacity-0 group-hover:opacity-100 transition-all">Manage</button>
                     </td>
                 </tr>
             `).join('');
@@ -632,34 +621,19 @@
         window.switchTab = (tab) => {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
             document.getElementById(`section-${tab}`).classList.remove('hidden');
-            
-            // Set active tab styles
-            ['request', 'search', 'admin'].forEach(b => {
+            ['request', 'search', 'admin', 'docs'].forEach(b => {
                 const el = document.getElementById(`tab-${b}`);
-                if (b === tab) {
-                    el.classList.add('va-red', 'text-white');
-                    el.classList.remove('text-slate-500');
-                } else {
-                    el.classList.remove('va-red', 'text-white');
-                    el.classList.add('text-slate-500');
-                }
+                if (b === tab) { el.classList.add('va-red', 'text-white'); el.classList.remove('text-slate-500'); }
+                else { el.classList.remove('va-red', 'text-white'); el.classList.add('text-slate-500'); }
             });
-
-            // Handle Admin authentication view
             if (tab === 'admin') {
-                if (isAdminUnlocked) {
-                    document.getElementById('admin-lock-screen').classList.add('hidden');
-                    document.getElementById('admin-dashboard').classList.remove('hidden');
-                } else {
-                    document.getElementById('admin-lock-screen').classList.remove('hidden');
-                    document.getElementById('admin-dashboard').classList.add('hidden');
-                }
+                if (isAdminUnlocked) { document.getElementById('admin-lock-screen').classList.add('hidden'); document.getElementById('admin-dashboard').classList.remove('hidden'); }
+                else { document.getElementById('admin-lock-screen').classList.remove('hidden'); document.getElementById('admin-dashboard').classList.add('hidden'); }
             }
         };
 
         window.closeModal = () => document.getElementById('ticket-modal').classList.add('hidden');
         window.closeSuccessOverlay = () => document.getElementById('success-overlay').classList.add('hidden');
-
         window.onload = init;
     </script>
 </body>
