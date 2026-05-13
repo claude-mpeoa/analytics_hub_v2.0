@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyrox | Leads Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+        
+        :root {
+            --brand-red: #E10600;
+            --brand-black: #0a0a0a;
+            --brand-dark-gray: #161616;
+            --brand-glass: rgba(26, 26, 26, 0.85);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--brand-black);
+            color: #ffffff;
+            overflow-x: hidden;
+            margin: 0;
+            scroll-behavior: smooth;
+        }
+
+        .glass-panel {
+            background: var(--brand-glass);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            border-radius: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .view-transition {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+        .hidden-view {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .winner-slot {
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(255, 255, 255, 0.02);
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+        }
+        
+        .winner-slot.active {
+            background: rgba(225, 6, 0, 0.05);
+            border: 2px solid var(--brand-red);
+            box-shadow: 0 0 40px rgba(225, 6, 0, 0.2);
+            transform: scale(1.05);
+        }
+
+        .spin-animation {
+            animation: text-flicker 0.1s infinite;
+        }
+
+        @keyframes text-flicker {
+            0% { opacity: 0.2; transform: translateY(-2px); }
+            50% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0.2; transform: translateY(2px); }
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #1a1a1a, #000);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .nav-btn:hover {
+            border-color: var(--brand-red);
+            background: rgba(225, 6, 0, 0.1);
+        }
+
+        .draw-btn-large {
+            background: var(--brand-red);
+            box-shadow: 0 0 50px rgba(225, 6, 0, 0.4);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .draw-btn-large:hover:not(:disabled) {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 0 70px rgba(225, 6, 0, 0.6);
+        }
+
+        .hashed-blur {
+            filter: blur(4px);
+            transition: filter 0.3s ease;
+            cursor: help;
+        }
+        .hashed-blur:hover { filter: blur(0); }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="dashboardView" class="view-transition p-4 md:p-10 max-w-7xl mx-auto">
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+            <div>
+                <h1 class="text-5xl font-black tracking-tighter uppercase italic">
+                    Hyrox <span class="text-red-600">Leads</span>
+                </h1>
+                <p class="text-zinc-500 font-bold uppercase text-[10px] tracking-[0.3em] mt-2">Live Competition Feed • Day 01</p>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button onclick="switchView('draw')" class="nav-btn px-6 py-4 rounded-2xl flex items-center gap-3 font-black uppercase text-xs tracking-widest text-red-500">
+                    <i class="fas fa-trophy"></i> Enter Draw Arena
+                </button>
+                <div class="h-10 w-[1px] bg-white/10 mx-2"></div>
+                <div class="text-right">
+                    <p class="text-[10px] uppercase font-bold text-zinc-500">Sync Status</p>
+                    <p class="text-green-500 font-bold text-sm uppercase">Active</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-12 gap-6">
+            <!-- Chart Section -->
+            <div class="glass-panel col-span-12 lg:col-span-8 p-8 flex flex-col justify-between min-h-[400px]">
+                <div class="flex justify-between items-center mb-8">
+                    <h3 class="text-xl font-black italic uppercase">Hourly Influx</h3>
+                    <span class="text-[10px] font-bold text-zinc-500 uppercase">24HR Cycle</span>
+                </div>
+                <div class="relative flex-grow h-[250px]">
+                    <canvas id="leadsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Total Leads -->
+            <div class="glass-panel col-span-12 lg:col-span-4 p-10 flex flex-col justify-center items-center text-center border-b-4 border-b-red-600">
+                <p class="text-zinc-500 font-black uppercase tracking-[0.3em] text-[10px] mb-4">Total Captured</p>
+                <h2 class="text-8xl font-black italic tracking-tighter mb-4">627</h2>
+                <div class="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden mb-2">
+                    <div class="bg-red-600 h-full w-[62.7%]"></div>
+                </div>
+                <p class="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">Goal: 1,000</p>
+            </div>
+
+            <!-- Leads Table -->
+            <div class="glass-panel col-span-12 lg:col-span-9 p-8">
+                <h3 class="text-xl font-black italic uppercase mb-8"><i class="fas fa-bolt text-red-600 mr-2"></i> Latest Entries</h3>
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-zinc-600 text-[10px] uppercase font-black tracking-widest border-b border-white/5">
+                                <th class="pb-4 pl-2">Athlete ID</th>
+                                <th class="pb-4">Name</th>
+                                <th class="pb-4">Contact</th>
+                                <th class="pb-4">Consultant</th>
+                                <th class="pb-4 text-right">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leadsTableBody" class="text-sm">
+                            <!-- JS Injection -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Leaderboard -->
+            <div class="glass-panel col-span-12 lg:col-span-3 p-8">
+                <h3 class="text-xl font-black italic uppercase mb-8">Top Performers</h3>
+                <div class="space-y-6" id="consultantLeaderboard">
+                    <!-- JS Injection -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="drawView" class="view-transition hidden-view min-h-screen flex flex-col items-center justify-center p-6 bg-radial-gradient">
+        <div class="max-w-5xl w-full">
+            <button onclick="switchView('dashboard')" class="mb-10 text-zinc-500 hover:text-white transition-colors flex items-center gap-2 font-bold uppercase text-xs tracking-widest">
+                <i class="fas fa-arrow-left"></i> Return to Dashboard
+            </button>
+
+            <div class="text-center mb-16">
+                <h1 class="text-6xl font-black italic uppercase tracking-tighter mb-4">Winner <span class="text-red-600">Selection</span></h1>
+                <p class="text-zinc-500 font-bold uppercase tracking-[0.4em] text-xs">Hyrox Competition Grand Draw</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16" id="winnersGrid">
+                <!-- Slot 1 -->
+                <div id="winner-0" class="winner-slot glass-panel p-10 flex flex-col items-center text-center">
+                    <div class="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center mb-6 border border-white/5 text-zinc-600 font-black italic">01</div>
+                    <h3 class="name-display text-2xl font-black text-zinc-800 italic uppercase tracking-tighter mb-2">Awaiting...</h3>
+                    <p class="id-display text-[10px] font-mono text-zinc-800">-- -- --</p>
+                </div>
+                <!-- Slot 2 -->
+                <div id="winner-1" class="winner-slot glass-panel p-10 flex flex-col items-center text-center">
+                    <div class="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center mb-6 border border-white/5 text-zinc-600 font-black italic">02</div>
+                    <h3 class="name-display text-2xl font-black text-zinc-800 italic uppercase tracking-tighter mb-2">Awaiting...</h3>
+                    <p class="id-display text-[10px] font-mono text-zinc-800">-- -- --</p>
+                </div>
+                <!-- Slot 3 -->
+                <div id="winner-2" class="winner-slot glass-panel p-10 flex flex-col items-center text-center">
+                    <div class="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center mb-6 border border-white/5 text-zinc-600 font-black italic">03</div>
+                    <h3 class="name-display text-2xl font-black text-zinc-800 italic uppercase tracking-tighter mb-2">Awaiting...</h3>
+                    <p class="id-display text-[10px] font-mono text-zinc-800">-- -- --</p>
+                </div>
+            </div>
+
+            <div class="flex justify-center">
+                <button id="drawButton" onclick="startDraw()" class="draw-btn-large px-16 py-6 rounded-3xl font-black uppercase italic tracking-tighter text-2xl flex items-center gap-4 text-white">
+                    <i class="fas fa-random"></i> Spin for Winner
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-20 py-10 flex justify-center opacity-10 hover:opacity-50 transition-opacity">
+        <button onclick="resetApp()" class="text-[10px] font-black uppercase tracking-[0.5em] text-zinc-600">Reset System States</button>
+    </div>
+
+    <script>
+        const leadsData = [
+            { id: "VA-X921", first: "Marcus", last: "Sterling", email: "m***@virgin.com", phone: "+44 **** 231", time: "14:22", consultant: "Sarah Jones" },
+            { id: "VA-B440", first: "Elena", last: "Rodriguez", email: "e***@outlook.com", phone: "+44 **** 988", time: "14:15", consultant: "Tom Harris" },
+            { id: "VA-L109", first: "James", last: "Patterson", email: "j***@company.co", phone: "+44 **** 442", time: "13:58", consultant: "Sarah Jones" },
+            { id: "VA-K332", first: "Chloe", last: "Bennett", email: "c***@icloud.com", phone: "+44 **** 112", time: "13:45", consultant: "Mike Ross" },
+            { id: "VA-P998", first: "David", last: "Oakley", email: "d***@gmail.com", phone: "+44 **** 005", time: "13:30", consultant: "Liam Chen" },
+            { id: "VA-S221", first: "Sophie", last: "Walsh", email: "s***@proton.me", phone: "+44 **** 776", time: "13:12", consultant: "Sarah Jones" },
+            { id: "VA-Z871", first: "Robert", last: "Vance", email: "r***@gmail.com", phone: "+44 **** 332", time: "12:55", consultant: "Emma Watson" },
+            { id: "VA-Q002", first: "Jessica", last: "Hale", email: "j***@yahoo.com", phone: "+44 **** 661", time: "12:40", consultant: "Mike Ross" },
+            { id: "VA-T115", first: "Arjun", last: "Mehta", email: "a***@company.in", phone: "+44 **** 119", time: "12:35", consultant: "Liam Chen" },
+            { id: "VA-M554", first: "Nina", last: "Sander", email: "n***@gmail.com", phone: "+44 **** 884", time: "12:15", consultant: "Sarah Jones" }
+        ];
+
+        let winners = [];
+        let isSpinning = false;
+
+        function switchView(view) {
+            const dash = document.getElementById('dashboardView');
+            const draw = document.getElementById('drawView');
+
+            if (view === 'draw') {
+                dash.classList.add('hidden-view');
+                setTimeout(() => {
+                    dash.style.display = 'none';
+                    draw.style.display = 'flex';
+                    setTimeout(() => draw.classList.remove('hidden-view'), 50);
+                }, 500);
+            } else {
+                draw.classList.add('hidden-view');
+                setTimeout(() => {
+                    draw.style.display = 'none';
+                    dash.style.display = 'block';
+                    setTimeout(() => dash.classList.remove('hidden-view'), 50);
+                }, 500);
+            }
+        }
+
+        function startDraw() {
+            if (winners.length >= 3 || isSpinning) return;
+            
+            const index = winners.length;
+            const slot = document.getElementById(`winner-${index}`);
+            const nameEl = slot.querySelector('.name-display');
+            const idEl = slot.querySelector('.id-display');
+            const btn = document.getElementById('drawButton');
+
+            isSpinning = true;
+            btn.disabled = true;
+            slot.classList.add('active');
+            nameEl.classList.add('spin-animation');
+
+            let timer = 0;
+            const interval = setInterval(() => {
+                const temp = leadsData[Math.floor(Math.random() * leadsData.length)];
+                nameEl.innerText = `${temp.first} ${temp.last}`;
+                idEl.innerText = `ID: ${temp.id}`;
+                timer += 100;
+
+                if (timer >= 2500) {
+                    clearInterval(interval);
+                    finalizeWinner(index, nameEl, idEl, btn);
+                }
+            }, 100);
+        }
+
+        function finalizeWinner(index, nameEl, idEl, btn) {
+            const pool = leadsData.filter(l => !winners.find(w => w.id === l.id));
+            const winner = pool[Math.floor(Math.random() * pool.length)];
+            winners.push(winner);
+
+            nameEl.classList.remove('spin-animation');
+            nameEl.innerText = `${winner.first} ${winner.last}`;
+            nameEl.classList.add('text-white');
+            idEl.innerText = `ID: ${winner.id}`;
+            idEl.classList.replace('text-zinc-800', 'text-red-600');
+
+            isSpinning = false;
+            if (winners.length < 3) {
+                btn.disabled = false;
+            } else {
+                btn.innerHTML = '<i class="fas fa-check"></i> Draw Complete';
+                btn.style.background = '#222';
+            }
+        }
+
+        function resetApp() {
+            winners = [];
+            isSpinning = false;
+            const btn = document.getElementById('drawButton');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-random"></i> Spin for Winner';
+            btn.style.background = 'var(--brand-red)';
+            
+            for (let i = 0; i < 3; i++) {
+                const slot = document.getElementById(`winner-${i}`);
+                slot.classList.remove('active');
+                slot.querySelector('.name-display').innerText = 'Awaiting...';
+                slot.querySelector('.name-display').classList.remove('text-white');
+                slot.querySelector('.id-display').innerText = '-- -- --';
+                slot.querySelector('.id-display').classList.replace('text-red-600', 'text-zinc-800');
+            }
+        }
+
+        window.onload = function() {
+            // Table Influx
+            const table = document.getElementById('leadsTableBody');
+            leadsData.forEach(l => {
+                table.innerHTML += `
+                    <tr class="border-b border-white/[0.02] hover:bg-white/[0.02]">
+                        <td class="py-5 pl-2 font-mono text-red-500 font-bold text-xs">${l.id}</td>
+                        <td class="py-5 font-bold uppercase tracking-tighter">${l.first} <span class="text-zinc-500">${l.last}</span></td>
+                        <td class="py-5">
+                            <span class="text-white font-mono text-[11px] hashed-blur block">${l.email}</span>
+                            <span class="text-[10px] text-zinc-600 hashed-blur">${l.phone}</span>
+                        </td>
+                        <td class="py-5 font-black text-xs text-zinc-400 uppercase">${l.consultant}</td>
+                        <td class="py-5 text-right font-bold text-zinc-500">${l.time}</td>
+                    </tr>
+                `;
+            });
+
+            // Leaderboard
+            const leaderboard = document.getElementById('consultantLeaderboard');
+            const tops = [{n: "Sarah Jones", l: 142}, {n: "Mike Ross", l: 98}, {n: "Liam Chen", l: 87}];
+            tops.forEach((c, i) => {
+                leaderboard.innerHTML += `
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-black uppercase text-white">${c.n}</span>
+                        <span class="text-lg font-black italic text-red-600">${c.l}</span>
+                    </div>
+                `;
+            });
+
+            // Chart Init
+            const ctx = document.getElementById('leadsChart').getContext('2d');
+            const grad = ctx.createLinearGradient(0, 0, 0, 300);
+            grad.addColorStop(0, 'rgba(225, 6, 0, 0.4)');
+            grad.addColorStop(1, 'rgba(225, 6, 0, 0)');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['8am', '12pm', '4pm', '8pm', '12am', '4am'],
+                    datasets: [{
+                        data: [15, 85, 160, 95, 40, 20],
+                        borderColor: '#E10600',
+                        borderWidth: 3,
+                        fill: true,
+                        backgroundColor: grad,
+                        tension: 0.4,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        y: { display: false },
+                        x: { ticks: { color: '#444', font: { weight: '800', size: 10 } }, grid: { display: false } }
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>
