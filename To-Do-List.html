@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Cloud Tasks + Timestamps</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        .custom-shadow { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02); }
+        .task-card { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .task-card:hover { transform: translateY(-2px); }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-xl mx-auto">
+        <header class="mb-8 flex justify-between items-end">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Timeline Workspace</h1>
+                <p id="date-text" class="text-slate-500 font-medium"></p>
+            </div>
+            <div id="sync-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-500 transition-all">
+                <div class="h-2 w-2 rounded-full bg-slate-300 status-dot"></div>
+                <span class="status-text">Ready</span>
+            </div>
+        </header>
+
+        <div class="relative mb-8">
+            <input type="text" id="task-input" 
+                class="w-full p-5 pr-16 bg-white rounded-2xl border border-slate-200 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all text-slate-700 placeholder-slate-400 custom-shadow"
+                placeholder="Add a new goal...">
+            <button id="add-btn" class="absolute right-3 top-3 h-11 w-11 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all flex items-center justify-center shadow-lg shadow-indigo-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="task-list" class="space-y-4">
+            <!-- Tasks appear here -->
+        </div>
+
+        <div id="empty-state" class="hidden py-12 text-center">
+            <p class="text-slate-400 font-medium">No tasks recorded yet.</p>
+        </div>
+    </div>
+
+    <script>
+        
+        // PASTE YOUR UPDATED URL HERE
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxV-rAC3QRLdjzGS4mVga7bEAyr7wGhQkvpEuPBVmmmRcRUS1mTe2nQXS8Psop-hbBXrA/exec"; 
+
+        let tasks = [];
+        const input = document.getElementById('task-input');
+        const listContainer = document.getElementById('task-list');
+        const emptyState = document.getElementById('empty-state');
+        const statusText = document.querySelector('.status-text');
+        const statusDot = document.querySelector('.status-dot');
+
+        document.getElementById('date-text').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+
+        function updateStatus(state, text) {
+            statusText.innerText = text;
+            statusDot.className = `h-2 w-2 rounded-full transition-all duration-500 status-dot`;
+            if (state === 'syncing') statusDot.classList.add('bg-amber-400', 'animate-pulse');
+            else if (state === 'online') statusDot.classList.add('bg-emerald-500');
+            else if (state === 'error') statusDot.classList.add('bg-red-500');
+            else statusDot.classList.add('bg-slate-300');
+        }
+
+        async function loadFromCloud() {
+            if (!GOOGLE_SCRIPT_URL) return;
+            updateStatus('syncing', 'Fetching...');
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL);
+                const cloudData = await response.json();
+                if (Array.isArray(cloudData)) {
+                    tasks = cloudData;
+                    renderTasks();
+                    localStorage.setItem('cloud_tasks_v2', JSON.stringify(tasks));
+                }
+                updateStatus('online', 'Cloud Synced');
+            } catch (err) {
+                updateStatus('error', 'Fetch Offline');
+            }
+        }
+
+        async function saveToCloud() {
+            if (!GOOGLE_SCRIPT_URL) return;
+            localStorage.setItem('cloud_tasks_v2', JSON.stringify(tasks));
+            updateStatus('syncing', 'Saving...');
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify(tasks)
+                });
+                updateStatus('online', 'Cloud Saved');
+            } catch (err) {
+                updateStatus('error', 'Save Offline');
+            }
+        }
+
+        function renderTasks() {
+            listContainer.innerHTML = '';
+            if (tasks.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            tasks.forEach((task, index) => {
+                const el = document.createElement('div');
+                el.className = `task-card group p-4 bg-white border border-slate-100 rounded-2xl custom-shadow ${task.completed ? 'bg-slate-50/50' : ''}`;
+                
+                // Format dates for display
+                const createdDate = new Date(task.createdAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                const completedDate = task.completedAt ? new Date(task.completedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : null;
+
+                el.innerHTML = `
+                    <div class="flex items-start gap-4">
+                        <div class="mt-1 cursor-pointer" onclick="toggleTask(${index})">
+                            <div class="h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all ${task.completed ? 'bg-indigo-600 border-indigo-600' : 'border-slate-200'}">
+                                ${task.completed ? '<svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                            </div>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-slate-700 font-semibold truncate ${task.completed ? 'line-through text-slate-400' : ''}">
+                                ${task.text}
+                            </p>
+                            <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-[10px] font-bold uppercase tracking-wider">
+                                <span class="text-slate-400">Created: ${createdDate}</span>
+                                ${task.completed ? `<span class="text-indigo-500">Done: ${completedDate}</span>` : ''}
+                            </div>
+                        </div>
+                        <button onclick="deleteTask(${index})" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                listContainer.appendChild(el);
+            });
+        }
+
+        function addTask() {
+            const val = input.value.trim();
+            if (val) {
+                const now = new Date().toISOString();
+                tasks.unshift({ 
+                    text: val, 
+                    completed: false, 
+                    id: Date.now(),
+                    createdAt: now,
+                    updatedAt: now,
+                    completedAt: null 
+                });
+                input.value = '';
+                renderTasks();
+                saveToCloud();
+            }
+        }
+
+        function toggleTask(index) {
+            const now = new Date().toISOString();
+            tasks[index].completed = !tasks[index].completed;
+            tasks[index].updatedAt = now;
+            tasks[index].completedAt = tasks[index].completed ? now : null;
+            renderTasks();
+            saveToCloud();
+        }
+
+        function deleteTask(index) {
+            tasks.splice(index, 1);
+            renderTasks();
+            saveToCloud();
+        }
+
+        document.getElementById('add-btn').addEventListener('click', addTask);
+        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') addTask(); });
+
+        window.onload = () => {
+            const cached = localStorage.getItem('cloud_tasks_v2');
+            if (cached) {
+                tasks = JSON.parse(cached);
+                renderTasks();
+            }
+            loadFromCloud();
+        };
+    </script>
+</body>
+</html>
