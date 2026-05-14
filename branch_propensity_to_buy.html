@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branch Performance & Sentiment Analysis Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .metric-card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 1.5rem; }
+        .status-down { color: #dc2626; font-weight: 600; }
+        .status-up { color: #16a34a; font-weight: 600; }
+        .status-flat { color: #4b5563; font-weight: 600; }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+    <div class="max-w-5xl mx-auto">
+        <!-- Header -->
+        <header class="mb-10 border-b border-gray-200 pb-6">
+            <h1 class="text-3xl font-bold text-gray-900">Branch Performance Analysis</h1>
+            <p class="text-gray-500 mt-2">Executive Summary: Sales Contribution & Member Sentiment Correlation</p>
+        </header>
+
+        <!-- Segment Performance Grid -->
+        <section class="mb-12">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">1. Sales Contribution by Club Type</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="metric-card">
+                    <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold">Lifestyle</p>
+                    <p class="text-3xl font-bold text-blue-600">50.59%</p>
+                    <p class="text-xs mt-2 status-down">-0.27 ppt</p>
+                </div>
+                <div class="metric-card">
+                    <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold">Flagship</p>
+                    <p class="text-3xl font-bold text-blue-600">42.72%</p>
+                    <p class="text-xs mt-2 status-up">+0.86 ppt</p>
+                </div>
+                <div class="metric-card">
+                    <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold">Red</p>
+                    <p class="text-3xl font-bold text-blue-600">5.00%</p>
+                    <p class="text-xs mt-2 status-down">-0.56 ppt</p>
+                </div>
+                <div class="metric-card">
+                    <p class="text-sm text-gray-500 uppercase tracking-wide font-semibold">Collection</p>
+                    <p class="text-3xl font-bold text-blue-600">1.69%</p>
+                    <p class="text-xs mt-2 status-flat">Flat (-0.04)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparative Case Studies -->
+        <section class="mb-12">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6">2. Branch Comparative Deep-Dive</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left bg-white rounded-lg shadow">
+                    <thead>
+                        <tr class="bg-gray-50 border-b">
+                            <th class="p-4 font-semibold text-gray-700">Branch</th>
+                            <th class="p-4 font-semibold text-gray-700">Contribution Δ</th>
+                            <th class="p-4 font-semibold text-gray-700">Search Data</th>
+                            <th class="p-4 font-semibold text-gray-700">Sentiment & Stability</th>
+                            <th class="p-4 font-semibold text-gray-700">Conv. Prob.</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <tr>
+                            <td class="p-4 font-medium">Claremont</td>
+                            <td class="p-4 status-down">Highest Drop</td>
+                            <td class="p-4 text-sm text-gray-600">-10% Impressions<br>-21% Clicks</td>
+                            <td class="p-4 text-sm text-gray-600">Service & Crowding deteriorating</td>
+                            <td class="p-4 font-bold text-red-600 text-lg">68%</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-medium">Groenkloof</td>
+                            <td class="p-4 status-down">-0.25 ppt</td>
+                            <td class="p-4 text-sm text-gray-600">--</td>
+                            <td class="p-4 text-sm text-gray-600">Service & Crowding deteriorating</td>
+                            <td class="p-4 font-bold text-orange-500 text-lg">70%</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-medium">Lonehill</td>
+                            <td class="p-4 status-flat">-0.04 ppt</td>
+                            <td class="p-4 text-sm text-gray-600">Stable</td>
+                            <td class="p-4 text-sm text-gray-600">Service stable; Crowding deteriorating</td>
+                            <td class="p-4 font-bold text-blue-500 text-lg">72%</td>
+                        </tr>
+                        <tr>
+                            <td class="p-4 font-medium">Morningside</td>
+                            <td class="p-4 status-flat">-0.04 ppt</td>
+                            <td class="p-4 text-sm text-gray-600">Stable</td>
+                            <td class="p-4 text-sm text-gray-600">All Metrics stable</td>
+                            <td class="p-4 font-bold text-green-600 text-lg">74%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- AI Insights & Findings -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="metric-card bg-slate-900 text-white">
+                <h3 class="text-lg font-semibold mb-4 text-blue-400">AI Sentiment Findings</h3>
+                <p class="text-sm leading-relaxed text-gray-300">
+                    Data indicates that while <strong>overall sentiment</strong> and <strong>facility perception</strong> are generally improving across the board, there is a sharp negative trend in:
+                </p>
+                <ul class="mt-4 space-y-2 text-sm">
+                    <li class="flex items-center"><span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span> Service Consistency</li>
+                    <li class="flex items-center"><span class="w-2 h-2 bg-red-500 rounded-full mr-2"></span> Crowding Index</li>
+                </ul>
+                <p class="mt-6 text-sm italic border-l-2 border-blue-500 pl-4">
+                    "Branches with stable crowding and service levels (e.g., Morningside) maintain a ~6% higher conversion probability than those experiencing deterioration (e.g., Claremont)."
+                </p>
+            </div>
+            
+            <div class="metric-card">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800">The "Research-to-Buy" Shift</h3>
+                <p class="text-sm text-gray-600 mb-4">
+                    Potential members are increasingly conducting online research before visiting. This digital footprint directly impacts the probability of conversion.
+                </p>
+                <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                    <p class="text-xs font-bold text-blue-800 uppercase mb-2">Key Recommendation</p>
+                    <p class="text-sm text-blue-900">
+                        Prioritize online review management and address specific member grievances regarding crowding to stabilize main perception metrics.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- External Factors -->
+        <section class="metric-card border-t-4 border-blue-600">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Micro & Macro Considerations</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-bold text-gray-700 mb-2">Economic Pressure</h4>
+                    <p class="text-sm text-gray-600">Increased living costs are likely impacting the discretionary spend typically allocated to Lifestyle and Red club tiers.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-700 mb-2">Seasonality</h4>
+                    <p class="text-sm text-gray-600">Standard seasonal fluctuations in sales performance should be weighted against the observed digital drop-offs.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="mt-12 text-center text-gray-400 text-xs">
+            <p>Generated for Internal Review &bull; Confidential Performance Data</p>
+        </footer>
+    </div>
+</body>
+</html>
