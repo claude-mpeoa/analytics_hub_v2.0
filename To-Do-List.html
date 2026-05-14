@@ -3,62 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Cloud Tasks + Timestamps</title>
+    <title>Pro Tasks: Drag & Detail</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
         .custom-shadow { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02); }
-        .task-card { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        .task-card:hover { transform: translateY(-2px); }
+        .task-card { transition: transform 0.2s, opacity 0.2s; cursor: default; }
+        .dragging { opacity: 0.5; transform: scale(0.98); }
+        .drag-over { border-top: 4px solid #4f46e5; }
+        
+        /* Custom scrollbar for long task text in modal */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
-    <div class="max-w-xl mx-auto">
-        <header class="mb-8 flex justify-between items-end">
+    <div class="max-w-2xl mx-auto">
+        <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Timeline Workspace</h1>
                 <p id="date-text" class="text-slate-500 font-medium"></p>
             </div>
-            <div id="sync-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-500 transition-all">
-                <div class="h-2 w-2 rounded-full bg-slate-300 status-dot"></div>
-                <span class="status-text">Ready</span>
+            
+            <div class="flex flex-col items-end gap-2">
+                <!-- Workspace Selector -->
+                <div class="flex items-center gap-2 bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
+                    <input type="text" id="workspace-input" 
+                        class="px-3 py-1 text-sm font-semibold text-slate-700 outline-none w-32 md:w-40" 
+                        placeholder="Workspace Name">
+                    <button onclick="switchWorkspace()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1 rounded-lg text-xs font-bold transition-all">LOAD</button>
+                </div>
+                
+                <div id="sync-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-500 transition-all">
+                    <div class="h-2 w-2 rounded-full bg-slate-300 status-dot"></div>
+                    <span class="status-text">Local Mode</span>
+                </div>
             </div>
         </header>
 
-        <div class="relative mb-8">
-            <input type="text" id="task-input" 
-                class="w-full p-5 pr-16 bg-white rounded-2xl border border-slate-200 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all text-slate-700 placeholder-slate-400 custom-shadow"
-                placeholder="Add a new goal...">
-            <button id="add-btn" class="absolute right-3 top-3 h-11 w-11 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all flex items-center justify-center shadow-lg shadow-indigo-200">
+        <div class="relative mb-8 group">
+            <textarea id="task-input" rows="1"
+                class="w-full p-5 pr-16 bg-white rounded-2xl border border-slate-200 focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all text-slate-700 placeholder-slate-400 custom-shadow resize-none overflow-hidden"
+                placeholder="What needs to be done? (Shift+Enter for new line)"
+                oninput="this.style.height = '';this.style.height = this.scrollHeight + 'px'"></textarea>
+            <button id="add-btn" class="absolute right-3 bottom-3 h-11 w-11 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all flex items-center justify-center shadow-lg shadow-indigo-200">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
                 </svg>
             </button>
         </div>
 
-        <div id="task-list" class="space-y-4">
+        <div id="task-list" class="space-y-3">
             <!-- Tasks appear here -->
         </div>
 
         <div id="empty-state" class="hidden py-12 text-center">
-            <p class="text-slate-400 font-medium">No tasks recorded yet.</p>
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4 text-slate-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+            </div>
+            <p class="text-slate-400 font-medium">Your timeline is clear.</p>
+        </div>
+    </div>
+
+    <div id="detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div class="p-6 md:p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Task Details</h2>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="modal-content" class="space-y-6">
+                    <div class="max-h-64 overflow-y-auto custom-scroll pr-2">
+                        <p id="modal-text" class="text-slate-800 text-lg font-medium leading-relaxed whitespace-pre-wrap"></p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6 border-t border-slate-100">
+                        <div class="bg-slate-50 p-3 rounded-2xl">
+                            <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Created</span>
+                            <span id="modal-created" class="text-sm font-semibold text-slate-600 italic"></span>
+                        </div>
+                        <div id="modal-done-container" class="bg-emerald-50 p-3 rounded-2xl hidden">
+                            <span class="block text-[10px] font-bold text-emerald-400 uppercase tracking-tighter">Completed</span>
+                            <span id="modal-completed" class="text-sm font-semibold text-emerald-600 italic"></span>
+                        </div>
+                        <div id="modal-updated-container" class="bg-indigo-50 p-3 rounded-2xl col-span-full hidden">
+                            <span class="block text-[10px] font-bold text-indigo-400 uppercase tracking-tighter">Last Edited</span>
+                            <span id="modal-updated" class="text-sm font-semibold text-indigo-600 italic"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-50 p-4 px-8 flex justify-end">
+                <button onclick="closeModal()" class="px-6 py-2 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-all">Close</button>
+            </div>
         </div>
     </div>
 
     <script>
-        
-        // PASTE YOUR UPDATED URL HERE
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxV-rAC3QRLdjzGS4mVga7bEAyr7wGhQkvpEuPBVmmmRcRUS1mTe2nQXS8Psop-hbBXrA/exec"; 
 
         let tasks = [];
+        let currentWorkspace = localStorage.getItem('active_workspace') || 'Personal-Workspace';
+        let draggedItemIndex = null;
+
         const input = document.getElementById('task-input');
+        const workspaceInput = document.getElementById('workspace-input');
         const listContainer = document.getElementById('task-list');
         const emptyState = document.getElementById('empty-state');
         const statusText = document.querySelector('.status-text');
         const statusDot = document.querySelector('.status-dot');
 
+        workspaceInput.value = currentWorkspace;
         document.getElementById('date-text').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
 
         function updateStatus(state, text) {
@@ -71,79 +136,36 @@
         }
 
         async function loadFromCloud() {
-            if (!GOOGLE_SCRIPT_URL) return;
-            updateStatus('syncing', 'Fetching...');
+            if (!GOOGLE_SCRIPT_URL || !currentWorkspace) return;
+            updateStatus('syncing', 'Syncing...');
             try {
-                const response = await fetch(GOOGLE_SCRIPT_URL);
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?userId=${encodeURIComponent(currentWorkspace)}`);
                 const cloudData = await response.json();
                 if (Array.isArray(cloudData)) {
                     tasks = cloudData;
                     renderTasks();
-                    localStorage.setItem('cloud_tasks_v2', JSON.stringify(tasks));
+                    localStorage.setItem(`tasks_${currentWorkspace}`, JSON.stringify(tasks));
                 }
-                updateStatus('online', 'Cloud Synced');
+                updateStatus('online', 'Cloud Ready');
             } catch (err) {
-                updateStatus('error', 'Fetch Offline');
+                updateStatus('error', 'Sync Failed');
             }
         }
 
         async function saveToCloud() {
-            if (!GOOGLE_SCRIPT_URL) return;
-            localStorage.setItem('cloud_tasks_v2', JSON.stringify(tasks));
+            if (!GOOGLE_SCRIPT_URL || !currentWorkspace) return;
+            localStorage.setItem(`tasks_${currentWorkspace}`, JSON.stringify(tasks));
             updateStatus('syncing', 'Saving...');
             try {
                 await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    body: JSON.stringify(tasks)
+                    body: JSON.stringify({ userId: currentWorkspace, tasks: tasks })
                 });
-                updateStatus('online', 'Cloud Saved');
+                updateStatus('online', 'Saved');
             } catch (err) {
-                updateStatus('error', 'Save Offline');
+                updateStatus('error', 'Save Failed');
             }
-        }
-
-        function renderTasks() {
-            listContainer.innerHTML = '';
-            if (tasks.length === 0) {
-                emptyState.classList.remove('hidden');
-                return;
-            }
-            emptyState.classList.add('hidden');
-
-            tasks.forEach((task, index) => {
-                const el = document.createElement('div');
-                el.className = `task-card group p-4 bg-white border border-slate-100 rounded-2xl custom-shadow ${task.completed ? 'bg-slate-50/50' : ''}`;
-                
-                // Format dates for display
-                const createdDate = new Date(task.createdAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-                const completedDate = task.completedAt ? new Date(task.completedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : null;
-
-                el.innerHTML = `
-                    <div class="flex items-start gap-4">
-                        <div class="mt-1 cursor-pointer" onclick="toggleTask(${index})">
-                            <div class="h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all ${task.completed ? 'bg-indigo-600 border-indigo-600' : 'border-slate-200'}">
-                                ${task.completed ? '<svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>' : ''}
-                            </div>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-slate-700 font-semibold truncate ${task.completed ? 'line-through text-slate-400' : ''}">
-                                ${task.text}
-                            </p>
-                            <div class="flex flex-wrap gap-x-4 gap-y-1 mt-1 text-[10px] font-bold uppercase tracking-wider">
-                                <span class="text-slate-400">Created: ${createdDate}</span>
-                                ${task.completed ? `<span class="text-indigo-500">Done: ${completedDate}</span>` : ''}
-                            </div>
-                        </div>
-                        <button onclick="deleteTask(${index})" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                        </button>
-                    </div>
-                `;
-                listContainer.appendChild(el);
-            });
         }
 
         function addTask() {
@@ -153,12 +175,13 @@
                 tasks.unshift({ 
                     text: val, 
                     completed: false, 
-                    id: Date.now(),
+                    id: Date.now().toString(),
                     createdAt: now,
                     updatedAt: now,
                     completedAt: null 
                 });
                 input.value = '';
+                input.style.height = 'auto';
                 renderTasks();
                 saveToCloud();
             }
@@ -173,23 +196,159 @@
             saveToCloud();
         }
 
-        function deleteTask(index) {
+        function deleteTask(index, event) {
+            event.stopPropagation();
             tasks.splice(index, 1);
             renderTasks();
             saveToCloud();
         }
 
+        function switchWorkspace() {
+            const newWs = workspaceInput.value.trim();
+            if (newWs) {
+                currentWorkspace = newWs;
+                localStorage.setItem('active_workspace', newWs);
+                const cached = localStorage.getItem(`tasks_${currentWorkspace}`);
+                tasks = cached ? JSON.parse(cached) : [];
+                renderTasks();
+                loadFromCloud();
+            }
+        }
+
+        function handleDragStart(index) {
+            draggedItemIndex = index;
+            setTimeout(() => {
+                document.querySelectorAll('.task-card')[index].classList.add('dragging');
+            }, 0);
+        }
+
+        function handleDragOver(e, index) {
+            e.preventDefault();
+            const cards = document.querySelectorAll('.task-card');
+            cards.forEach(c => c.classList.remove('drag-over'));
+            if (draggedItemIndex !== index) {
+                cards[index].classList.add('drag-over');
+            }
+        }
+
+        function handleDrop(index) {
+            if (draggedItemIndex === null || draggedItemIndex === index) return;
+            const itemToMove = tasks.splice(draggedItemIndex, 1)[0];
+            tasks.splice(index, 0, itemToMove);
+            renderTasks();
+            saveToCloud();
+        }
+
+        function handleDragEnd() {
+            draggedItemIndex = null;
+            document.querySelectorAll('.task-card').forEach(c => {
+                c.classList.remove('dragging', 'drag-over');
+            });
+        }
+
+        function openDetail(index) {
+            const task = tasks[index];
+            document.getElementById('modal-text').innerText = task.text;
+            document.getElementById('modal-created').innerText = new Date(task.createdAt).toLocaleString();
+            
+            const doneBox = document.getElementById('modal-done-container');
+            if (task.completedAt) {
+                doneBox.classList.remove('hidden');
+                document.getElementById('modal-completed').innerText = new Date(task.completedAt).toLocaleString();
+            } else {
+                doneBox.classList.add('hidden');
+            }
+
+            const updateBox = document.getElementById('modal-updated-container');
+            if (task.updatedAt && task.updatedAt !== task.createdAt) {
+                updateBox.classList.remove('hidden');
+                document.getElementById('modal-updated').innerText = new Date(task.updatedAt).toLocaleString();
+            } else {
+                updateBox.classList.add('hidden');
+            }
+
+            document.getElementById('detail-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+        }
+
+        function renderTasks() {
+            listContainer.innerHTML = '';
+            if (tasks.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            tasks.forEach((task, index) => {
+                const el = document.createElement('div');
+                el.draggable = true;
+                el.className = `task-card group flex items-start gap-3 p-4 bg-white border border-slate-100 rounded-2xl custom-shadow ${task.completed ? 'bg-slate-50/50' : ''}`;
+                
+                // Drag Events
+                el.addEventListener('dragstart', () => handleDragStart(index));
+                el.addEventListener('dragover', (e) => handleDragOver(e, index));
+                el.addEventListener('drop', () => handleDrop(index));
+                el.addEventListener('dragend', handleDragEnd);
+
+                const createdDate = new Date(task.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' });
+
+                el.innerHTML = `
+                    <div class="mt-1.5 cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+                        </svg>
+                    </div>
+                    <div class="mt-1 cursor-pointer flex-shrink-0" onclick="toggleTask(${index})">
+                        <div class="h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all ${task.completed ? 'bg-indigo-600 border-indigo-600 shadow-sm' : 'border-slate-200'}">
+                            ${task.completed ? '<svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0 cursor-pointer" onclick="openDetail(${index})">
+                        <p class="text-slate-700 font-semibold leading-tight break-words ${task.completed ? 'line-through text-slate-400' : ''}">
+                            ${task.text}
+                        </p>
+                        <div class="flex items-center gap-2 mt-2">
+                            <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">${createdDate}</span>
+                            ${task.completed ? '<span class="text-[9px] font-bold uppercase tracking-wider text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-md">Completed</span>' : ''}
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1">
+                         <button onclick="deleteTask(${index}, event)" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                listContainer.appendChild(el);
+            });
+        }
+
         document.getElementById('add-btn').addEventListener('click', addTask);
-        input.addEventListener('keypress', (e) => { if (e.key === 'Enter') addTask(); });
+        input.addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                addTask(); 
+            }
+        });
 
         window.onload = () => {
-            const cached = localStorage.getItem('cloud_tasks_v2');
+            const cached = localStorage.getItem(`tasks_${currentWorkspace}`);
             if (cached) {
                 tasks = JSON.parse(cached);
                 renderTasks();
             }
             loadFromCloud();
         };
+
+        // Close modal on click outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('detail-modal');
+            if (event.target == modal) closeModal();
+        }
     </script>
 </body>
 </html>
