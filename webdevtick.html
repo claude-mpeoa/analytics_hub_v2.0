@@ -8,206 +8,363 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/d23ca4c3f1.js" crossorigin="anonymous"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f4f4f4; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; color: #1e293b; }
         .va-red { background-color: #E10613; }
         .va-red-hover:hover { background-color: #B1050F; }
         .va-text-red { color: #E10613; }
-        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.05); }
+        .glass-panel { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.05); }
         .ticket-card { transition: all 0.3s ease; }
-        .ticket-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        .status-pill { padding: 4px 12px; border-radius: 9999px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+        .ticket-card:hover { transform: translateY(-3px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .status-pill { padding: 4px 12px; border-radius: 9999px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
         .status-pending { background-color: #FEF3C7; color: #92400E; }
         .status-vetted { background-color: #DBEAFE; color: #1E40AF; }
         .status-inprogress { background-color: #E0E7FF; color: #3730A3; }
         .status-completed { background-color: #D1FAE5; color: #065F46; }
-        .status-declined { background-color: #FEE2E2; color: #991B1B; }
         
-        /* Success Overlay Animation */
+        .section-header { 
+            border-left: 4px solid #E10613; 
+            padding-left: 1rem; 
+            margin-bottom: 1.5rem; 
+            background: linear-gradient(to right, rgba(225, 6, 19, 0.05), transparent);
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Custom scrollbar for better UX */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
         @keyframes scaleIn {
-            from { transform: scale(0.9); opacity: 0; }
+            from { transform: scale(0.95); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
-        .animate-scale-in { animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .animate-scale-in { animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1); }
     </style>
 </head>
-<body class="min-h-screen text-slate-900">
+<body class="min-h-screen">
 
     <div id="app" class="max-w-6xl mx-auto px-4 py-8">
-        <header class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
-            <div class="flex items-center gap-3">
-                <div class="va-red p-3 rounded-xl shadow-lg">
-                    <i class="fas fa-bolt text-white text-2xl"></i>
+        <header class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
+            <div class="flex items-center gap-4">
+                <div class="va-red p-4 rounded-2xl shadow-xl rotate-3 hover:rotate-0 transition-transform cursor-pointer">
+                    <i class="fas fa-bolt text-white text-3xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-3xl font-800 tracking-tighter uppercase italic">Virgin <span class="va-text-red font-black">Active</span></h1>
-                    <p class="text-xs font-bold tracking-[0.2em] text-slate-400 uppercase">Web Dev Workflow Portal</p>
+                    <h1 class="text-4xl font-900 tracking-tighter uppercase italic leading-none">Virgin <span class="va-text-red font-black">Active</span></h1>
+                    <p class="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase mt-1">Global Web Dev Workflow</p>
                 </div>
             </div>
             
-            <div class="flex flex-col items-end gap-2">
-                <nav class="flex bg-white p-1 rounded-2xl shadow-sm border border-slate-200">
-                    <button onclick="switchTab('request')" id="tab-request" class="px-6 py-2 rounded-xl text-sm font-bold transition-all va-red text-white">Log Request</button>
-                    <button onclick="switchTab('search')" id="tab-search" class="px-6 py-2 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-slate-800">My Tickets</button>
-                    <button onclick="switchTab('docs')" id="tab-docs" class="px-6 py-2 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-slate-800">Docs</button>
-               
-                    <button onclick="switchTab('admin')" id="tab-admin" class="px-6 py-2 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-slate-800">
-
-                        Admin <span id="pending-badge" class="hidden ml-1 px-1.5 py-0.5 va-red text-white text-[10px] rounded-full">0</span>
+            <div class="flex flex-col items-end gap-3">
+                <nav class="flex bg-white p-1.5 rounded-2xl shadow-md border border-slate-100">
+                    <button onclick="switchTab('request')" id="tab-request" class="px-6 py-2.5 rounded-xl text-xs font-black transition-all va-red text-white uppercase italic tracking-widest">Log Request</button>
+                    <button onclick="switchTab('search')" id="tab-search" class="px-6 py-2.5 rounded-xl text-xs font-black transition-all text-slate-500 hover:text-slate-800 uppercase tracking-widest">My Tickets</button>
+                    <button onclick="switchTab('docs')" id="tab-docs" class="px-6 py-2.5 rounded-xl text-xs font-black transition-all text-slate-500 hover:text-slate-800 uppercase tracking-widest">Docs</button>
+                    <button onclick="switchTab('admin')" id="tab-admin" class="px-6 py-2.5 rounded-xl text-xs font-black transition-all text-slate-500 hover:text-slate-800 uppercase tracking-widest">
+                        Admin <span id="pending-badge" class="hidden ml-1 px-1.5 py-0.5 va-red text-white text-[9px] rounded-full">0</span>
                     </button>
                 </nav>
                 <div id="sync-indicator" class="text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2 mr-2">
-                    <div id="sync-dot" class="h-1.5 w-1.5 rounded-full bg-slate-300"></div>
-                    <span id="sync-text">System Ready</span>
+                    <div id="sync-dot" class="h-2 w-2 rounded-full bg-slate-300"></div>
+                    <span id="sync-text">System Standby</span>
                 </div>
             </div>
         </header>
 
         <main>
             <section id="section-request" class="tab-content">
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="md:col-span-2">
-                        <div class="glass-panel p-8 rounded-3xl shadow-xl border-t-8 border-t-[#E10613]">
-                            <h2 class="text-2xl font-black mb-6 italic uppercase">Create Ticket</h2>
-                            <form id="ticketForm" class="space-y-6">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div>
-                                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Requestor Full Name</label>
-                                        <input type="text" id="req_name" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-medium">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Work Email</label>
-                                        <input type="email" id="req_email" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-medium">
-                                    </div>
+                <form id="ticketForm" class="max-w-4xl mx-auto space-y-8 pb-20">
+                    
+                    <!-- PROGRESS INDICATOR -->
+                    <div class="max-w-xl mx-auto mb-10 px-4">
+                        <div class="flex justify-between items-center relative">
+                            <div class="absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 -translate-y-1/2 -z-10"></div>
+                            <div id="step-line" class="absolute top-1/2 left-0 w-0 h-0.5 va-red -translate-y-1/2 -z-10 transition-all duration-500"></div>
+                            
+                            <div class="step-dot active w-10 h-10 rounded-full bg-white border-4 border-[#E10613] flex items-center justify-center font-black text-xs transition-all duration-500" data-step="1">1</div>
+                            <div class="step-dot w-10 h-10 rounded-full bg-white border-4 border-slate-200 flex items-center justify-center font-black text-xs transition-all duration-500" data-step="2">2</div>
+                            <div class="step-dot w-10 h-10 rounded-full bg-white border-4 border-slate-200 flex items-center justify-center font-black text-xs transition-all duration-500" data-step="3">3</div>
+                            <div class="step-dot w-10 h-10 rounded-full bg-white border-4 border-slate-200 flex items-center justify-center font-black text-xs transition-all duration-500" data-step="4">4</div>
+                        </div>
+                        <div class="flex justify-between mt-4">
+                            <span class="text-[9px] font-black uppercase tracking-widest text-[#E10613]">Overview</span>
+                            <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">Classification</span>
+                            <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">Business</span>
+                            <span class="text-[9px] font-black uppercase tracking-widest text-slate-400">Scope</span>
+                        </div>
+                    </div>
+
+                    <!-- STEP 1: REQUEST OVERVIEW -->
+                    <div id="form-step-1" class="form-step animate-scale-in">
+                        <div class="glass-panel p-8 rounded-[40px] shadow-xl border-t-8 border-t-[#E10613]">
+                            <div class="section-header">
+                                <h2 class="text-xl font-black italic uppercase">01. Request Overview</h2>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Basic identifiers for this task</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="md:col-span-2">
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Request Title / Headline</label>
+                                    <input type="text" id="req_title" required placeholder="e.g. Q3 Summer Campaign Launch" class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-bold text-slate-700">
                                 </div>
                                 
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Requestor Full Name</label>
+                                    <input type="text" id="req_name" required class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-medium">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Work Email</label>
+                                    <input type="email" id="req_email" required class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-medium">
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Department / Team</label>
+                                    <input type="text" id="req_dept" required class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-medium">
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Market / Region</label>
+                                    <select id="req_market" class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-bold">
+                                        <option value="ZA">South Africa</option>
+                                        <option value="UK">United Kingdom</option>
+                                        <option value="IT">Italy</option>
+                                        <option value="AU">Australia</option>
+                                        <option value="TH">Thailand</option>
+                                        <option value="SG">Singapore</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Campaign / Initiative Name</label>
+                                    <input type="text" id="req_campaign" class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-medium">
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Business Owner</label>
+                                    <input type="text" id="req_owner" required class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-medium">
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Requested Go Live Date</label>
+                                    <input type="date" id="req_golive" required class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-bold">
+                                </div>
+
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Priority</label>
+                                    <select id="req_priority" class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-bold">
+                                        <option value="Low">Low - Nice to Have</option>
+                                        <option value="Medium" selected>Medium - Normal Workflow</option>
+                                        <option value="High">High - Business Critical</option>
+                                        <option value="Urgent">Urgent - Revenue Impacting</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: REQUEST DETAIL -->
+                    <div id="form-step-2" class="form-step hidden animate-scale-in">
+                        <div class="glass-panel p-8 rounded-[40px] shadow-xl">
+                            <div class="section-header">
+                                <h2 class="text-xl font-black italic uppercase">02. Classification</h2>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">What are we building?</p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Request Type</label>
+                                <select id="req_type" class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-bold">
+                                    <option>Landing Page</option>
+                                    <option>HomePage Update</option>
+                                    <option>Banner Swap</option>
+                                    <option>Copy Update</option>
+                                    <option>Image Update</option>
+                                    <option>Campaign Launch</option>
+                                    <option>GA4 Tracking</option>
+                                    <option>SEO Metadata Update</option>
+                                    <option>Bug Fix</option>
+                                    <option>Form Update</option>
+                                    <option value="Other">Other (Specify in Scope)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: BUSINESS OBJECTIVE -->
+                    <div id="form-step-3" class="form-step hidden animate-scale-in">
+                        <div class="glass-panel p-8 rounded-[40px] shadow-xl">
+                            <div class="section-header">
+                                <h2 class="text-xl font-black italic uppercase">03. Business Objective</h2>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Strategic justification</p>
+                            </div>
+                            
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Purpose of the request</label>
+                                    <textarea id="bus_purpose" rows="2" class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-medium"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Target KPI / Metric</label>
+                                    <textarea id="bus_kpi" rows="2" placeholder="e.g. Increase conversion by 5%" class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-medium"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Priority Context</label>
+                                    <textarea id="bus_why" rows="2" placeholder="Why is this required now?" class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-medium"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: SCOPE OF WORK -->
+                    <div id="form-step-4" class="form-step hidden animate-scale-in">
+                        <div class="glass-panel p-8 rounded-[40px] shadow-xl">
+                            <div class="section-header">
+                                <h2 class="text-xl font-black italic uppercase">04. Scope & Assets</h2>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Technical requirements</p>
+                            </div>
+                            
+                            <div class="space-y-6">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Priority Level</label>
-                                        <select id="req_priority" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-bold">
-                                            <option value="Low">Low - Maintenance</option>
-                                            <option value="Medium">Medium - Standard</option>
-                                            <option value="High">High - Business Critical</option>
-                                            <option value="Urgent">Urgent - Revenue Blocking</option>
+                                        <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">URLs Impacted</label>
+                                        <textarea id="scope_urls" rows="3" class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-medium"></textarea>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Change Requirements</label>
+                                        <textarea id="scope_details" rows="3" placeholder="Step-by-step description..." class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-medium"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Assets Status</label>
+                                        <select id="scope_assets_status" class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-bold">
+                                            <option value="Yes / Emailed">Yes / Emailed</option>
+                                            <option value="No / Not Applicable">No / Not Applicable</option>
+                                            <option value="Pending">Pending (Coming soon)</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Request Category</label>
-                                        <select id="req_type" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-bold">
-                                            <option>Bug Fix</option>
-                                            <option>New Feature</option>
-                                            <option>Content Change</option>
-                                            <option>API / Integration</option>
-                                        </select>
+                                        <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Asset Link (Drive/Cloud)</label>
+                                        <input type="text" id="scope_asset_links" placeholder="https://..." class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-medium">
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Technical Details & Requirements</label>
-                                    <textarea id="req_details" required rows="5" placeholder="Describe exactly what needs to be changed..." class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-medium"></textarea>
-                                </div>
-
-                                <button type="submit" id="submit-btn" class="w-full va-red text-white py-5 rounded-2xl font-black text-lg shadow-xl va-red-hover transition-all flex items-center justify-center gap-3 uppercase italic">
-                                    <i class="fas fa-plus-circle"></i> Submit Request
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="space-y-6">
-                        <div class="bg-slate-900 text-white p-8 rounded-3xl shadow-xl relative overflow-hidden">
-                            <div class="relative z-10">
-                                <h3 class="text-xl font-black mb-4 italic uppercase">Dev Workflow</h3>
-                                <p class="text-slate-400 text-xs mb-6 leading-relaxed font-bold tracking-wide">
-                                    Your request will be vetted by management before being assigned to a developer.
-                                </p>
-                                <div class="space-y-4">
-                                    <div class="flex items-center gap-4">
-                                        <div class="h-8 w-8 rounded-lg bg-white/10 flex items-center justify-center text-xs font-black">1</div>
-                                        <span class="text-xs font-bold uppercase tracking-wider">Ticket Logged</span>
-                                    </div>
-                                    <div class="flex items-center gap-4">
-                                        <div class="h-8 w-8 rounded-lg bg-white/10 flex items-center justify-center text-xs font-black">2</div>
-                                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Vetting Phase</span>
-                                    </div>
-                                    <div class="flex items-center gap-4">
-                                        <div class="h-8 w-8 rounded-lg bg-white/10 flex items-center justify-center text-xs font-black">3</div>
-                                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">In Sprint</span>
-                                    </div>
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase mb-2 tracking-widest">Additional Info</label>
+                                    <textarea id="scope_additional" rows="3" class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-[#E10613] outline-none bg-slate-50 font-medium"></textarea>
                                 </div>
                             </div>
-                            <i class="fas fa-code absolute -bottom-4 -right-4 text-8xl text-white/5"></i>
                         </div>
                     </div>
-                </div>
+
+                    <!-- STEP NAVIGATION BUTTONS -->
+                    <div class="flex items-center gap-4">
+                        <button type="button" id="prev-btn" onclick="navigateStep(-1)" class="hidden flex-1 bg-white border border-slate-200 text-slate-400 py-6 rounded-[30px] font-black text-sm uppercase italic tracking-widest hover:bg-slate-50 transition-all">
+                            Previous Step
+                        </button>
+                        <button type="button" id="next-btn" onclick="navigateStep(1)" class="flex-[2] va-red text-white py-6 rounded-[30px] font-black text-xl shadow-xl va-red-hover transition-all flex items-center justify-center gap-4 uppercase italic tracking-tighter">
+                            Next <i class="fas fa-chevron-right text-sm"></i>
+                        </button>
+                        <button type="submit" id="submit-btn" class="hidden flex-[2] bg-slate-900 text-white py-6 rounded-[30px] font-black text-xl shadow-2xl hover:bg-black transition-all flex items-center justify-center gap-4 uppercase italic tracking-tighter">
+                            <i class="fas fa-bolt"></i> Submit Request
+                        </button>
+                    </div>
+                </form>
             </section>
 
+            <!-- SEARCH SECTION -->
             <section id="section-search" class="hidden tab-content">
-                <div class="max-w-2xl mx-auto">
-                    <div class="glass-panel p-8 rounded-3xl shadow-xl mb-8 border-b-4 border-b-slate-900">
-                        <h2 class="text-2xl font-black mb-6 text-center italic uppercase">Track Progress</h2>
+                <div class="max-w-3xl mx-auto">
+                    <div class="glass-panel p-10 rounded-[40px] shadow-2xl mb-10 border-b-4 border-b-slate-900">
+                        <h2 class="text-3xl font-black mb-8 text-center italic uppercase tracking-tighter">My Ticket <span class="va-text-red">Tracker</span></h2>
                         <div class="relative">
-                            <input type="text" id="search-input" oninput="handleSearch()" placeholder="Enter any search criteria to start the search" class="w-full pl-12 pr-4 py-5 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-slate-900 outline-none shadow-inner font-bold">
-                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 text-xl"></i>
+                            <input type="text" id="search-input" oninput="handleSearch()" placeholder="Enter your work email to view your tickets..." class="w-full pl-14 pr-6 py-6 rounded-[24px] border border-slate-100 focus:ring-4 focus:ring-slate-900/5 outline-none shadow-inner font-bold text-lg">
+                            <i class="fas fa-user-shield absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 text-2xl"></i>
                         </div>
+                        <p class="text-[9px] font-black text-slate-400 uppercase text-center mt-4 tracking-[0.2em]">Note: For security, only tickets associated with this email will be displayed.</p>
                     </div>
-                    <div id="search-results" class="space-y-4"></div>
+                    <div id="search-results" class="space-y-4 px-4"></div>
                 </div>
             </section>
 
+            <!-- ADMIN SECTION -->
             <section id="section-admin" class="hidden tab-content">
-                <!-- Admin Lock Screen -->
                 <div id="admin-lock-screen" class="max-w-md mx-auto text-center py-20">
-                    <div class="va-red w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl">
-                        <i class="fas fa-lock text-3xl text-white"></i>
+                    <div class="va-red w-24 h-24 rounded-[32px] flex items-center justify-center mx-auto mb-10 shadow-2xl rotate-3">
+                        <i class="fas fa-shield-alt text-4xl text-white"></i>
                     </div>
-                    <h2 class="text-3xl font-black italic uppercase mb-2 tracking-tighter">Admin Access</h2>
-                    <p class="text-slate-400 font-bold text-xs uppercase tracking-widest mb-8">Enter your security PIN to continue</p>
-                    <div class="bg-white p-2 rounded-2xl shadow-sm border border-slate-200 flex gap-2">
-                        <input type="password" id="admin-pin-input" placeholder="•••••••" class="flex-1 px-4 py-3 text-center text-2xl tracking-[0.5em] font-black outline-none bg-transparent">
-                        <button onclick="checkAdminPin()" class="bg-slate-900 text-white px-8 py-3 rounded-xl font-black uppercase italic text-sm hover:bg-black transition-all">Verify</button>
+                    <h2 class="text-4xl font-black italic uppercase mb-4 tracking-tighter">Management</h2>
+                    <p class="text-slate-400 font-bold text-[10px] uppercase tracking-[0.3em] mb-10">Vault Authentication Required</p>
+                    <div class="bg-white p-3 rounded-3xl shadow-xl border border-slate-100 flex gap-3">
+                        <input type="password" id="admin-pin-input" placeholder="••••••" class="flex-1 px-6 py-4 text-center text-3xl tracking-[0.6em] font-black outline-none bg-transparent">
+                        <button onclick="checkAdminPin()" class="bg-slate-900 text-white px-10 py-4 rounded-2xl font-black uppercase italic text-sm hover:bg-black transition-all">Enter</button>
                     </div>
-                    <p id="pin-error" class="hidden text-red-500 font-black text-[10px] uppercase mt-4 tracking-widest italic">Invalid Security Code</p>
+                    <p id="pin-error" class="hidden text-red-500 font-black text-[10px] uppercase mt-6 tracking-widest italic animate-bounce">Access Denied: Invalid Security Hash</p>
                 </div>
 
-                <!-- Admin Dashboard (Hidden by default) -->
-                <div id="admin-dashboard" class="hidden">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-l-slate-900">
-                            <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Total</p>
-                            <p id="stat-total" class="text-2xl font-black">0</p>
+                <div id="admin-dashboard" class="hidden animate-scale-in">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        <div class="bg-white p-8 rounded-[32px] shadow-sm border-l-4 border-l-slate-900">
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Queue Total</p>
+                            <p id="stat-total" class="text-4xl font-black italic">0</p>
                         </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-l-amber-500">
-                            <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Pending</p>
-                            <p id="stat-pending" class="text-2xl font-black">0</p>
+                        <div class="bg-white p-8 rounded-[32px] shadow-sm border-l-4 border-l-amber-500">
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Pending</p>
+                            <p id="stat-pending" class="text-4xl font-black italic">0</p>
                         </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-l-blue-600">
-                            <p class="text-[10px] font-black text-slate-400 uppercase mb-1">In Dev</p>
-                            <p id="stat-dev" class="text-2xl font-black">0</p>
+                        <div class="bg-white p-8 rounded-[32px] shadow-sm border-l-4 border-l-blue-600">
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Active Dev</p>
+                            <p id="stat-dev" class="text-4xl font-black italic">0</p>
                         </div>
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-l-emerald-500">
-                            <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Success</p>
-                            <p id="stat-done" class="text-2xl font-black">0</p>
+                        <div class="bg-white p-8 rounded-[32px] shadow-sm border-l-4 border-l-emerald-500">
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Completed</p>
+                            <p id="stat-done" class="text-4xl font-black italic">0</p>
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+                    <!-- ADMIN SEARCH AND FILTERS -->
+                    <div class="mb-6 flex flex-col md:flex-row gap-4 items-center">
+                        <div class="relative flex-1 w-full">
+                            <i class="fas fa-search absolute left-6 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                            <input type="text" id="admin-search-input" oninput="handleAdminSearch()" placeholder="Search by name, title, or ID..." class="w-full pl-14 pr-6 py-4 rounded-2xl border border-slate-100 focus:ring-4 focus:ring-slate-900/5 outline-none font-bold text-sm">
+                        </div>
+                        <div class="flex gap-2">
+                            <div class="bg-white px-4 py-2 rounded-xl border border-slate-100 flex items-center gap-2">
+                                <span class="text-[9px] font-black text-slate-400 uppercase">Sort:</span>
+                                <span id="current-sort-label" class="text-[10px] font-black text-slate-900 uppercase italic">Date (Newest)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-[40px] shadow-2xl overflow-hidden border border-slate-100">
                         <div class="overflow-x-auto">
                             <table class="w-full text-left">
                                 <thead class="bg-slate-50 border-b">
                                     <tr>
-                                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase">Requestor</th>
-                                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase">Description</th>
-                                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase">Priority</th>
-                                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase text-right">Action</th>
+                                        <th onclick="setAdminSort('created_at')" class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer hover:text-[#E10613] transition-colors">
+                                            Requestor <i class="fas fa-sort ml-1 opacity-30"></i>
+                                        </th>
+                                        <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Task Title</th>
+                                        <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
+                                        <th onclick="setAdminSort('priority')" class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer hover:text-[#E10613] transition-colors">
+                                            Priority <i class="fas fa-sort ml-1 opacity-30"></i>
+                                        </th>
+                                        <th onclick="setAdminSort('status')" class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer hover:text-[#E10613] transition-colors">
+                                            Status <i class="fas fa-sort ml-1 opacity-30"></i>
+                                        </th>
+                                        <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody id="admin-table-body" class="divide-y divide-slate-100"></tbody>
+                                <tbody id="admin-table-body" class="divide-y divide-slate-50"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </section>
-
+            
 <!-- DOCUMENTATION SECTION -->
             <section id="section-docs" class="hidden tab-content">
                 <div class="max-w-4xl mx-auto">
@@ -281,35 +438,27 @@
                 </div>
             </section>
 
-
-            
         </main>
     </div>
 
-    <!-- Success Overlay -->
-    <div id="success-overlay" class="fixed inset-0 bg-slate-900/95 z-[100] hidden flex items-center justify-center p-6 backdrop-blur-sm">
-        <div class="max-w-md w-full bg-white rounded-[40px] p-10 text-center shadow-2xl animate-scale-in">
-            <div class="va-red w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl rotate-12">
+    <!-- UI COMPONENTS -->
+    <div id="success-overlay" class="fixed inset-0 bg-slate-900/98 z-[100] hidden flex items-center justify-center p-6 backdrop-blur-md">
+        <div class="max-w-md w-full bg-white rounded-[50px] p-12 text-center shadow-2xl animate-scale-in">
+            <div class="va-red w-24 h-24 rounded-[32px] flex items-center justify-center mx-auto mb-8 shadow-2xl rotate-12">
                 <i class="fas fa-check text-4xl text-white"></i>
             </div>
-            <h2 class="text-3xl font-black italic uppercase mb-4 tracking-tighter">Ticket Logged!</h2>
-            <div class="bg-slate-50 p-4 rounded-2xl mb-6">
-                <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Your Reference ID</p>
-                <p id="success-ref" class="text-2xl font-black va-text-red tracking-widest">---</p>
+            <h2 class="text-4xl font-black italic uppercase mb-4 tracking-tighter">Request <span class="va-text-red">Sent</span></h2>
+            <div class="bg-slate-50 p-6 rounded-3xl mb-8 border border-slate-100">
+                <p class="text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Transaction Ref</p>
+                <p id="success-ref" class="text-3xl font-black text-slate-900 tracking-tighter">---</p>
             </div>
-            <p class="text-slate-500 font-bold text-sm leading-relaxed mb-8">
-                Request Logged Successfully. If you need to track progress or check developer notes, head to the <span class="text-slate-900">"My Tickets"</span> tab and search for your ticket number or email address.
-            </p>
-            <button onclick="closeSuccessOverlay()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-black transition-all">
-                Got it, Thanks!
-            </button>
+            <button onclick="closeSuccessOverlay()" class="w-full bg-slate-900 text-white py-5 rounded-[24px] font-black uppercase tracking-widest hover:bg-black transition-all italic">Close Notification</button>
         </div>
     </div>
 
-    <!-- Management Modal -->
-    <div id="ticket-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center p-4 z-[90] backdrop-blur-sm">
-        <div class="bg-white rounded-[32px] max-w-2xl w-full p-8 shadow-2xl relative">
-            <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-300 hover:text-slate-900">
+    <div id="ticket-modal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-[90] backdrop-blur-sm">
+        <div class="bg-white rounded-[40px] max-w-3xl w-full p-10 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal()" class="absolute top-8 right-8 text-slate-300 hover:text-slate-900 transition-colors">
                 <i class="fas fa-times text-2xl"></i>
             </button>
             <div id="modal-content"></div>
@@ -322,10 +471,13 @@
 
         let allTickets = [];
         let isAdminUnlocked = false;
+        let adminSearchQuery = '';
+        let adminSortKey = 'created_at';
+        let adminSortOrder = 'desc';
+        let currentStep = 1;
 
         async function init() {
-            // Load local cache first for instant feedback
-            const cached = localStorage.getItem('va_tickets_local');
+            const cached = localStorage.getItem('va_tickets_v2');
             if (cached) {
                 allTickets = JSON.parse(cached);
                 refreshAllViews();
@@ -333,69 +485,97 @@
             await loadFromCloud();
         }
 
-        function updateSyncStatus(state, text) {
-            const dot = document.getElementById('sync-dot');
-            const msg = document.getElementById('sync-text');
-            msg.innerText = text;
-            dot.className = `h-1.5 w-1.5 rounded-full transition-all duration-500`;
-            if (state === 'syncing') dot.classList.add('bg-amber-400', 'animate-pulse');
-            else if (state === 'online') dot.classList.add('bg-emerald-500');
-            else if (state === 'error') dot.classList.add('bg-red-500');
-        }
-
-        async function loadFromCloud() {
-            if (!GOOGLE_SCRIPT_URL) return;
-            updateSyncStatus('syncing', 'Updating Content...');
-            try {
-                const response = await fetch(GOOGLE_SCRIPT_URL);
-                const cloudData = await response.json();
-                if (Array.isArray(cloudData)) {
-                    allTickets = cloudData;
-                    localStorage.setItem('va_tickets_local', JSON.stringify(allTickets));
-                    refreshAllViews();
+        function navigateStep(direction) {
+            // Validation for Step 1
+            if (direction === 1 && currentStep === 1) {
+                const required = ['req_title', 'req_name', 'req_email', 'req_dept', 'req_owner', 'req_golive'];
+                for (let id of required) {
+                    if (!document.getElementById(id).value) {
+                        alert('Please complete all required identity fields before proceeding.');
+                        document.getElementById(id).focus();
+                        return;
+                    }
                 }
-                updateSyncStatus('online', 'Cloud Linked');
-            } catch (err) {
-                updateSyncStatus('error', 'Fetch Failed');
+            }
+
+            const totalSteps = 4;
+            const newStep = currentStep + direction;
+
+            if (newStep >= 1 && newStep <= totalSteps) {
+                // Update visibility
+                document.querySelectorAll('.form-step').forEach(s => s.classList.add('hidden'));
+                document.getElementById(`form-step-${newStep}`).classList.remove('hidden');
+                
+                // Update Dots
+                document.querySelectorAll('.step-dot').forEach((dot, idx) => {
+                    const stepNum = idx + 1;
+                    dot.classList.remove('active', 'border-[#E10613]', 'text-[#E10613]', 'border-slate-200');
+                    if (stepNum <= newStep) {
+                        dot.classList.add('border-[#E10613]', 'text-[#E10613]');
+                    } else {
+                        dot.classList.add('border-slate-200', 'text-slate-400');
+                    }
+                });
+
+                // Update Line
+                document.getElementById('step-line').style.width = `${((newStep - 1) / (totalSteps - 1)) * 100}%`;
+
+                // Update Buttons
+                document.getElementById('prev-btn').classList.toggle('hidden', newStep === 1);
+                document.getElementById('next-btn').classList.toggle('hidden', newStep === totalSteps);
+                document.getElementById('submit-btn').classList.toggle('hidden', newStep !== totalSteps);
+
+                currentStep = newStep;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 
-        async function pushToCloud() {
-            if (!GOOGLE_SCRIPT_URL) return;
-            updateSyncStatus('syncing', 'Syncing Sheet...');
-            localStorage.setItem('va_tickets_local', JSON.stringify(allTickets));
-            try {
-                // Post to Google Apps Script
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify(allTickets)
-                });
-                updateSyncStatus('online', 'Changes Saved');
-            } catch (err) {
-                updateSyncStatus('error', 'Sync Failed');
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`section-${tabId}`).classList.remove('hidden');
+            
+            document.querySelectorAll('nav button').forEach(b => {
+                b.className = "px-6 py-2.5 rounded-xl text-xs font-black transition-all text-slate-500 hover:text-slate-800 uppercase tracking-widest";
+            });
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            activeTab.className = "px-6 py-2.5 rounded-xl text-xs font-black transition-all va-red text-white uppercase italic tracking-widest";
+            
+            if (tabId === 'admin' && !isAdminUnlocked) {
+                document.getElementById('admin-lock-screen').classList.remove('hidden');
+                document.getElementById('admin-dashboard').classList.add('hidden');
             }
         }
 
         document.getElementById('ticketForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submit-btn');
+            const originalText = btn.innerHTML;
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-circle-notch animate-spin"></i> Processing...';
+            btn.innerHTML = '<i class="fas fa-sync animate-spin"></i> Processing...';
 
             const newTicket = {
                 id: 'VA-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+                title: document.getElementById('req_title').value,
                 name: document.getElementById('req_name').value,
                 email: document.getElementById('req_email').value,
+                dept: document.getElementById('req_dept').value,
+                market: document.getElementById('req_market').value,
+                campaign: document.getElementById('req_campaign').value,
+                owner: document.getElementById('req_owner').value,
+                golive: document.getElementById('req_golive').value,
                 priority: document.getElementById('req_priority').value,
                 type: document.getElementById('req_type').value,
-                details: document.getElementById('req_details').value,
+                bus_purpose: document.getElementById('bus_purpose').value,
+                bus_kpi: document.getElementById('bus_kpi').value,
+                bus_why: document.getElementById('bus_why').value,
+                scope_urls: document.getElementById('scope_urls').value,
+                scope_details: document.getElementById('scope_details').value,
+                scope_assets_status: document.getElementById('scope_assets_status').value,
+                scope_asset_links: document.getElementById('scope_asset_links').value,
+                scope_additional: document.getElementById('scope_additional').value,
                 status: 'Pending',
                 notes: '',
-                created_at: new Date().toISOString(),
-                vetted_at: '',
-                inprogress_at: '',
-                completed_at: ''
+                created_at: new Date().toISOString()
             };
 
             allTickets.unshift(newTicket);
@@ -403,341 +583,288 @@
             
             document.getElementById('success-ref').innerText = newTicket.id;
             document.getElementById('success-overlay').classList.remove('hidden');
-            
             document.getElementById('ticketForm').reset();
+            currentStep = 1;
+            navigateStep(0); // Reset UI step
             btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-plus-circle"></i> Log Request to Sprint';
+            btn.innerHTML = originalText;
             refreshAllViews();
         });
 
-        window.handleSearch = () => {
-            const input = document.getElementById('search-input').value.toLowerCase().trim();
-            const container = document.getElementById('search-results');
-            if (!input) { container.innerHTML = ''; return; }
-
-            const filtered = allTickets.filter(t => t.email.toLowerCase().includes(input) || t.id.toLowerCase().includes(input));
-            
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center py-10 text-slate-400 font-bold text-sm italic">No tickets found for "${input}"</div>`;
-                return;
+        async function loadFromCloud() {
+            updateSyncStatus('syncing', 'Refreshing...');
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL);
+                const cloudData = await response.json();
+                if (Array.isArray(cloudData)) {
+                    allTickets = cloudData;
+                    localStorage.setItem('va_tickets_v2', JSON.stringify(allTickets));
+                    refreshAllViews();
+                }
+                updateSyncStatus('online', 'Connected');
+            } catch (err) {
+                updateSyncStatus('error', 'Offline Mode');
             }
+        }
 
-            container.innerHTML = filtered.map(t => `
-                <div onclick="openTicketDetails('${t.id}')" class="glass-panel p-6 rounded-3xl shadow-sm border border-slate-100 ticket-card flex justify-between items-center relative overflow-hidden cursor-pointer active:scale-95 transition-transform">
-                    <div class="va-red w-1.5 absolute left-0 top-0 bottom-0"></div>
-                    <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-2">
-                            <span class="status-pill status-${t.status.toLowerCase().replace(' ', '')}">${t.status}</span>
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">${t.id}</span>
-                        </div>
-                        <h3 class="font-bold text-sm text-slate-800 line-clamp-1 pr-4">${t.details}</h3>
-                    </div>
-                    <i class="fas fa-chevron-right text-slate-300"></i>
-                </div>
-            `).join('');
-        };
+        async function pushToCloud() {
+            updateSyncStatus('syncing', 'Syncing...');
+            localStorage.setItem('va_tickets_v2', JSON.stringify(allTickets));
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify(allTickets)
+                });
+                updateSyncStatus('online', 'Connected');
+            } catch (err) {
+                updateSyncStatus('error', 'Sync Failed');
+            }
+        }
 
-        window.openTicketDetails = (id) => {
+        function updateSyncStatus(state, text) {
+            const dot = document.getElementById('sync-dot');
+            const msg = document.getElementById('sync-text');
+            msg.innerText = text;
+            dot.className = `h-2 w-2 rounded-full transition-all duration-500`;
+            if (state === 'syncing') dot.classList.add('bg-amber-400', 'animate-pulse');
+            else if (state === 'online') dot.classList.add('bg-emerald-500');
+            else if (state === 'error') dot.classList.add('bg-red-500');
+        }
+
+        function openTicketDetails(id) {
             const t = allTickets.find(x => x.id === id);
+            if (!t) return;
+
+            const modal = document.getElementById('ticket-modal');
             const content = document.getElementById('modal-content');
             
-            const formatDate = (iso) => iso ? new Date(iso).toLocaleString('en-ZA', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '---';
-
             content.innerHTML = `
-                <div class="mb-6">
-                    <div class="flex items-center gap-2 mb-1">
+                <div class="mb-8">
+                    <div class="flex items-center gap-3 mb-2">
                         <span class="status-pill status-${t.status.toLowerCase().replace(' ', '')}">${t.status}</span>
-                        <span class="text-xs font-black text-slate-400 uppercase tracking-widest">${t.id}</span>
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${t.id}</span>
                     </div>
-                    <h3 class="text-2xl font-black italic uppercase">Ticket <span class="va-text-red">Insight</span></h3>
+                    <h2 class="text-3xl font-black italic uppercase tracking-tighter">${t.title}</h2>
+                    <p class="text-[10px] font-black text-slate-400 uppercase mt-2">${t.type} • Requested by ${t.name} (${t.market})</p>
                 </div>
 
-                <div class="space-y-6">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-slate-50 p-4 rounded-2xl">
-                            <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Requestor</p>
-                            <p class="text-sm font-bold">${t.name}</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                    <div class="space-y-4">
+                        <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] border-b pb-1">Technical Scope</h4>
+                        <div>
+                            <p class="text-[9px] font-black text-slate-400 uppercase">Impacted URLs</p>
+                            <p class="text-sm font-bold text-slate-700">${t.scope_urls || 'N/A'}</p>
                         </div>
-                        <div class="bg-slate-50 p-4 rounded-2xl">
-                            <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Category</p>
-                            <p class="text-sm font-bold">${t.type}</p>
+                        <div>
+                            <p class="text-[9px] font-black text-slate-400 uppercase">Requirements</p>
+                            <p class="text-sm font-medium text-slate-600">${t.scope_details || 'N/A'}</p>
                         </div>
-                    </div>
-
-                    <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Full Requirement</p>
-                        <div class="bg-slate-900 text-white p-5 rounded-2xl text-sm leading-relaxed italic">
-                            "${t.details}"
+                        <div>
+                            <p class="text-[9px] font-black text-slate-400 uppercase">Asset Links</p>
+                            <a href="${t.scope_asset_links}" target="_blank" class="text-sm font-bold va-text-red hover:underline">${t.scope_asset_links || 'No link provided'}</a>
                         </div>
                     </div>
-
-                    ${t.notes ? `
-                    <div class="border-l-4 border-l-[#E10613] bg-red-50 p-5 rounded-r-2xl">
-                        <p class="text-[10px] font-black va-text-red uppercase mb-1">Developer Update</p>
-                        <p class="text-sm font-medium text-slate-700 italic">"${t.notes}"</p>
-                    </div>
-                    ` : ''}
-
-                    <div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase mb-3 tracking-widest">Audit Trail</p>
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center text-xs border-b border-slate-100 pb-2">
-                                <span class="font-bold text-slate-500 uppercase">Logged</span>
-                                <span class="font-black">${formatDate(t.created_at)}</span>
-                            </div>
-                            <div class="flex justify-between items-center text-xs border-b border-slate-100 pb-2">
-                                <span class="font-bold text-slate-500 uppercase">Vetted</span>
-                                <span class="font-black ${t.vetted_at ? 'text-slate-900' : 'text-slate-300'}">${formatDate(t.vetted_at)}</span>
-                            </div>
-                            <div class="flex justify-between items-center text-xs">
-                                <span class="font-bold text-slate-500 uppercase">Completed</span>
-                                <span class="font-black ${t.completed_at ? 'va-text-red' : 'text-slate-300'}">${formatDate(t.completed_at)}</span>
+                    <div class="space-y-4">
+                        <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-[0.2em] border-b pb-1">Business Context</h4>
+                        <div>
+                            <p class="text-[9px] font-black text-slate-400 uppercase">Target KPI</p>
+                            <p class="text-sm font-bold text-slate-700">${t.bus_kpi || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] font-black text-slate-400 uppercase">Management Notes</p>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs text-slate-500 italic">
+                                ${t.notes || 'No notes added by the dev team yet.'}
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <button onclick="closeModal()" class="w-full bg-slate-100 py-4 rounded-2xl font-black text-slate-500 uppercase text-xs hover:bg-slate-200 transition-all mt-4">
-                        Close View
+                ${isAdminUnlocked ? `
+                    <div class="bg-slate-50 p-8 rounded-[30px] border border-slate-100">
+                        <h4 class="text-xs font-black uppercase mb-6 italic tracking-widest"><i class="fas fa-tools mr-2 va-text-red"></i> View and Manage Tickets</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-[9px] font-black text-slate-400 uppercase mb-2">Update Workflow Status</label>
+                                <select id="update-status" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none font-bold text-sm">
+                                    <option ${t.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                    <option ${t.status === 'Vetted' ? 'selected' : ''}>Vetted</option>
+                                    <option ${t.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                    <option ${t.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[9px] font-black text-slate-400 uppercase mb-2">Internal Dev Notes</label>
+                                <textarea id="update-notes" rows="1" class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none font-medium text-sm">${t.notes || ''}</textarea>
+                            </div>
+                        </div>
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <button onclick="updateTicketStatus('${t.id}')" id="commit-btn" class="flex-1 va-red text-white py-4 rounded-2xl font-black uppercase italic text-xs tracking-widest shadow-lg hover:shadow-red-200/50 transition-all flex items-center justify-center">
+                                Submit Change
+                            </button>
+                            <button onclick="closeModal()" class="flex-1 bg-white border border-slate-200 text-slate-400 py-4 rounded-2xl font-black uppercase italic text-xs tracking-widest hover:bg-slate-50 transition-all">
+                                Cancel
+                            </button>
+                        </div>
+                        <div class="mt-6 pt-6 border-t border-slate-100 text-center">
+                            <button onclick="deleteTicket('${t.id}')" class="text-[9px] font-black text-red-300 uppercase hover:text-red-600 transition-colors tracking-[0.2em]">
+                                <i class="fas fa-trash-alt mr-1"></i> Purge Ticket from Vault
+                            </button>
+                        </div>
+                    </div>
+                ` : `
+                    <button onclick="closeModal()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black uppercase italic text-xs tracking-widest shadow-xl">
+                        Exit View
                     </button>
-                </div>
+                `}
             `;
-            document.getElementById('ticket-modal').classList.remove('hidden');
-        };
-
-        window.checkAdminPin = () => {
-            const input = document.getElementById('admin-pin-input');
-            const error = document.getElementById('pin-error');
             
+            modal.classList.remove('hidden');
+        }
+
+        async function updateTicketStatus(id) {
+            const btn = document.getElementById('commit-btn');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-sync-alt animate-spin mr-2"></i> UPDATING...';
+            btn.classList.replace('va-red', 'bg-slate-400');
+
+            try {
+                const t = allTickets.find(x => x.id === id);
+                t.status = document.getElementById('update-status').value;
+                t.notes = document.getElementById('update-notes').value;
+                await pushToCloud();
+                btn.innerHTML = '<i class="fas fa-check mr-2"></i> SYNCED';
+                btn.classList.replace('bg-slate-400', 'bg-emerald-500');
+                setTimeout(() => { closeModal(); refreshAllViews(); }, 800);
+            } catch (err) {
+                btn.innerHTML = '<i class="fas fa-exclamation-triangle mr-2"></i> ERROR';
+                btn.classList.replace('bg-slate-400', 'bg-red-500');
+                btn.disabled = false;
+                setTimeout(() => { btn.innerHTML = originalHTML; btn.classList.replace('bg-red-500', 'va-red'); }, 2000);
+            }
+        }
+
+        async function deleteTicket(id) {
+            if(!confirm('This will permanently delete this request from the global vault. Proceed?')) return;
+            allTickets = allTickets.filter(t => t.id !== id);
+            await pushToCloud();
+            closeModal();
+            refreshAllViews();
+        }
+
+        function checkAdminPin() {
+            const input = document.getElementById('admin-pin-input');
             if (input.value === ADMIN_PIN) {
                 isAdminUnlocked = true;
                 document.getElementById('admin-lock-screen').classList.add('hidden');
                 document.getElementById('admin-dashboard').classList.remove('hidden');
-                error.classList.add('hidden');
-                refreshAllViews();
+                refreshAdminDashboard();
             } else {
+                const error = document.getElementById('pin-error');
                 error.classList.remove('hidden');
-                input.value = '';
-                input.focus();
+                setTimeout(() => error.classList.add('hidden'), 3000);
             }
-        };
-
-        window.openAdminManager = (id) => {
-            const t = allTickets.find(x => x.id === id);
-            const content = document.getElementById('modal-content');
-            
-            const getTAT = (start, end) => {
-                if (!start || !end) return "Pending";
-                const diff = new Date(end) - new Date(start);
-                const hours = Math.floor(diff / (1000 * 60 * 60));
-                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                return `${hours}h ${mins}m`;
-            };
-
-            content.innerHTML = `
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="va-red p-2 rounded-lg text-white text-xs"><i class="fas fa-cog"></i></div>
-                    <h3 class="text-2xl font-black italic uppercase">Manage <span class="va-text-red">${t.id}</span></h3>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="bg-slate-50 p-3 rounded-xl">
-                        <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Time Logged to Vetted</p>
-                        <p class="text-sm font-bold">${getTAT(t.created_at, t.vetted_at)}</p>
-                    </div>
-                    <div class="bg-slate-50 p-3 rounded-xl">
-                        <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Time Vetted to Dev</p>
-                        <p class="text-sm font-bold">${getTAT(t.vetted_at, t.inprogress_at)}</p>
-                    </div>
-                </div>
-
-                <div class="space-y-4">
-                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
-                        <p class="text-[10px] font-black text-slate-400 uppercase mb-2">Request Context</p>
-                        <p class="text-sm font-medium text-slate-700 leading-relaxed italic">"${t.details}"</p>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Update Stage</label>
-                            <select id="manage-status" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 font-bold text-sm">
-                                <option value="Pending" ${t.status === 'Pending' ? 'selected' : ''}>Pending Review</option>
-                                <option value="Vetted" ${t.status === 'Vetted' ? 'selected' : ''}>Vetted / Sprint Ready</option>
-                                <option value="In Progress" ${t.status === 'In Progress' ? 'selected' : ''}>Active Development</option>
-                                <option value="Completed" ${t.status === 'Completed' ? 'selected' : ''}>Completed / Live</option>
-                                <option value="Declined" ${t.status === 'Declined' ? 'selected' : ''}>Declined / Cancelled</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Priority</label>
-                            <div class="p-3 bg-slate-50 rounded-xl font-bold text-sm text-slate-600">${t.priority}</div>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 tracking-widest">Update for Requestor</label>
-                        <textarea id="manage-notes" rows="3" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm" placeholder="Provide notes for the requester to see...">${t.notes || ''}</textarea>
-                    </div>
-
-                    <div class="flex justify-end gap-3 mt-8">
-                        <button onclick="deleteTicketPrompt('${t.id}')" class="mr-auto text-[10px] font-black text-slate-300 hover:text-red-500 uppercase tracking-widest transition-colors">
-                            <i class="fas fa-trash-alt mr-1"></i> Delete Ticket
-                        </button>
-                        <button onclick="closeModal()" class="px-6 py-3 font-bold text-slate-400 text-sm">Cancel</button>
-                        <button onclick="saveAdminUpdate('${t.id}')" class="va-red text-white px-10 py-4 rounded-2xl font-black shadow-lg uppercase italic text-sm">Update & Sync</button>
-                    </div>
-                </div>
-            `;
-            document.getElementById('ticket-modal').classList.remove('hidden');
-        };
-
-        window.saveAdminUpdate = async (id) => {
-            const index = allTickets.findIndex(x => x.id === id);
-            const newStatus = document.getElementById('manage-status').value;
-            const oldStatus = allTickets[index].status;
-
-            const now = new Date().toISOString();
-            if (newStatus !== oldStatus) {
-                if (newStatus === 'Vetted') allTickets[index].vetted_at = now;
-                if (newStatus === 'In Progress') allTickets[index].inprogress_at = now;
-                if (newStatus === 'Completed') allTickets[index].completed_at = now;
-            }
-
-            allTickets[index].status = newStatus;
-            allTickets[index].notes = document.getElementById('manage-notes').value;
-
-            closeModal();
-            refreshAllViews();
-            await pushToCloud();
-        };
-
-        window.deleteTicketPrompt = (id) => {
-            const content = document.getElementById('modal-content');
-            content.innerHTML = `
-                <div class="text-center py-6">
-                    <div class="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                        <i class="fas fa-exclamation-triangle text-2xl"></i>
-                    </div>
-                    <h3 class="text-xl font-black uppercase italic mb-2">Confirm Deletion</h3>
-                    <p class="text-slate-500 text-xs font-bold mb-8 uppercase tracking-wider">This action is permanent and will remove ${id} from all systems.</p>
-                    
-                    <div class="space-y-4">
-                        <input type="password" id="delete-pin" placeholder="ENTER DELETE PIN" class="w-full px-4 py-4 rounded-2xl border-2 border-slate-100 text-center font-black tracking-[0.5em] focus:border-red-500 outline-none">
-                        <div id="delete-error" class="hidden text-[10px] font-black text-red-500 uppercase italic">Incorrect Authorization Code</div>
-                        
-                        <div class="flex flex-col gap-2 pt-4">
-                            <button onclick="executeDelete('${id}')" class="w-full bg-red-600 text-white py-4 rounded-2xl font-black uppercase italic shadow-lg hover:bg-red-700 transition-all">
-                                Authorize Destruction
-                            </button>
-                            <button onclick="openAdminManager('${id}')" class="w-full py-4 text-slate-400 font-bold text-xs uppercase tracking-widest">
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        };
-
-        window.executeDelete = async (id) => {
-            const pin = document.getElementById('delete-pin').value;
-            const DELETE_AUTH = "2057072"; // Using same admin pin for consistency, but as a separate check
-
-            if (pin === DELETE_AUTH) {
-                allTickets = allTickets.filter(t => t.id !== id);
-                closeModal();
-                refreshAllViews();
-                await pushToCloud();
-                
-                // Small notification
-                const msg = document.createElement('div');
-                msg.className = "fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black uppercase italic text-xs shadow-2xl z-[200] animate-bounce";
-                msg.innerText = "Ticket Purged Successfully";
-                document.body.appendChild(msg);
-                setTimeout(() => msg.remove(), 3000);
-            } else {
-                document.getElementById('delete-error').classList.remove('hidden');
-                document.getElementById('delete-pin').value = '';
-                document.getElementById('delete-pin').focus();
-            }
-        };
-
-        function refreshAllViews() {
-            updateStats();
-            renderAdminTable();
-            handleSearch();
         }
 
-        function updateStats() {
+        function handleAdminSearch() {
+            adminSearchQuery = document.getElementById('admin-search-input').value.toLowerCase();
+            refreshAdminDashboard();
+        }
+
+        function setAdminSort(key) {
+            if (adminSortKey === key) adminSortOrder = adminSortOrder === 'asc' ? 'desc' : 'asc';
+            else { adminSortKey = key; adminSortOrder = 'desc'; }
+            const labels = { 'created_at': 'Date', 'priority': 'Priority', 'status': 'Status' };
+            document.getElementById('current-sort-label').innerText = `${labels[key]} (${adminSortOrder === 'asc' ? 'Asc' : 'Desc'})`;
+            refreshAdminDashboard();
+        }
+
+        function refreshAllViews() {
+            if (isAdminUnlocked) refreshAdminDashboard();
+            const pending = allTickets.filter(t => t.status === 'Pending').length;
+            const badge = document.getElementById('pending-badge');
+            if (pending > 0) { badge.innerText = pending; badge.classList.remove('hidden'); }
+            else { badge.classList.add('hidden'); }
+        }
+
+        function handleSearch() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const container = document.getElementById('search-results');
+            if (!query || query.length < 3) { 
+                container.innerHTML = `<div class="text-center py-10 text-slate-300 font-bold italic uppercase text-xs tracking-widest">Enter work email to fetch records...</div>`; 
+                return; 
+            }
+            const filtered = allTickets.filter(t => t.email.toLowerCase() === query);
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-20 bg-white rounded-[40px] text-slate-400 font-bold italic uppercase text-[10px] tracking-widest">No matching records found.</div>`;
+                return;
+            }
+            container.innerHTML = filtered.map(t => `
+                <div onclick="openTicketDetails('${t.id}')" class="glass-panel p-6 rounded-3xl shadow-sm border border-slate-100 ticket-card flex justify-between items-center relative overflow-hidden cursor-pointer active:scale-95 transition-all">
+                    <div class="va-red w-1.5 absolute left-0 top-0 bottom-0"></div>
+                    <div class="flex-1 px-2">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="status-pill status-${t.status.toLowerCase().replace(' ', '')}">${t.status}</span>
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${t.id}</span>
+                        </div>
+                        <h3 class="font-black text-sm text-slate-800 line-clamp-1 italic uppercase tracking-tighter">${t.title}</h3>
+                        <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase">${t.type} • ${new Date(t.created_at).toLocaleDateString()}</p>
+                    </div>
+                    <div class="bg-slate-50 h-12 w-12 rounded-2xl flex items-center justify-center text-slate-300"><i class="fas fa-chevron-right"></i></div>
+                </div>
+            `).join('');
+        }
+
+        function refreshAdminDashboard() {
             document.getElementById('stat-total').innerText = allTickets.length;
             document.getElementById('stat-pending').innerText = allTickets.filter(t => t.status === 'Pending').length;
             document.getElementById('stat-dev').innerText = allTickets.filter(t => t.status === 'In Progress').length;
             document.getElementById('stat-done').innerText = allTickets.filter(t => t.status === 'Completed').length;
-            
-            const pCount = allTickets.filter(t => t.status === 'Pending').length;
-            const badge = document.getElementById('pending-badge');
-            if (badge) {
-                if (pCount > 0) {
-                    badge.innerText = pCount;
-                    badge.classList.remove('hidden');
-                } else {
-                    badge.classList.add('hidden');
-                }
-            }
-        }
 
-        window.renderAdminTable = () => {
-            const body = document.getElementById('admin-table-body');
-            if (!body || !isAdminUnlocked) return;
-            body.innerHTML = allTickets.map(t => `
-                <tr class="hover:bg-slate-50 transition-all group">
-                    <td class="px-6 py-5">
-                        <div class="font-black italic uppercase text-sm">${t.name}</div>
-                        <div class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">${t.id}</div>
+            const priorityOrder = { 'Urgent': 0, 'High': 1, 'Medium': 2, 'Low': 3 };
+            const statusOrder = { 'Pending': 0, 'Vetted': 1, 'In Progress': 2, 'Completed': 3 };
+
+            let filtered = allTickets.filter(t => 
+                t.title.toLowerCase().includes(adminSearchQuery) ||
+                t.name.toLowerCase().includes(adminSearchQuery) ||
+                t.id.toLowerCase().includes(adminSearchQuery) ||
+                t.email.toLowerCase().includes(adminSearchQuery)
+            );
+
+            filtered.sort((a, b) => {
+                let valA, valB;
+                if (adminSortKey === 'priority') { valA = priorityOrder[a.priority]; valB = priorityOrder[b.priority]; }
+                else if (adminSortKey === 'status') { valA = statusOrder[a.status]; valB = statusOrder[b.status]; }
+                else { valA = a[adminSortKey]; valB = b[adminSortKey]; }
+                if (valA < valB) return adminSortOrder === 'asc' ? -1 : 1;
+                if (valA > valB) return adminSortOrder === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            const tbody = document.getElementById('admin-table-body');
+            tbody.innerHTML = filtered.map(t => `
+                <tr class="hover:bg-slate-50/50 transition-colors">
+                    <td class="px-8 py-6">
+                        <p class="text-sm font-black text-slate-900">${t.name}</p>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase">${t.market}</p>
                     </td>
-                    <td class="px-6 py-5">
-                        <div class="text-xs font-bold text-slate-500 truncate max-w-[200px]">${t.details}</div>
+                    <td class="px-8 py-6">
+                        <p class="text-sm font-bold text-slate-700 line-clamp-1 italic uppercase tracking-tighter">${t.title}</p>
                     </td>
-                    <td class="px-6 py-5">
+                    <td class="px-8 py-6 text-xs font-black text-slate-500 uppercase">${t.type}</td>
+                    <td class="px-8 py-6">
                         <span class="status-pill status-${t.status.toLowerCase().replace(' ', '')}">${t.status}</span>
                     </td>
-                    <td class="px-6 py-5 text-right">
-                        <button onclick="openAdminManager('${t.id}')" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all">
-                            Manage
-                        </button>
+                    <td class="px-8 py-6 text-right">
+                        <button onclick="openTicketDetails('${t.id}')" class="bg-slate-900 text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase italic hover:bg-black transition-all">Manage</button>
                     </td>
                 </tr>
             `).join('');
-        };
+        }
 
-        window.switchTab = (tab) => {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-            document.getElementById(`section-${tab}`).classList.remove('hidden');
-            
-            // Set active tab styles
-            ['request', 'search', 'admin'].forEach(b => {
-                const el = document.getElementById(`tab-${b}`);
-                if (b === tab) {
-                    el.classList.add('va-red', 'text-white');
-                    el.classList.remove('text-slate-500');
-                } else {
-                    el.classList.remove('va-red', 'text-white');
-                    el.classList.add('text-slate-500');
-                }
-            });
-
-            // Handle Admin authentication view
-            if (tab === 'admin') {
-                if (isAdminUnlocked) {
-                    document.getElementById('admin-lock-screen').classList.add('hidden');
-                    document.getElementById('admin-dashboard').classList.remove('hidden');
-                } else {
-                    document.getElementById('admin-lock-screen').classList.remove('hidden');
-                    document.getElementById('admin-dashboard').classList.add('hidden');
-                }
-            }
-        };
-
-        window.closeModal = () => document.getElementById('ticket-modal').classList.add('hidden');
-        window.closeSuccessOverlay = () => document.getElementById('success-overlay').classList.add('hidden');
+        function closeModal() { document.getElementById('ticket-modal').classList.add('hidden'); }
+        function closeSuccessOverlay() { document.getElementById('success-overlay').classList.add('hidden'); switchTab('search'); }
 
         window.onload = init;
     </script>
