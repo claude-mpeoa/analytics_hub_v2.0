@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Tasks: Drag & Detail</title>
+    <title>Pro Tasks: Live Drag & Detail</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -24,6 +24,10 @@
     <div class="max-w-2xl mx-auto">
         <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    <span class="text-[10px] font-bold tracking-wider text-emerald-600 uppercase">Live Real-Time Sync</span>
+                </div>
                 <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Timeline Workspace</h1>
                 <p id="date-text" class="text-slate-500 font-medium"></p>
             </div>
@@ -34,12 +38,12 @@
                     <input type="text" id="workspace-input" 
                         class="px-3 py-1 text-sm font-semibold text-slate-700 outline-none w-32 md:w-40" 
                         placeholder="Workspace Name">
-                    <button onclick="switchWorkspace()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1 rounded-lg text-xs font-bold transition-all">LOAD</button>
+                    <button onclick="switchWorkspace()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-lg text-xs font-bold transition-all">LOAD</button>
                 </div>
                 
                 <div id="sync-status" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 text-[10px] font-bold uppercase tracking-wider text-slate-500 transition-all">
                     <div class="h-2 w-2 rounded-full bg-slate-300 status-dot"></div>
-                    <span class="status-text">Local Mode</span>
+                    <span class="status-text">Connecting...</span>
                 </div>
             </div>
         </header>
@@ -56,8 +60,28 @@
             </button>
         </div>
 
-        <div id="task-list" class="space-y-3">
-            <!-- Tasks appear here -->
+        <!-- Active Tasks Header -->
+        <div class="flex items-center justify-between mb-3 px-1">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Active Goals</h2>
+            <span id="active-count" class="text-xs font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600">0</span>
+        </div>
+
+        <div id="task-list" class="space-y-3 mb-8">
+            <!-- Active Tasks appear here -->
+        </div>
+
+        <!-- Completed Section -->
+        <div class="border-t border-slate-100 pt-6">
+            <button onclick="toggleCompletedSection()" class="flex items-center justify-between w-full mb-4 px-1 group text-left">
+                <div class="flex items-center gap-2">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 group-hover:text-slate-600 transition-colors">Completed History</h2>
+                    <span id="completed-count" class="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">0</span>
+                </div>
+                <span id="toggle-icon" class="text-slate-400 group-hover:text-slate-600 transition-colors text-xs font-bold">SHOW</span>
+            </button>
+            <div id="completed-task-list" class="space-y-3 hidden opacity-75">
+                <!-- Completed Tasks appear here -->
+            </div>
         </div>
 
         <div id="empty-state" class="hidden py-12 text-center">
@@ -70,6 +94,7 @@
         </div>
     </div>
 
+    <!-- Detail Modal -->
     <div id="detail-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
             <div class="p-6 md:p-8">
@@ -109,16 +134,39 @@
         </div>
     </div>
 
-    <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxV-rAC3QRLdjzGS4mVga7bEAyr7wGhQkvpEuPBVmmmRcRUS1mTe2nQXS8Psop-hbBXrA/exec"; 
+    <!-- Firestore Integration script imports -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global Variables
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'live-tasks-workspace';
+        const firebaseConfig = {
+            apiKey: "AIzaSyAB0y4HrWYWJDgDdOu1n4IRIAN7I6u3ZnA",
+            authDomain: "hub-datastore.firebaseapp.com",
+            projectId: "hub-datastore",
+            storageBucket: "hub-datastore.firebasestorage.app",
+            messagingSenderId: "506609110569",
+            appId: "1:506609110569:web:a1cccc7bea50a47f061638"
+            };
+        
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
         let tasks = [];
         let currentWorkspace = localStorage.getItem('active_workspace') || 'Personal-Workspace';
         let draggedItemIndex = null;
+        let currentUser = null;
+        let showCompleted = false;
+        let activeSubscriptionUnsubscribe = null;
 
         const input = document.getElementById('task-input');
         const workspaceInput = document.getElementById('workspace-input');
         const listContainer = document.getElementById('task-list');
+        const completedContainer = document.getElementById('completed-task-list');
         const emptyState = document.getElementById('empty-state');
         const statusText = document.querySelector('.status-text');
         const statusDot = document.querySelector('.status-dot');
@@ -126,6 +174,7 @@
         workspaceInput.value = currentWorkspace;
         document.getElementById('date-text').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
 
+        // Stream Status Manager
         function updateStatus(state, text) {
             statusText.innerText = text;
             statusDot.className = `h-2 w-2 rounded-full transition-all duration-500 status-dot`;
@@ -135,40 +184,147 @@
             else statusDot.classList.add('bg-slate-300');
         }
 
-        async function loadFromCloud() {
-            if (!GOOGLE_SCRIPT_URL || !currentWorkspace) return;
-            updateStatus('syncing', 'Syncing...');
-            try {
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?userId=${encodeURIComponent(currentWorkspace)}`);
-                const cloudData = await response.json();
-                if (Array.isArray(cloudData)) {
-                    tasks = cloudData;
-                    renderTasks();
-                    localStorage.setItem(`tasks_${currentWorkspace}`, JSON.stringify(tasks));
-                }
-                updateStatus('online', 'Cloud Ready');
-            } catch (err) {
-                updateStatus('error', 'Sync Failed');
+        // Setup real-time Firestore Subscription
+        function setupLiveSync() {
+            if (!currentUser) return;
+            
+            // Unsubscribe from any previous live listeners
+            if (activeSubscriptionUnsubscribe) {
+                activeSubscriptionUnsubscribe();
             }
+
+            updateStatus('syncing', 'Connecting Live...');
+
+            // Strict collection path matching RULE 1
+            const workspaceDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'workspaces', currentWorkspace);
+
+            // Fetch live changes in real-time
+            activeSubscriptionUnsubscribe = onSnapshot(workspaceDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    tasks = data.tasks || [];
+                } else {
+                    tasks = [];
+                }
+                renderTasks();
+                updateStatus('online', 'Live Connected');
+            }, (error) => {
+                console.error("Firestore live-sync error:", error);
+                updateStatus('error', 'Sync Disconnected');
+            });
         }
 
+        // Save modifications up to Firestore
         async function saveToCloud() {
-            if (!GOOGLE_SCRIPT_URL || !currentWorkspace) return;
-            localStorage.setItem(`tasks_${currentWorkspace}`, JSON.stringify(tasks));
-            updateStatus('syncing', 'Saving...');
+            if (!currentUser) return;
+            updateStatus('syncing', 'Syncing...');
             try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify({ userId: currentWorkspace, tasks: tasks })
-                });
-                updateStatus('online', 'Saved');
+                const workspaceDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'workspaces', currentWorkspace);
+                await setDoc(workspaceDocRef, { tasks: tasks }, { merge: true });
+                updateStatus('online', 'Live Connected');
             } catch (err) {
+                console.error("Cloud save failed:", err);
                 updateStatus('error', 'Save Failed');
             }
         }
 
-        function addTask() {
+        // Render Active & Completed Lists cleanly
+        window.renderTasks = function renderTasks() {
+            listContainer.innerHTML = '';
+            completedContainer.innerHTML = '';
+            
+            const activeTasks = tasks.filter(t => !t.completed);
+            const completedTasks = tasks.filter(t => t.completed);
+
+            document.getElementById('active-count').innerText = activeTasks.length;
+            document.getElementById('completed-count').innerText = completedTasks.length;
+
+            if (tasks.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            // Render Active Tasks
+            activeTasks.forEach((task) => {
+                const index = tasks.findIndex(t => t.id === task.id);
+                const el = document.createElement('div');
+                el.draggable = true;
+                el.className = `task-card group flex items-start gap-3 p-4 bg-white border border-slate-100 rounded-2xl custom-shadow`;
+                
+                el.addEventListener('dragstart', () => handleDragStart(index));
+                el.addEventListener('dragover', (e) => handleDragOver(e, el));
+                el.addEventListener('drop', () => handleDrop(index));
+                el.addEventListener('dragend', handleDragEnd);
+
+                const createdDate = new Date(task.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' });
+
+                el.innerHTML = `
+                    <div class="mt-1.5 cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+                        </svg>
+                    </div>
+                    <div class="mt-1 cursor-pointer flex-shrink-0" onclick="toggleTask(${index})">
+                        <div class="h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all border-slate-200 hover:border-indigo-400">
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0 cursor-pointer" onclick="openDetail(${index})">
+                        <p class="text-slate-700 font-semibold leading-tight break-words">
+                            ${escapeHTML(task.text)}
+                        </p>
+                        <div class="flex items-center gap-2 mt-2">
+                            <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">${createdDate}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1">
+                         <button onclick="deleteTask(${index}, event)" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                listContainer.appendChild(el);
+            });
+
+            // Render Completed Tasks
+            completedTasks.forEach((task) => {
+                const index = tasks.findIndex(t => t.id === task.id);
+                const el = document.createElement('div');
+                el.className = `task-card flex items-start gap-3 p-4 bg-slate-50/50 border border-slate-100 rounded-2xl custom-shadow`;
+                
+                const completedDate = new Date(task.completedAt).toLocaleDateString([], { month: 'short', day: 'numeric' });
+
+                el.innerHTML = `
+                    <div class="w-5 flex-shrink-0"></div> <!-- spacing matching drag handle -->
+                    <div class="mt-1 cursor-pointer flex-shrink-0" onclick="toggleTask(${index})">
+                        <div class="h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all bg-indigo-600 border-indigo-600 shadow-sm">
+                            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0 cursor-pointer" onclick="openDetail(${index})">
+                        <p class="text-slate-400 font-semibold leading-tight break-words line-through">
+                            ${escapeHTML(task.text)}
+                        </p>
+                        <div class="flex items-center gap-2 mt-2">
+                            <span class="text-[9px] font-bold uppercase tracking-wider text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-md">Completed ${completedDate}</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1">
+                         <button onclick="deleteTask(${index}, event)" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                completedContainer.appendChild(el);
+            });
+        }
+
+        // Task operations
+        window.addTask = function addTask() {
             const val = input.value.trim();
             if (val) {
                 const now = new Date().toISOString();
@@ -187,7 +343,7 @@
             }
         }
 
-        function toggleTask(index) {
+        window.toggleTask = function toggleTask(index) {
             const now = new Date().toISOString();
             tasks[index].completed = !tasks[index].completed;
             tasks[index].updatedAt = now;
@@ -196,25 +352,36 @@
             saveToCloud();
         }
 
-        function deleteTask(index, event) {
+        window.deleteTask = function deleteTask(index, event) {
             event.stopPropagation();
             tasks.splice(index, 1);
             renderTasks();
             saveToCloud();
         }
 
-        function switchWorkspace() {
+        window.switchWorkspace = function switchWorkspace() {
             const newWs = workspaceInput.value.trim();
             if (newWs) {
                 currentWorkspace = newWs;
                 localStorage.setItem('active_workspace', newWs);
-                const cached = localStorage.getItem(`tasks_${currentWorkspace}`);
-                tasks = cached ? JSON.parse(cached) : [];
-                renderTasks();
-                loadFromCloud();
+                setupLiveSync();
             }
         }
 
+        window.toggleCompletedSection = function toggleCompletedSection() {
+            showCompleted = !showCompleted;
+            const container = document.getElementById('completed-task-list');
+            const icon = document.getElementById('toggle-icon');
+            if (showCompleted) {
+                container.classList.remove('hidden');
+                icon.innerText = "HIDE";
+            } else {
+                container.classList.add('hidden');
+                icon.innerText = "SHOW";
+            }
+        }
+
+        // Drag and Drop ordering handlers
         function handleDragStart(index) {
             draggedItemIndex = index;
             setTimeout(() => {
@@ -222,13 +389,11 @@
             }, 0);
         }
 
-        function handleDragOver(e, index) {
+        function handleDragOver(e, el) {
             e.preventDefault();
-            const cards = document.querySelectorAll('.task-card');
+            const cards = document.querySelectorAll('#task-list .task-card');
             cards.forEach(c => c.classList.remove('drag-over'));
-            if (draggedItemIndex !== index) {
-                cards[index].classList.add('drag-over');
-            }
+            el.classList.add('drag-over');
         }
 
         function handleDrop(index) {
@@ -246,7 +411,8 @@
             });
         }
 
-        function openDetail(index) {
+        // Modal viewing handlers
+        window.openDetail = function openDetail(index) {
             const task = tasks[index];
             document.getElementById('modal-text').innerText = task.text;
             document.getElementById('modal-created').innerText = new Date(task.createdAt).toLocaleString();
@@ -270,61 +436,33 @@
             document.getElementById('detail-modal').classList.remove('hidden');
         }
 
-        function closeModal() {
+        window.closeModal = function closeModal() {
             document.getElementById('detail-modal').classList.add('hidden');
         }
 
-        function renderTasks() {
-            listContainer.innerHTML = '';
-            if (tasks.length === 0) {
-                emptyState.classList.remove('hidden');
-                return;
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        // Initialize authorization according to RULE 3
+        async function runAuthenticationFlow() {
+            updateStatus('syncing', 'Authenticating...');
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    const credentials = await signInWithCustomToken(auth, __initial_auth_token);
+                    currentUser = credentials.user;
+                } else {
+                    const credentials = await signInAnonymously(auth);
+                    currentUser = credentials.user;
+                }
+                console.log("Authorized Session ID:", currentUser.uid);
+                setupLiveSync();
+            } catch (err) {
+                console.error("Auth initialization failed:", err);
+                updateStatus('error', 'Auth Failed');
             }
-            emptyState.classList.add('hidden');
-
-            tasks.forEach((task, index) => {
-                const el = document.createElement('div');
-                el.draggable = true;
-                el.className = `task-card group flex items-start gap-3 p-4 bg-white border border-slate-100 rounded-2xl custom-shadow ${task.completed ? 'bg-slate-50/50' : ''}`;
-                
-                // Drag Events
-                el.addEventListener('dragstart', () => handleDragStart(index));
-                el.addEventListener('dragover', (e) => handleDragOver(e, index));
-                el.addEventListener('drop', () => handleDrop(index));
-                el.addEventListener('dragend', handleDragEnd);
-
-                const createdDate = new Date(task.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' });
-
-                el.innerHTML = `
-                    <div class="mt-1.5 cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-                        </svg>
-                    </div>
-                    <div class="mt-1 cursor-pointer flex-shrink-0" onclick="toggleTask(${index})">
-                        <div class="h-6 w-6 rounded-lg border-2 flex items-center justify-center transition-all ${task.completed ? 'bg-indigo-600 border-indigo-600 shadow-sm' : 'border-slate-200'}">
-                            ${task.completed ? '<svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg>' : ''}
-                        </div>
-                    </div>
-                    <div class="flex-1 min-w-0 cursor-pointer" onclick="openDetail(${index})">
-                        <p class="text-slate-700 font-semibold leading-tight break-words ${task.completed ? 'line-through text-slate-400' : ''}">
-                            ${task.text}
-                        </p>
-                        <div class="flex items-center gap-2 mt-2">
-                            <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">${createdDate}</span>
-                            ${task.completed ? '<span class="text-[9px] font-bold uppercase tracking-wider text-emerald-500 bg-emerald-50 px-2 py-0.5 rounded-md">Completed</span>' : ''}
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-1">
-                         <button onclick="deleteTask(${index}, event)" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                        </button>
-                    </div>
-                `;
-                listContainer.appendChild(el);
-            });
         }
 
         document.getElementById('add-btn').addEventListener('click', addTask);
@@ -335,16 +473,17 @@
             }
         });
 
+        // Start Auth loop on window.onload
         window.onload = () => {
             const cached = localStorage.getItem(`tasks_${currentWorkspace}`);
             if (cached) {
                 tasks = JSON.parse(cached);
                 renderTasks();
             }
-            loadFromCloud();
+            runAuthenticationFlow();
         };
 
-        // Close modal on click outside
+        // Close modal on outside click
         window.onclick = function(event) {
             const modal = document.getElementById('detail-modal');
             if (event.target == modal) closeModal();
