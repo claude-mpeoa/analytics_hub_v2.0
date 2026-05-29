@@ -41,6 +41,61 @@
             to { transform: scale(1); opacity: 1; }
         }
         .animate-scale-in { animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1); }
+
+        .help-fab {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 80;
+            min-width: 64px;
+            height: 64px;
+            padding: 0 22px;
+            border-radius: 9999px;
+            background-color: #E10613;
+            color: #ffffff;
+            box-shadow: 0 20px 35px rgba(225, 6, 19, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 0.75rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            transition: all 0.25s ease;
+        }
+        .help-fab:hover {
+            background-color: #B1050F;
+            transform: translateY(-3px) scale(1.03);
+        }
+        .help-frame {
+            width: 100%;
+            height: min(78vh, 900px);
+            border: 0;
+            border-radius: 24px;
+            background: #ffffff;
+        }
+        .docs-frame {
+            width: 100%;
+            height: min(78vh, 900px);
+            border: 0;
+            border-radius: 32px;
+            background: #ffffff;
+            box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18);
+        }
+        @media (max-width: 640px) {
+            .help-fab {
+                right: 16px;
+                bottom: 16px;
+                min-width: 56px;
+                height: 56px;
+                padding: 0 18px;
+            }
+            .help-frame {
+                height: 74vh;
+                border-radius: 18px;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -367,78 +422,42 @@
             
 <!-- DOCUMENTATION SECTION -->
             <section id="section-docs" class="hidden tab-content">
-                <div class="max-w-4xl mx-auto">
-                    <div class="text-center mb-12">
-                        <h2 class="text-4xl font-black italic uppercase tracking-tighter mb-4">System <span class="va-text-red">Process</span></h2>
-                        <p class="text-slate-500 font-bold uppercase tracking-widest text-xs">Standard Operating Procedure for Web Requests</p>
-                    </div>
-
-                    <!-- Flow Visualization -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 relative mb-20">
-                        <div class="hidden md:block timeline-line"></div>
-                        
-                        <!-- Step 1 -->
-                        <div class="relative bg-white p-8 rounded-[32px] shadow-sm border border-slate-100">
-                            <div class="va-red text-white h-12 w-12 rounded-2xl flex items-center justify-center font-black absolute -top-6 left-8 shadow-lg italic">01</div>
-                            <h3 class="text-xl font-black italic uppercase mb-4 mt-2">Log the Request</h3>
-                            <p class="text-sm text-slate-600 leading-relaxed font-medium">
-                                Fill in your name, email, and define the priority. Ensure the category (Bug, Feature, Content) is accurate to help with sorting.
-                            </p>
-                            <div class="mt-4 flex items-center gap-2 text-[10px] font-black va-text-red uppercase tracking-widest">
-                                <i class="fas fa-paper-plane"></i> Submit Button
-                            </div>
+                <div class="max-w-6xl mx-auto pb-20">
+                    <div class="glass-panel p-6 md:p-8 rounded-[40px] shadow-2xl border-t-8 border-t-[#E10613]">
+                        <div class="mb-6">
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Ticketing System Guide</p>
+                            <h2 class="text-3xl md:text-4xl font-black italic uppercase tracking-tighter">How to Log a <span class="va-text-red">Ticket</span></h2>
+                            <p class="text-sm text-slate-500 font-bold mt-2">Use this guide to understand how to complete and track a web development request.</p>
                         </div>
-
-                        <!-- Step 2 -->
-                        <div class="relative bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 md:mt-16">
-                            <div class="bg-slate-900 text-white h-12 w-12 rounded-2xl flex items-center justify-center font-black absolute -top-6 left-8 shadow-lg italic">02</div>
-                            <h3 class="text-xl font-black italic uppercase mb-4 mt-2">Notification</h3>
-                            <p class="text-sm text-slate-600 leading-relaxed font-medium">
-                                Once submitted, <span class="font-bold text-slate-900">Claude Mpeoa</span> is instantly notified via the system. If your request is complex, email detailed briefs to his address directly.
-                            </p>
-                        </div>
-
-                        <!-- Step 3 -->
-                        <div class="relative bg-white p-8 rounded-[32px] shadow-sm border border-slate-100">
-                            <div class="bg-slate-900 text-white h-12 w-12 rounded-2xl flex items-center justify-center font-black absolute -top-6 left-8 shadow-lg italic">03</div>
-                            <h3 class="text-xl font-black italic uppercase mb-4 mt-2">Track & Search</h3>
-                            <p class="text-sm text-slate-600 leading-relaxed font-medium">
-                                Use the <span class="font-bold text-slate-900">"My Tickets"</span> tab. Searching your ID or email provides a live summary of notes and technical status updates.
-                            </p>
-                        </div>
-
-                        <!-- Step 4 -->
-                        <div class="relative bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 md:mt-16">
-                            <div class="va-red text-white h-12 w-12 rounded-2xl flex items-center justify-center font-black absolute -top-6 left-8 shadow-lg italic">04</div>
-                            <h3 class="text-xl font-black italic uppercase mb-4 mt-2">Resolution</h3>
-                            <p class="text-sm text-slate-600 leading-relaxed font-medium">
-                                The Admin updates the ticket status (Vetted, In Progress, Completed). Once marked as <span class="text-emerald-600 font-bold">Completed</span>, the fix is live.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Core Value Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-slate-900 text-white p-6 rounded-3xl text-center shadow-xl">
-                            <i class="fas fa-shield-alt text-2xl va-text-red mb-4"></i>
-                            <h4 class="font-black italic uppercase text-sm mb-2 tracking-tighter">Accountability</h4>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase leading-relaxed">Every request is time-stamped and assigned. No "lost" requests.</p>
-                        </div>
-                        <div class="bg-slate-900 text-white p-6 rounded-3xl text-center shadow-xl">
-                            <i class="fas fa-bolt text-2xl va-text-red mb-4"></i>
-                            <h4 class="font-black italic uppercase text-sm mb-2 tracking-tighter">Efficiency</h4>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase leading-relaxed">Minimises back-and-forth communication. One portal for everything.</p>
-                        </div>
-                        <div class="bg-slate-900 text-white p-6 rounded-3xl text-center shadow-xl">
-                            <i class="fas fa-eye text-2xl va-text-red mb-4"></i>
-                            <h4 class="font-black italic uppercase text-sm mb-2 tracking-tighter">Visibility</h4>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase leading-relaxed">Full audit trail for business stakeholders on dev progress.</p>
-                        </div>
+                        <iframe src="tick_how_to.html" class="docs-frame" title="How to log a ticket guide"></iframe>
                     </div>
                 </div>
             </section>
 
         </main>
+    </div>
+
+
+    <!-- FLOATING HELP BUTTON -->
+    <button type="button" onclick="openHelpModal()" id="floating-help-button" class="help-fab" aria-label="Open ticket logging help">
+        <i class="fas fa-question text-xl"></i>
+        <span>Help</span>
+    </button>
+
+    <!-- HELP / HOW TO MODAL -->
+    <div id="help-modal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-[120] backdrop-blur-sm">
+        <div class="bg-white rounded-[40px] max-w-6xl w-full p-4 md:p-6 shadow-2xl relative max-h-[94vh] animate-scale-in">
+            <div class="flex items-center justify-between gap-4 mb-4 px-2">
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Ticketing System Guide</p>
+                    <h2 class="text-2xl md:text-3xl font-black italic uppercase tracking-tighter">How to Log a <span class="va-text-red">Ticket</span></h2>
+                </div>
+                <button type="button" onclick="closeHelpModal()" class="h-12 w-12 rounded-2xl bg-slate-100 text-slate-400 hover:bg-slate-900 hover:text-white transition-all flex items-center justify-center" aria-label="Close help guide">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <iframe id="help-frame" src="tick_how_to.html" class="help-frame" title="How to log a ticket"></iframe>
+        </div>
     </div>
 
     <!-- UI COMPONENTS -->
@@ -540,6 +559,11 @@
             const activeTab = document.getElementById(`tab-${tabId}`);
             activeTab.className = "px-6 py-2.5 rounded-xl text-xs font-black transition-all va-red text-white uppercase italic tracking-widest";
             
+            const floatingHelpButton = document.getElementById('floating-help-button');
+            if (floatingHelpButton) {
+                floatingHelpButton.classList.toggle('hidden', tabId === 'docs');
+            }
+
             if (tabId === 'admin' && !isAdminUnlocked) {
                 document.getElementById('admin-lock-screen').classList.remove('hidden');
                 document.getElementById('admin-dashboard').classList.add('hidden');
@@ -864,7 +888,17 @@
         }
 
         function closeModal() { document.getElementById('ticket-modal').classList.add('hidden'); }
+        function openHelpModal() { document.getElementById('help-modal').classList.remove('hidden'); }
+        function closeHelpModal() { document.getElementById('help-modal').classList.add('hidden'); }
         function closeSuccessOverlay() { document.getElementById('success-overlay').classList.add('hidden'); switchTab('search'); }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeHelpModal();
+        });
+
+        document.getElementById('help-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeHelpModal();
+        });
 
         window.onload = init;
     </script>
