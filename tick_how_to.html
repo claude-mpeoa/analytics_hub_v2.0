@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virgin Active | Ticketing System Tutorial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/d23ca4c3f1.js" crossorigin="anonymous"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; color: #1e293b; }
+        .va-red { background-color: #E10613; }
+        .va-red-hover:hover { background-color: #B1050F; }
+        .va-text-red { color: #E10613; }
+        .glass-panel { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); border: 1px solid rgba(0,0,0,0.05); }
+        .ticket-card { transition: all 0.3s ease; }
+        .ticket-card:hover { transform: translateY(-3px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .status-pill { padding: 4px 12px; border-radius: 9999px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+        .status-pending { background-color: #FEF3C7; color: #92400E; }
+        .status-completed { background-color: #D1FAE5; color: #065F46; }
+        .section-header { border-left: 4px solid #E10613; padding-left: 1rem; margin-bottom: 1.5rem; background: linear-gradient(to right, rgba(225, 6, 19, 0.05), transparent); padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        @keyframes scaleIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .animate-scale-in { animation: scaleIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1); }
+        .tutorial-shot { min-height: 260px; background: linear-gradient(135deg, #f1f5f9, #ffffff); border: 2px dashed #cbd5e1; }
+        .timeline-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: #e2e8f0; transform: translateX(-50%); }
+        .field-label { font-size: 0.62rem; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; color: #64748b; }
+        .field-note { color: #475569; line-height: 1.7; font-weight: 500; }
+        @media print { nav, .no-print { display: none !important; } body { background: white; } .glass-panel { box-shadow: none !important; border: 1px solid #e2e8f0; } }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div id="app" class="max-w-6xl mx-auto px-4 py-8">
+        <header class="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
+            <div class="flex items-center gap-4">
+                <div class="va-red p-4 rounded-2xl shadow-xl rotate-3 hover:rotate-0 transition-transform cursor-pointer">
+                    <i class="fas fa-bolt text-white text-3xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-black tracking-tighter uppercase italic leading-none">Virgin <span class="va-text-red font-black">Active</span></h1>
+                    <p class="text-[10px] font-black tracking-[0.3em] text-slate-400 uppercase mt-1">Ticketing System Tutorial</p>
+                </div>
+            </div>
+            <div class="flex flex-col items-end gap-3 no-print">
+                <nav class="flex flex-wrap justify-center bg-white p-1.5 rounded-2xl shadow-md border border-slate-100">
+                    <a href="#start" class="px-6 py-2.5 rounded-xl text-xs font-black transition-all va-red text-white uppercase italic tracking-widest">Start</a>
+                    <a href="#steps" class="px-6 py-2.5 rounded-xl text-xs font-black transition-all text-slate-500 hover:text-slate-800 uppercase tracking-widest">Steps</a>
+                    <a href="#tracking" class="px-6 py-2.5 rounded-xl text-xs font-black transition-all text-slate-500 hover:text-slate-800 uppercase tracking-widest">My Tickets</a>
+                    <a href="#support" class="px-6 py-2.5 rounded-xl text-xs font-black transition-all text-slate-500 hover:text-slate-800 uppercase tracking-widest">Support</a>
+                </nav>
+                <div class="text-[9px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-2 mr-2">
+                    <div class="h-2 w-2 rounded-full bg-emerald-500"></div>
+                    <span>Tutorial Ready</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="space-y-12">
+            <section id="start" class="glass-panel rounded-[44px] shadow-2xl p-8 md:p-12 border-t-8 border-t-[#E10613] animate-scale-in">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+                    <div>
+                        <span class="status-pill status-pending">User Guide</span>
+                        <h2 class="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mt-5 mb-6">How to log a <span class="va-text-red">Web Dev Ticket</span></h2>
+                        <p class="text-slate-600 text-lg leading-relaxed font-medium mb-8">Use this guide when submitting a request through the Virgin Active Web Dev Workflow Portal. The ticketing form has four steps: overview, classification, business objective, and scope and assets.</p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <a href="#steps" class="va-red va-red-hover text-white px-8 py-5 rounded-[24px] font-black uppercase italic tracking-widest text-xs text-center shadow-xl">View the 4 steps</a>
+                            <a href="#tracking" class="bg-slate-900 hover:bg-black text-white px-8 py-5 rounded-[24px] font-black uppercase italic tracking-widest text-xs text-center shadow-xl">Track a ticket</a>
+                        </div>
+                    </div>
+
+<img src="resources/img/Ticket Step 1.png" alt="Ticket Step 1 screenshot" class="tutorial-screenshot">
+
+                </div>
+            </section>
+
+            <section class="max-w-4xl mx-auto">
+                <div class="max-w-xl mx-auto mb-10 px-4">
+                    <div class="flex justify-between items-center relative">
+                        <div class="absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 -translate-y-1/2 -z-10"></div>
+                        <div class="absolute top-1/2 left-0 w-full h-0.5 va-red -translate-y-1/2 -z-10"></div>
+                        <div class="w-10 h-10 rounded-full bg-white border-4 border-[#E10613] flex items-center justify-center font-black text-xs text-[#E10613]">1</div>
+                        <div class="w-10 h-10 rounded-full bg-white border-4 border-[#E10613] flex items-center justify-center font-black text-xs text-[#E10613]">2</div>
+                        <div class="w-10 h-10 rounded-full bg-white border-4 border-[#E10613] flex items-center justify-center font-black text-xs text-[#E10613]">3</div>
+                        <div class="w-10 h-10 rounded-full bg-white border-4 border-[#E10613] flex items-center justify-center font-black text-xs text-[#E10613]">4</div>
+                    </div>
+                    <div class="flex justify-between mt-4">
+                        <span class="text-[9px] font-black uppercase tracking-widest text-[#E10613]">Overview</span>
+                        <span class="text-[9px] font-black uppercase tracking-widest text-[#E10613]">Classification</span>
+                        <span class="text-[9px] font-black uppercase tracking-widest text-[#E10613]">Business</span>
+                        <span class="text-[9px] font-black uppercase tracking-widest text-[#E10613]">Scope</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="steps" class="space-y-10">
+                <article class="glass-panel p-8 md:p-10 rounded-[40px] shadow-xl border-t-8 border-t-[#E10613]">
+                    <div class="section-header">
+                        <h2 class="text-2xl font-black italic uppercase">01. Request Overview</h2>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Start from the Log Request tab</p>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                        <div class="lg:col-span-3 space-y-6">
+                            <p class="field-note">At the top navigation, select <strong class="text-slate-900">Log Request</strong>. You will land on the overview page where the basic ticket details need to be captured.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100"><p class="field-label">Request Title / Headline</p><p class="field-note mt-2">Enter what the ticket is about. This becomes the ticket name.</p></div>
+                                <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100"><p class="field-label">Requestor Details</p><p class="field-note mt-2">Add your full name, work email, department, and market region manually.</p></div>
+                                <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100"><p class="field-label">Saved Requestor Details</p><p class="field-note mt-2">After your details have been added once, they can be selected from a dropdown in future.</p></div>
+                                <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100"><p class="field-label">Campaign / Initiative</p><p class="field-note mt-2">Enter the campaign name, or mark it as Not Applicable for bug fixes, typo fixes, and similar requests.</p></div>
+                                <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100 md:col-span-2"><p class="field-label">Go Live Date and Priority</p><p class="field-note mt-2">Select the requested go live date and priority. High priority requests will be assessed accordingly, but delivery before the requested go live date cannot be guaranteed because other high priority tickets may already be queued.</p></div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2 tutorial-shot rounded-[32px] p-8 flex flex-col items-center justify-center text-center">
+<img src="resources/img/Ticket Step 1.png" alt="Ticket Step 1 screenshot" class="tutorial-screenshot">
+                        </div>
+                    </div>
+                </article>
+
+                <article class="glass-panel p-8 md:p-10 rounded-[40px] shadow-xl">
+                    <div class="section-header">
+                        <h2 class="text-2xl font-black italic uppercase">02. Classification</h2>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Define the request type</p>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                        <div class="lg:col-span-3">
+                            <p class="field-note mb-6">Select the <strong class="text-slate-900">Request Type</strong> that best describes what needs to be done. This helps the developer understand the type of work being requested and route the ticket correctly.</p>
+                            <div class="bg-slate-900 text-white p-6 rounded-3xl shadow-xl">
+                                <p class="text-[10px] font-black va-text-red uppercase tracking-widest mb-3">Examples</p>
+                                <p class="text-sm leading-relaxed font-bold text-slate-200">Landing page changes, homepage updates, banner swaps, copy updates, image updates, campaign launches, GA4 tracking, SEO metadata updates, bug fixes, or form updates.</p>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2 tutorial-shot rounded-[32px] p-8 flex flex-col items-center justify-center text-center">
+<img src="resources/img/Ticket Step 2.png" alt="Ticket Step 2 screenshot" class="tutorial-screenshot">
+                        </div>
+                    </div>
+                </article>
+
+                <article class="glass-panel p-8 md:p-10 rounded-[40px] shadow-xl">
+                    <div class="section-header">
+                        <h2 class="text-2xl font-black italic uppercase">03. Business Objective</h2>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Explain the purpose and impact</p>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                        <div class="lg:col-span-3 space-y-4">
+                            <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100"><p class="field-label">Purpose of the Request</p><p class="field-note mt-2">Explain why the ticket is being logged and what the request will fix or improve.</p></div>
+                            <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100"><p class="field-label">Target KPI / Metric</p><p class="field-note mt-2">Add what the change is expected to drive, such as conversions, user experience, sales, or another measurable outcome. If it is just a fix, enter N/A.</p></div>
+                            <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100"><p class="field-label">Priority Context</p><p class="field-note mt-2">Explain why you selected the priority level. This gives the developer context when comparing the request with other active tickets.</p></div>
+                        </div>
+                        <div class="lg:col-span-2 tutorial-shot rounded-[32px] p-8 flex flex-col items-center justify-center text-center">
+<img src="resources/img/Ticket Step 3.png" alt="Ticket Step 3 screenshot" class="tutorial-screenshot">
+                        </div>
+                    </div>
+                </article>
+
+                <article class="glass-panel p-8 md:p-10 rounded-[40px] shadow-xl">
+                    <div class="section-header">
+                        <h2 class="text-2xl font-black italic uppercase">04. Scope and Assets</h2>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Provide the exact requirements</p>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                        <div class="lg:col-span-3 space-y-4">
+                            <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100"><p class="field-label">URLs Impacted</p><p class="field-note mt-2">Add the URL that needs to be fixed, or the suggested URL for a new page. If more than one URL is affected, separate them with commas.</p></div>
+                            <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100"><p class="field-label">Change Requirements</p><p class="field-note mt-2">Provide step-by-step instructions explaining what needs to be done on the request.</p></div>
+                            <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100"><p class="field-label">Asset Status and Asset Link</p><p class="field-note mt-2">If you have images, videos, or text content, email them to <a class="va-text-red font-bold" href="mailto:claude.mpeoa@virginactive.co.za">claude.mpeoa@virginactive.co.za</a>, or place them in a folder and paste the Drive or cloud folder link in the Asset Link field.</p></div>
+                            <div class="bg-slate-50 p-5 rounded-3xl border border-slate-100"><p class="field-label">Additional Info</p><p class="field-note mt-2">Use this field for anything you may have missed in earlier steps. You can also use Previous Step to go back and edit earlier information.</p></div>
+                        </div>
+                        <div class="lg:col-span-2 tutorial-shot rounded-[32px] p-8 flex flex-col items-center justify-center text-center">
+<img src="resources/img/Ticket Step 4.png" alt="Ticket Step 4 screenshot" class="tutorial-screenshot">
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section class="glass-panel p-8 md:p-10 rounded-[40px] shadow-xl border-b-4 border-b-slate-900">
+                <div class="section-header">
+                    <h2 class="text-2xl font-black italic uppercase">Submitting the Request</h2>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">What happens after all required fields are completed</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-slate-900 text-white p-6 rounded-3xl text-center shadow-xl"><i class="fas fa-circle-check text-3xl va-text-red mb-4"></i><h3 class="font-black italic uppercase text-sm mb-2">Success Message</h3><p class="text-[11px] text-slate-400 font-bold uppercase leading-relaxed">A confirmation message appears when the request has been submitted successfully.</p></div>
+                    <div class="bg-slate-900 text-white p-6 rounded-3xl text-center shadow-xl"><i class="fas fa-hashtag text-3xl va-text-red mb-4"></i><h3 class="font-black italic uppercase text-sm mb-2">Ticket Number</h3><p class="text-[11px] text-slate-400 font-bold uppercase leading-relaxed">There is no need to memorize the ticket number. You can find your tickets later using your work email address.</p></div>
+                    <div class="bg-slate-900 text-white p-6 rounded-3xl text-center shadow-xl"><i class="fas fa-envelope-open-text text-3xl va-text-red mb-4"></i><h3 class="font-black italic uppercase text-sm mb-2">Review Details</h3><p class="text-[11px] text-slate-400 font-bold uppercase leading-relaxed">The ticket stores the request details, current status, notes, and reference number.</p></div>
+                </div>
+            </section>
+
+            <section id="tracking" class="glass-panel p-8 md:p-10 rounded-[40px] shadow-xl">
+                <div class="section-header">
+                    <h2 class="text-2xl font-black italic uppercase">Tracking Your Ticket</h2>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Use the My Tickets section</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
+                    <div class="lg:col-span-3">
+                        <p class="field-note mb-6">Open <strong class="text-slate-900">My Tickets</strong> and search using the email address you used when logging the request. Select the ticket to view more information.</p>
+                        <div class="bg-white rounded-[32px] shadow-sm border border-slate-100 p-6 ticket-card">
+                            <div class="flex items-center gap-3 mb-3"><span class="status-pill status-completed">Completed</span><span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">VA-ABC123</span></div>
+                            <h3 class="font-black text-sm text-slate-800 italic uppercase tracking-tighter">Example Ticket Result</h3>
+                            <p class="text-[10px] font-bold text-slate-400 mt-1 uppercase">Landing Page • Current status, notes, ticket number and request details available</p>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2 tutorial-shot rounded-[32px] p-8 flex flex-col items-center justify-center text-center">
+<img src="resources/img/Ticket Search.png" alt="Ticket Search screenshot" class="tutorial-screenshot">
+                    </div>
+                </div>
+            </section>
+
+            <section id="support" class="glass-panel p-8 md:p-10 rounded-[40px] shadow-xl mb-20">
+                <div class="text-center max-w-3xl mx-auto">
+                    <div class="va-red w-20 h-20 rounded-[28px] flex items-center justify-center mx-auto mb-8 shadow-2xl rotate-3"><i class="fas fa-headset text-3xl text-white"></i></div>
+                    <h2 class="text-3xl md:text-4xl font-black italic uppercase tracking-tighter mb-4">Need Help?</h2>
+                    <p class="text-slate-600 leading-relaxed font-medium mb-8">For questions about a ticket or the ticketing system, contact the system administrator, Claude Mpeoa.</p>
+                    <a href="mailto:claude.mpeoa@virginactive.co.za" class="inline-flex items-center gap-3 bg-slate-900 hover:bg-black text-white px-8 py-5 rounded-[24px] font-black uppercase italic tracking-widest text-xs shadow-xl"><i class="fas fa-envelope"></i> claude.mpeoa@virginactive.co.za</a>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
