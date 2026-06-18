@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Youth Day Campaign Dashboard</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- FontAwesome for beautiful icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+    }
+    .card-glow {
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+  </style>
+</head>
+<body class="gradient-bg text-slate-100 min-h-screen pb-16">
+
+  <!-- Header Section -->
+  <header class="border-b border-slate-800 bg-slate-950/50 backdrop-blur sticky top-0 z-50 px-4 py-4 md:px-8">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="bg-indigo-600 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest text-indigo-100">Meta Ads</span>
+          <span class="text-xs text-slate-400">Campaign ID: YouthDay_2026</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-extrabold text-white mt-1">Youth Day Campaign Dashboard</h1>
+      </div>
+      <div class="flex items-center gap-3 self-start md:self-auto bg-slate-900 p-2.5 rounded-lg border border-slate-800">
+        <i class="fa-regular fa-calendar-days text-indigo-400 text-lg"></i>
+        <div class="text-left">
+          <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider leading-none">Reporting Period</p>
+          <p class="text-xs font-semibold text-slate-300">Youth Day Holiday Window</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 md:px-8 mt-8 space-y-8">
+
+    <!-- Overview Section & Meta Ad Health Cards -->
+    <section>
+      <h2 class="text-lg font-bold text-slate-300 mb-4 flex items-center gap-2">
+        <i class="fa-brands fa-facebook text-blue-500"></i>
+        At-A-Glance Funnel Summary
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Spend Card -->
+        <div class="bg-slate-900/60 p-5 rounded-2xl card-glow flex flex-col justify-between">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Amount Spent</p>
+              <h3 class="text-2xl font-extrabold text-white mt-2">R5,535.01</h3>
+            </div>
+            <div class="bg-indigo-500/10 p-2.5 rounded-xl border border-indigo-500/20">
+              <i class="fa-solid fa-wallet text-indigo-400"></i>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
+            <span class="text-slate-400">Target Budget</span>
+            <span class="font-semibold text-emerald-400">100% Utilised</span>
+          </div>
+        </div>
+
+        <!-- Clicks Card -->
+        <div class="bg-slate-900/60 p-5 rounded-2xl card-glow flex flex-col justify-between">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Link Clicks</p>
+              <h3 class="text-2xl font-extrabold text-white mt-2">2,770</h3>
+            </div>
+            <div class="bg-cyan-500/10 p-2.5 rounded-xl border border-cyan-500/20">
+              <i class="fa-solid fa-arrow-pointer text-cyan-400"></i>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
+            <span class="text-slate-400">Cost per Click (CPC)</span>
+            <span class="font-bold text-cyan-400">R2.00</span>
+          </div>
+        </div>
+
+        <!-- Landing Page Visitors -->
+        <div class="bg-slate-900/60 p-5 rounded-2xl card-glow flex flex-col justify-between">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Website Visitors</p>
+              <h3 class="text-2xl font-extrabold text-white mt-2">1,800</h3>
+            </div>
+            <div class="bg-purple-500/10 p-2.5 rounded-xl border border-purple-500/20">
+              <i class="fa-solid fa-users text-purple-400"></i>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
+            <span class="text-slate-400">Click-to-Land Rate</span>
+            <span class="font-bold text-amber-500">65.0% <i class="fa-solid fa-circle-exclamation ml-1"></i></span>
+          </div>
+        </div>
+
+        <!-- Leads Card -->
+        <div class="bg-slate-900/60 p-5 rounded-2xl card-glow flex flex-col justify-between">
+          <div class="flex justify-between items-start">
+            <div>
+              <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Form Submissions</p>
+              <h3 class="text-2xl font-extrabold text-white mt-2">29</h3>
+            </div>
+            <div class="bg-emerald-500/10 p-2.5 rounded-xl border border-emerald-500/20">
+              <i class="fa-solid fa-paper-plane text-emerald-400"></i>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
+            <span class="text-slate-400">Actual Cost Per Lead</span>
+            <span class="font-bold text-emerald-400">R190.86</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detailed Analytics Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Left Column: Ad Metrics Detail & Device Split -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <!-- Ad Efficiency Table -->
+        <div class="bg-slate-900/40 p-6 rounded-2xl card-glow border border-slate-800">
+          <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-chart-line text-indigo-400"></i>
+            Meta Ad-Delivery Efficiency
+          </h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800/60">
+              <p class="text-xs text-slate-400 font-medium">Impressions</p>
+              <p class="text-lg font-extrabold text-white mt-1">325,213</p>
+            </div>
+            <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800/60">
+              <p class="text-xs text-slate-400 font-medium">Reach</p>
+              <p class="text-lg font-extrabold text-white mt-1">246,570</p>
+            </div>
+            <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800/60">
+              <p class="text-xs text-slate-400 font-medium">CTR (All)</p>
+              <p class="text-lg font-extrabold text-emerald-400 mt-1">1.12%</p>
+            </div>
+            <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800/60">
+              <p class="text-xs text-slate-400 font-medium">Frequency</p>
+              <p class="text-lg font-extrabold text-white mt-1">1.32</p>
+            </div>
+          </div>
+          <div class="mt-4 p-3.5 bg-slate-950/40 rounded-xl border border-slate-800 text-xs text-slate-400 space-y-2">
+            <p>
+              <strong>CTR (All) Analysis:</strong> A CTR of <strong>1.12%</strong> represents a highly competitive and healthy benchmark for social acquisition campaigns targeting the South African youth demographic. It indicates that the ad creatives built positive initial interest.
+            </p>
+            <p class="text-indigo-400">
+              <i class="fa-solid fa-tag mr-1"></i> CPM: <strong>R17.02</strong> (Very cost-effective distribution for the South African youth demographic).
+            </p>
+          </div>
+        </div>
+
+        <!-- Devices & Dropoff Insights -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Device Breakdown Chart -->
+          <div class="bg-slate-900/40 p-6 rounded-2xl card-glow border border-slate-800 flex flex-col justify-between">
+            <div>
+              <h3 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-mobile-screen-button text-indigo-400"></i>
+                Device Type Split
+              </h3>
+              <p class="text-xs text-slate-400 mb-4">Virtually all impressions delivered on mobile.</p>
+            </div>
+            <div class="relative w-40 h-40 mx-auto">
+              <canvas id="deviceChart"></canvas>
+            </div>
+            <div class="mt-4 space-y-1.5">
+              <div class="flex justify-between text-xs">
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block"></span> Mobile</span>
+                <span class="font-bold text-white">97.7%</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400 inline-block"></span> Desktop</span>
+                <span class="font-bold text-white">1.5%</span>
+              </div>
+              <div class="flex justify-between text-xs">
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block"></span> Tablet</span>
+                <span class="font-bold text-white">0.8%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Page Performance Alarm Box -->
+          <div class="bg-slate-900/40 p-6 rounded-2xl card-glow border border-rose-950/50 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 text-rose-400 mb-2">
+                <i class="fa-solid fa-triangle-exclamation animate-pulse"></i>
+                <h3 class="text-base font-bold text-white">On-Site Engagement</h3>
+              </div>
+              <p class="text-xs text-slate-400 mb-4">Severe optimization bottlenecks detected post-click.</p>
+            </div>
+            <div class="space-y-4 my-2">
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-400">Bounce Rate</span>
+                  <span class="text-rose-400 font-bold">97%</span>
+                </div>
+                <div class="w-full bg-slate-850 h-2 rounded-full overflow-hidden">
+                  <div class="bg-rose-500 h-full rounded-full" style="width: 97%;"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-slate-400">Avg. Page Duration</span>
+                  <span class="text-amber-400 font-bold">10 Seconds</span>
+                </div>
+                <div class="w-full bg-slate-850 h-2 rounded-full overflow-hidden">
+                  <div class="bg-amber-500 h-full rounded-full" style="width: 15%;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-[11px] text-rose-200 mt-2">
+              <i class="fa-solid fa-bolt mr-1"></i> Since <strong>97.7%</strong> of traffic is mobile, a 10s duration and 97% bounce strongly point to a slow loading mobile page or non-responsive contact form.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Interactive Simulator & Live Funnel Graph -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <!-- Live Funnel Simulator Card -->
+        <div class="bg-slate-900/60 p-6 rounded-2xl card-glow border border-indigo-500/30">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-lg font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-sliders text-indigo-400"></i>
+              Funnel Simulator
+            </h3>
+            <button onclick="resetSliders()" class="text-xs text-slate-400 hover:text-white transition underline">Reset</button>
+          </div>
+          <p class="text-xs text-slate-400 mb-6">See how fixing mobile friction & load speeds unlocks hidden revenue/leads.</p>
+
+          <!-- Interactive Sliders -->
+          <div class="space-y-5">
+            <!-- Slider 1: Click-to-Land Link Ratio -->
+            <div>
+              <div class="flex justify-between text-xs mb-2">
+                <span class="text-slate-300 font-medium">Click-to-Land Speed Success</span>
+                <span id="clickLandVal" class="text-indigo-400 font-bold">65%</span>
+              </div>
+              <input type="range" id="clickLandSlider" min="50" max="98" value="65" 
+                     class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+              <p class="text-[10px] text-slate-500 mt-1">Controls how many clicked users successfully load the page before bouncing away due to load lag.</p>
+            </div>
+
+            <!-- Slider 2: Bounce Rate -->
+            <div>
+              <div class="flex justify-between text-xs mb-2">
+                <span class="text-slate-300 font-medium">Page Bounce Rate</span>
+                <span id="bounceVal" class="text-rose-400 font-bold">97%</span>
+              </div>
+              <input type="range" id="bounceSlider" min="40" max="98" value="97" 
+                     class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+              <p class="text-[10px] text-slate-500 mt-1">Simulates optimization of web layouts to retain traffic. Reducing bounce rate preserves valid target leads.</p>
+            </div>
+          </div>
+
+          <!-- Dynamic Results Comparison -->
+          <div class="mt-8 pt-6 border-t border-slate-800 space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-slate-950/50 p-4 rounded-xl border border-slate-800 text-center">
+                <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Historical Leads</p>
+                <p class="text-2xl font-extrabold text-slate-400 mt-1">29</p>
+                <p class="text-[10px] text-slate-400 mt-1">Cost Per Lead: R190.86</p>
+              </div>
+              <div class="bg-indigo-950/20 p-4 rounded-xl border border-indigo-500/30 text-center">
+                <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider">Projected Leads</p>
+                <p id="projectedLeads" class="text-2xl font-extrabold text-emerald-400 mt-1">29</p>
+                <p id="projectedCPL" class="text-[10px] text-slate-300 mt-1">Cost Per Lead: R190.86</p>
+              </div>
+            </div>
+
+            <!-- Funnel Projection Visualizer -->
+            <div class="bg-slate-950/40 p-4 rounded-xl border border-slate-800/80 space-y-3">
+              <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest text-center">Interactive Funnel Dropoff</p>
+              
+              <!-- Clicks Visual -->
+              <div>
+                <div class="flex justify-between text-[11px] text-slate-400 mb-1">
+                  <span>Ad Clicks</span>
+                  <span class="font-bold text-white">2,770 (100%)</span>
+                </div>
+                <div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden">
+                  <div class="bg-indigo-600 h-full rounded-full" style="width: 100%;"></div>
+                </div>
+              </div>
+
+              <!-- Visitors Visual -->
+              <div>
+                <div class="flex justify-between text-[11px] text-slate-400 mb-1">
+                  <span>Successful Visitors Loaded</span>
+                  <span id="funnelVisitorsText" class="font-bold text-white">1,800 (65%)</span>
+                </div>
+                <div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden">
+                  <div id="funnelVisitorsBar" class="bg-cyan-500 h-full rounded-full" style="width: 65%;"></div>
+                </div>
+              </div>
+
+              <!-- Leads Visual -->
+              <div>
+                <div class="flex justify-between text-[11px] text-slate-400 mb-1">
+                  <span>Form Submits</span>
+                  <span id="funnelLeadsText" class="font-bold text-white">29 (1%)</span>
+                </div>
+                <div class="w-full bg-slate-900 h-3 rounded-full overflow-hidden">
+                  <div id="funnelLeadsBar" class="bg-emerald-500 h-full rounded-full" style="width: 1%;"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Actionable Insights & Diagnostics -->
+    <section class="bg-slate-900/40 p-6 rounded-2xl card-glow border border-slate-800">
+      <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-list-check text-emerald-400"></i>
+        Post-Campaign Action Items & Diagnostics
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div class="space-y-2">
+          <div class="flex items-center gap-2.5 text-amber-400 font-semibold text-sm">
+            <span class="w-6 h-6 rounded-full bg-amber-400/10 text-amber-400 flex items-center justify-center font-bold text-xs">1</span>
+            Reduce Landing Page Weight
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed pl-8">
+            Mobile users in South Africa on standard cell connections drop off rapidly if a page exceeds a 2-second loading threshold. Optimise image sizes, eliminate heavy JS, and minify styling packages on your landing page.
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex items-center gap-2.5 text-amber-400 font-semibold text-sm">
+            <span class="w-6 h-6 rounded-full bg-amber-400/10 text-amber-400 flex items-center justify-center font-bold text-xs">2</span>
+            Optimise Form Layout
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed pl-8">
+            An 10s average duration means users read the page but bail on the form. Keep form fields minimal (3 fields max: Name, Phone/WhatsApp, Email). Add frictionless options like auto-fill or social signup.
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex items-center gap-2.5 text-indigo-400 font-semibold text-sm">
+            <span class="w-6 h-6 rounded-full bg-indigo-400/10 text-indigo-400 flex items-center justify-center font-bold text-xs">3</span>
+            Leverage Instant Forms
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed pl-8">
+            For rapid mobile acquisition campaigns, bypass external hosting entirely. Run Meta's Native Lead Forms (Instant Forms). It guarantees 100% click-to-lead delivery and pre-fills user contact info.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Initial Campaign Constant Data
+    const spend = 5535.01;
+    const clicks = 2770;
+    const actualVisitors = 1800;
+    const actualLeads = 29;
+    
+    // Non-bouncing conversion rate (historic baseline)
+    // Non-bouncers = 1800 * (1 - 0.97) = 54 users.
+    // Leads = 29. Conversion rate of Engaged users = 29 / 54 = ~53.7%
+    const engagedConversionRate = 29 / (actualVisitors * (1 - 0.97)); 
+
+    // DOM Elements
+    const clickLandSlider = document.getElementById('clickLandSlider');
+    const bounceSlider = document.getElementById('bounceSlider');
+    const clickLandValText = document.getElementById('clickLandVal');
+    const bounceValText = document.getElementById('bounceVal');
+    
+    const projectedLeadsText = document.getElementById('projectedLeads');
+    const projectedCPLText = document.getElementById('projectedCPL');
+
+    const funnelVisitorsText = document.getElementById('funnelVisitorsText');
+    const funnelVisitorsBar = document.getElementById('funnelVisitorsBar');
+    const funnelLeadsText = document.getElementById('funnelLeadsText');
+    const funnelLeadsBar = document.getElementById('funnelLeadsBar');
+
+    // Chart.js init for Device split
+    const ctx = document.getElementById('deviceChart').getContext('2d');
+    const deviceChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Mobile', 'Desktop', 'Tablet'],
+        datasets: [{
+          data: [97.7, 1.5, 0.8],
+          backgroundColor: ['#4f46e5', '#22d3ee', '#a855f7'],
+          borderWidth: 1,
+          borderColor: '#1e1b4b'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        cutout: '75%'
+      }
+    });
+
+    // Main Update Function
+    function updateSimulator() {
+      const targetClickLand = parseFloat(clickLandSlider.value);
+      const targetBounce = parseFloat(bounceSlider.value);
+
+      // Adjust text colors and display values
+      clickLandValText.innerText = `${targetClickLand}%`;
+      bounceValText.innerText = `${targetBounce}%`;
+      
+      if (targetBounce < 80) {
+        bounceValText.className = "text-emerald-400 font-bold";
+      } else if (targetBounce < 90) {
+        bounceValText.className = "text-amber-400 font-bold";
+      } else {
+        bounceValText.className = "text-rose-400 font-bold";
+      }
+
+      // Calculate projected values
+      const projectedVisitors = Math.round(clicks * (targetClickLand / 100));
+      const projectedEngaged = projectedVisitors * (1 - (targetBounce / 100));
+      const projectedLeads = Math.round(projectedEngaged * engagedConversionRate);
+      const projectedCPL = projectedLeads > 0 ? (spend / projectedLeads).toFixed(2) : spend.toFixed(2);
+
+      // Update UI Counters
+      projectedLeadsText.innerText = projectedLeads;
+      projectedCPLText.innerText = `Cost Per Lead: R${projectedCPL}`;
+
+      // Update Funnel Bar Visuals
+      const visitorPctOfClicks = Math.round((projectedVisitors / clicks) * 100);
+      const leadPctOfClicks = ((projectedLeads / clicks) * 100).toFixed(1);
+
+      funnelVisitorsText.innerText = `${projectedVisitors.toLocaleString()} (${visitorPctOfClicks}%)`;
+      funnelVisitorsBar.style.width = `${visitorPctOfClicks}%`;
+
+      funnelLeadsText.innerText = `${projectedLeads.toLocaleString()} (${leadPctOfClicks}%)`;
+      // Cap bar UI at visually readable size if too low
+      funnelLeadsBar.style.width = `${Math.max(leadPctOfClicks * 4, 1.5)}%`;
+    }
+
+    function resetSliders() {
+      clickLandSlider.value = 65;
+      bounceSlider.value = 97;
+      updateSimulator();
+    }
+
+    // Attach Event Listeners
+    clickLandSlider.addEventListener('input', updateSimulator);
+    bounceSlider.addEventListener('input', updateSimulator);
+
+    // Initial Trigger on page load
+    window.onload = function() {
+      updateSimulator();
+    };
+  </script>
+</body>
+</html>
