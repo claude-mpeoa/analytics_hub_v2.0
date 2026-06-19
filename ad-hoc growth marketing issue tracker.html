@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Issue Tracking Timeline</title>
+  <style>
+    :root {
+      --bg: #0b0b0d;
+      --text: #f5f7fb;
+      --muted: #a7adbb;
+      --positive: #8ed081;
+      --warning: #f3b38a;
+      --negative: #ff3b1f;
+      --critical: #ff3b1f;
+      --planned: #6d2c91;
+      --accent: #ff2a1a;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #070708 0%, #111216 100%);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 24px 56px;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 24px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .title h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 4.2rem);
+      line-height: 1;
+      font-weight: 300;
+      letter-spacing: -0.03em;
+    }
+
+    .title h1 span {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .title p {
+      margin: 14px 0 0;
+      color: var(--accent);
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      max-width: 720px;
+      justify-content: flex-end;
+    }
+
+    .chip,
+    select {
+      background: #111216;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+    }
+
+    select {
+      min-width: 180px;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: rgba(255,122,26,0.7);
+      box-shadow: 0 0 0 3px rgba(255,122,26,0.12);
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .metric-sub {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .timeline-card { padding: 28px 24px 24px; }
+
+    .section-title {
+      margin: 0 0 18px;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .timeline-rail {
+      position: relative;
+      padding-left: 34px;
+      display: grid;
+      gap: 18px;
+      min-height: 16px;
+    }
+
+    .timeline-rail::before {
+      content: "";
+      position: absolute;
+      left: 11px;
+      top: 8px;
+      bottom: 8px;
+      width: 4px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,122,26,0.95), rgba(255,122,26,0.35));
+    }
+
+    .event {
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .event::before {
+      content: "";
+      position: absolute;
+      left: -34px;
+      top: 26px;
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      border: 2px solid rgba(255,122,26,0.9);
+      box-shadow: 0 0 0 8px rgba(255,122,26,0.08);
+    }
+
+    .event.positive::before { background: var(--positive); }
+    .event.warning::before { background: var(--warning); }
+    .event.negative::before { background: var(--negative); }
+    .event.critical::before { background: var(--critical); }
+    .event.planned::before { background: var(--planned); }
+
+    .event-card {
+      padding: 16px 16px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .event-card:hover {
+      transform: translateY(-2px);
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.12);
+    }
+
+    .event-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .date-block { min-width: 140px; }
+
+    .date {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .time-note {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+    }
+
+    .tag.category { background: #ffffff; color: #111; }
+    .tag.impact { background: rgba(255,255,255,0.08); color: #e8ebf2; }
+    .tag.root { background: rgba(255,122,26,0.14); color: #ffd3b2; }
+
+    .tag.severity-positive { background: rgba(142,208,129,0.18); color: #b7efae; }
+    .tag.severity-warning { background: rgba(243,179,138,0.18); color: #ffd1b1; }
+    .tag.severity-negative { background: rgba(255,59,31,0.18); color: #ffb0a1; }
+    .tag.severity-critical { background: rgba(255,59,31,0.3); color: #ffd0c8; }
+    .tag.severity-planned { background: rgba(109,44,145,0.3); color: #dfb8ff; }
+
+    .event-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+
+    .event-summary {
+      margin: 0;
+      color: #d7dbe6;
+      line-height: 1.45;
+      font-size: 0.88rem;
+    }
+
+    details { margin-top: 10px; }
+
+    summary {
+      cursor: pointer;
+      color: #ffd3b2;
+      font-size: 0.84rem;
+      font-weight: 600;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    .detail-body {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .empty-state {
+      display: none;
+      margin-top: 12px;
+      padding: 18px;
+      border-radius: 14px;
+      border: 1px dashed rgba(255,255,255,0.16);
+      color: var(--muted);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .side {
+      display: grid;
+      gap: 20px;
+    }
+
+    .legend { display: grid; gap: 14px; }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #eef1f7;
+    }
+
+    .swatch {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      border: 2px solid rgba(255, 122, 26, 0.9);
+      flex: 0 0 26px;
+    }
+
+    .summary-card p {
+      margin: 0;
+      line-height: 1.6;
+      color: #d6d9e2;
+    }
+
+    .table-card {
+      overflow-x: auto;
+    }
+
+    .table-card table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      min-width: 620px;
+    }
+
+    .table-card th,
+    .table-card td {
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      vertical-align: top;
+    }
+
+    .table-card th {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    .status::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .open { color: #ff9b3d; }
+    .progress { color: #8ec5ff; }
+    .resolved { color: #9ce18d; }
+
+    .test-results { display: none; }
+
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 1fr; }
+      .dashboard { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .filters { justify-content: flex-start; }
+    }
+
+    @media (max-width: 700px) {
+      .dashboard { grid-template-columns: 1fr; }
+      .wrap { padding: 20px 14px 40px; }
+      .timeline-rail { padding-left: 28px; }
+      .event::before { left: -28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="title">
+        <h1>Issue Tracking Timeline | <span id="reportMonthLabel">Month</span></h1>
+        <p>Technical update and categorised issue reporting</p>
+      </div>
+      <div class="filters">
+        <div class="chip">Campaign: Summer</div>
+        <div class="chip">Team: Digital Ops</div>
+        <select id="monthFilter" aria-label="Filter by month"></select>
+        <select id="categoryFilter" aria-label="Filter by category"></select>
+        <select id="impactFilter" aria-label="Filter by impact area"></select>
+        <select id="rootCauseFilter" aria-label="Filter by root cause"></select>
+      </div>
+    </section>
+
+    <section class="dashboard">
+      <div class="card">
+        <div class="metric-label">Total issues logged</div>
+        <div class="metric-value" id="metricTotal">0</div>
+        <div class="metric-sub">Visible for selected filters</div>
+      </div>
+      <div class="card">
+        <div class="metric-label">Open / active issues</div>
+        <div class="metric-value" id="metricOpen">0</div>
+        <div class="metric-sub">Open or in progress</div>
+      </div>
+      <div class="card">
+        <div class="metric-label">Resolved issues</div>
+        <div class="metric-value" id="metricResolved">0</div>
+        <div class="metric-sub">Resolved in current view</div>
+      </div>
+      <div class="card">
+        <div class="metric-label">Highest impact area</div>
+        <div class="metric-value" id="metricTopCategory">-</div>
+        <div class="metric-sub">Most frequent category in current view</div>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="card timeline-card">
+        <h2 class="section-title">Vertical incident timeline</h2>
+        <div class="timeline-rail" id="timelineRail"></div>
+        <div class="empty-state" id="emptyState">No issues found for the selected filters.</div>
+        <div class="test-results" id="testResults"><strong>Checks:</strong> waiting...</div>
+      </div>
+
+      <div class="side">
+        <div class="card">
+          <h2 class="section-title">Legend</h2>
+          <div class="legend">
+            <div class="legend-item"><span class="swatch" style="background: var(--positive)"></span>Positive impact / change</div>
+            <div class="legend-item"><span class="swatch" style="background: var(--warning)"></span>Warning / risk</div>
+            <div class="legend-item"><span class="swatch" style="background: var(--negative)"></span>Negative impact</div>
+            <div class="legend-item"><span class="swatch" style="background: var(--planned)"></span>Planned or strategic action</div>
+          </div>
+        </div>
+
+        <div class="card summary-card">
+          <h2 class="section-title">Overall summary</h2>
+          <p id="summaryText"><strong>Current view:</strong> loading issue summary.</p>
+        </div>
+
+        <div class="card table-card">
+          <h2 class="section-title">Current issue register</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Issue</th>
+                <th>Category</th>
+                <th>Impact</th>
+                <th>Root Cause</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="issueTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const issues = [
+      {
+        id: 1,
+        issueDate: "2025-09-29",
+        dateLabel: "29 Sep 25",
+        timeNote: "Implementation",
+        category: "Forms",
+        impactArea: "Lead Generation",
+        rootCause: "Process",
+        severity: "positive",
+        severityLabel: "Positive change",
+        status: "Resolved",
+        title: "Updated webforms designed and implemented",
+        summary: "Updated webforms were designed and implemented for upcoming campaigns.",
+        details: "This prepared the campaign ecosystem for upcoming paid media activity."
+      },
+      {
+        id: 2,
+        issueDate: "2025-10-01",
+        dateLabel: "1 Oct 25",
+        timeNote: "Deployment",
+        category: "Paid Media",
+        impactArea: "Lead Generation",
+        rootCause: "Process",
+        severity: "positive",
+        severityLabel: "Positive change",
+        status: "Resolved",
+        title: "Updated webforms applied to paid campaigns",
+        summary: "Updated webforms were applied to Paid Search and Paid Social campaigns.",
+        details: "This moved lead capture for paid acquisition activity onto the updated webform approach."
+      },
+      {
+        id: 3,
+        issueDate: "2025-10-03",
+        dateLabel: "3 Oct 25",
+        timeNote: "Issue identified",
+        category: "Forms",
+        impactArea: "Tracking",
+        rootCause: "Process",
+        severity: "warning",
+        severityLabel: "Issue identified",
+        status: "Resolved",
+        title: "Referrer field issue identified and repaired",
+        summary: "Low campaign performance was discovered and the webform referrer field issue was repaired.",
+        details: "The referrer field had been removed, affecting attribution and performance visibility."
+      },
+      {
+        id: 4,
+        issueDate: "2025-10-06",
+        dateLabel: "6 Oct 25",
+        timeNote: "Mitigation",
+        category: "Infrastructure",
+        impactArea: "Website",
+        rootCause: "Infrastructure",
+        severity: "negative",
+        severityLabel: "Negative impact",
+        status: "Resolved",
+        title: "Website VM resource limitations discovered",
+        summary: "Website performance improved but was still not optimal due to VM instability and CPU capacity limits.",
+        details: "The website was capping. All campaigns were rolled back to Typeform as a mitigation action."
+      },
+      {
+        id: 5,
+        issueDate: "2025-10-09",
+        dateLabel: "9 Oct 25",
+        timeNote: "Recovery",
+        category: "Operations",
+        impactArea: "Operations",
+        rootCause: "Process",
+        severity: "positive",
+        severityLabel: "Recovery action",
+        status: "Resolved",
+        title: "Recovered leads uploaded to LMS",
+        summary: "Recovered leads were manually uploaded to LMS for dialling.",
+        details: "This reduced downstream impact on the contact centre and helped preserve recovered lead volume."
+      },
+      {
+        id: 6,
+        issueDate: "2025-10-10",
+        dateLabel: "10 Oct 25",
+        timeNote: "Monitoring",
+        category: "Tracking",
+        impactArea: "Website",
+        rootCause: "Process",
+        severity: "planned",
+        severityLabel: "Monitoring",
+        status: "Resolved",
+        title: "Microsoft Clarity implemented",
+        summary: "Microsoft Clarity was implemented to monitor user behaviour and user experience.",
+        details: "Tracking started on 11 October, with live sessions already taking place."
+      },
+      {
+        id: 7,
+        issueDate: "2025-10-23",
+        dateLabel: "23 Oct 25",
+        timeNote: "Issue identified",
+        category: "Automation",
+        impactArea: "Lead Generation",
+        rootCause: "Third Party",
+        severity: "negative",
+        severityLabel: "Negative impact",
+        status: "Resolved",
+        title: "Make scenario failures affected lead delivery",
+        summary: "A large number of Make scenarios were failing, preventing leads from reaching the contact centre.",
+        details: "This created measurable errors in lead processing and downstream contact centre delivery."
+      },
+      {
+        id: 8,
+        issueDate: "2025-10-24",
+        dateLabel: "24 to 27 Oct 25",
+        timeNote: "Connection issue",
+        category: "Connectivity",
+        impactArea: "Operations",
+        rootCause: "Third Party",
+        severity: "negative",
+        severityLabel: "Negative impact",
+        status: "Resolved",
+        title: "CST / Itensity connection instability",
+        summary: "Itensity connection volatility limited agent ability to log sales and payments.",
+        details: "The issue persisted between 24 and 27 October."
+      },
+      {
+        id: 9,
+        issueDate: "2025-10-30",
+        dateLabel: "30 Oct 25",
+        timeNote: "Infrastructure improvement",
+        category: "Infrastructure",
+        impactArea: "Website",
+        rootCause: "Infrastructure",
+        severity: "positive",
+        severityLabel: "Improvement",
+        status: "Resolved",
+        title: "Website VM resources increased",
+        summary: "Website VM resources were increased to combat VM capping.",
+        details: "This was a corrective infrastructure action following website resource constraints."
+      },
+      {
+        id: 10,
+        issueDate: "2025-10-31",
+        dateLabel: "31 Oct 25",
+        timeNote: "Deployment",
+        category: "Paid Media",
+        impactArea: "Lead Generation",
+        rootCause: "Process",
+        severity: "positive",
+        severityLabel: "Deployment",
+        status: "Resolved",
+        title: "Generic, Demand and Competitor campaigns placed on webforms",
+        summary: "Generic, Demand and Competitor campaigns were placed on webforms.",
+        details: "This expanded webform use across more campaign types."
+      },
+      {
+        id: 11,
+        issueDate: "2025-11-11",
+        dateLabel: "11 Nov 25",
+        timeNote: "Nominal",
+        category: "Performance",
+        impactArea: "Tracking",
+        rootCause: "Process",
+        severity: "positive",
+        severityLabel: "Nominal",
+        status: "Resolved",
+        title: "Campaigns nominal and trackable",
+        summary: "All campaigns were nominal and performance could be tracked accordingly.",
+        details: "This marks a period where campaign performance and measurement stabilised."
+      },
+      {
+        id: 12,
+        issueDate: "2025-11-25",
+        dateLabel: "25 Nov 25",
+        timeNote: "Deployment",
+        category: "Paid Media",
+        impactArea: "Lead Generation",
+        rootCause: "Process",
+        severity: "planned",
+        severityLabel: "Deployment",
+        status: "Resolved",
+        title: "Vitality Brand campaign placed on webforms",
+        summary: "Vitality Brand campaign was placed on webforms.",
+        details: "This continued the staged move of campaigns to the webform ecosystem."
+      },
+      {
+        id: 13,
+        issueDate: "2025-12-03",
+        dateLabel: "3 Dec 25",
+        timeNote: "Benchmark",
+        category: "PMax",
+        impactArea: "Lead Generation",
+        rootCause: "Process",
+        severity: "planned",
+        severityLabel: "Benchmark",
+        status: "Resolved",
+        title: "50% of PMax traffic placed on webforms",
+        summary: "50% of total PMax traffic was placed on webforms to benchmark performance.",
+        details: "This created a comparative performance test for webforms versus existing flow."
+      },
+      {
+        id: 14,
+        issueDate: "2025-12-15",
+        dateLabel: "15 Dec 25",
+        timeNote: "Nominal",
+        category: "Performance",
+        impactArea: "Operations",
+        rootCause: "Process",
+        severity: "positive",
+        severityLabel: "Nominal",
+        status: "Resolved",
+        title: "Performance and related systems nominal",
+        summary: "All performance and related systems were nominal.",
+        details: "This confirms stable operating conditions at the time."
+      },
+      {
+        id: 15,
+        issueDate: "2026-02-02",
+        dateLabel: "2 Feb 26",
+        timeNote: "Deployment",
+        category: "PMax",
+        impactArea: "Lead Generation",
+        rootCause: "Process",
+        severity: "planned",
+        severityLabel: "Deployment",
+        status: "Resolved",
+        title: "PMax moved to 100% webforms",
+        summary: "PMax traffic was moved to 100% webforms.",
+        details: "This completed the PMax migration to the webform flow."
+      },
+      {
+        id: 16,
+        issueDate: "2026-03-03",
+        dateLabel: "3 Mar 26",
+        timeNote: "Investigation",
+        category: "Tracking",
+        impactArea: "Tracking",
+        rootCause: "Unknown",
+        severity: "warning",
+        severityLabel: "Investigation",
+        status: "Resolved",
+        title: "Tracking related issues investigated",
+        summary: "Tracking related issues were identified and investigated.",
+        details: "This was the first investigation point for the March tracking issues."
+      },
+      {
+        id: 17,
+        issueDate: "2026-03-05",
+        dateLabel: "5 Mar 26",
+        timeNote: "Issue start",
+        category: "Website",
+        impactArea: "Website",
+        rootCause: "Governance",
+        severity: "negative",
+        severityLabel: "Negative impact",
+        status: "Resolved",
+        title: "Website videos failed to load",
+        summary: "Multiple website videos failed to load.",
+        details: "The issue was later linked to privacy policy and Content Security Policy related configuration."
+      },
+      {
+        id: 18,
+        issueDate: "2026-03-06",
+        dateLabel: "6 Mar 26",
+        timeNote: "Issue identified",
+        category: "Website",
+        impactArea: "Website",
+        rootCause: "Governance",
+        severity: "negative",
+        severityLabel: "Negative impact",
+        status: "Resolved",
+        title: "Multiple website videos failing",
+        summary: "Multiple videos were identified as failing to load on the website.",
+        details: "This reinforced the need for deeper investigation into website policies and configuration."
+      },
+      {
+        id: 19,
+        issueDate: "2026-03-11",
+        dateLabel: "11 Mar 26",
+        timeNote: "Patch request",
+        category: "Website",
+        impactArea: "Website",
+        rootCause: "Third Party",
+        severity: "warning",
+        severityLabel: "Mitigation",
+        status: "Resolved",
+        title: "Vimeo access requested for temporary patch",
+        summary: "Access to Vimeo was requested to implement a temporary patch.",
+        details: "Temporary solution was needed to keep videos running while underlying website issues were investigated."
+      },
+      {
+        id: 20,
+        issueDate: "2026-03-13",
+        dateLabel: "13 Mar 26",
+        timeNote: "Root cause identified",
+        category: "Website Security",
+        impactArea: "Website",
+        rootCause: "Governance",
+        severity: "critical",
+        severityLabel: "Root cause",
+        status: "Resolved",
+        title: "Content Security Policy issue identified",
+        summary: "A Content Security Policy code issue was identified on the website.",
+        details: "The CSP was not loading correctly and affected embedded content, tracking scripts and campaign signals."
+      },
+      {
+        id: 21,
+        issueDate: "2026-03-17",
+        dateLabel: "17 Mar 26",
+        timeNote: "Escalation",
+        category: "Governance",
+        impactArea: "Revenue",
+        rootCause: "Governance",
+        severity: "negative",
+        severityLabel: "Escalation",
+        status: "Open",
+        title: "Website changelog requested from Ninjas",
+        summary: "A website changelog was requested due to repeated failures and paid channel investment loss.",
+        details: "The request followed multiple failures causing negative impact on paid tactics and campaign investment."
+      },
+      {
+        id: 22,
+        issueDate: "2026-03-18",
+        dateLabel: "18 Mar 26",
+        timeNote: "Fixed same day",
+        category: "Website",
+        impactArea: "Website",
+        rootCause: "Configuration",
+        severity: "warning",
+        severityLabel: "Config issue",
+        status: "Resolved",
+        title: "Learn to Swim page video error",
+        summary: "Learn to Swim page had a config error stopping YouTube videos from running.",
+        details: "Ninjas fixed the issue on the same day."
+      },
+      {
+        id: 23,
+        issueDate: "2026-03-26",
+        dateLabel: "26 Mar 26",
+        timeNote: "Governance request",
+        category: "Governance",
+        impactArea: "Operations",
+        rootCause: "Governance",
+        severity: "warning",
+        severityLabel: "Audit request",
+        status: "Open",
+        title: "Audit trail requested from Ninjas",
+        summary: "An audit trail was requested to identify who was requesting website changes without Marketing consultation.",
+        details: "The request was made to establish ownership, approval and communication gaps for website changes."
+      },
+      {
+        id: 24,
+        issueDate: "2026-04-07",
+        dateLabel: "7 Apr 26",
+        timeNote: "Analysis delivered",
+        category: "Tracking",
+        impactArea: "Tracking",
+        rootCause: "Governance",
+        severity: "critical",
+        severityLabel: "Business impact",
+        status: "Resolved",
+        title: "CSP impact analysis delivered",
+        summary: "Complete analysis of failing CSP was provided to Ninjas.",
+        details: "The issue negatively affected paid tactics, thank-you page signals and AI campaign optimisation."
+      },
+      {
+        id: 25,
+        issueDate: "2026-04-07",
+        dateLabel: "7 Apr 26",
+        timeNote: "Testing advice",
+        category: "Buy Online",
+        impactArea: "Revenue",
+        rootCause: "Process",
+        severity: "warning",
+        severityLabel: "Risk raised",
+        status: "Resolved",
+        title: "A/B testing recommended for Buy Online changes",
+        summary: "Claude was informed of upcoming Buy Online changes and advised A/B testing before implementation.",
+        details: "The recommendation was made because website issues had recently affected paid tactics and tracking."
+      },
+      {
+        id: 26,
+        issueDate: "2026-04-10",
+        dateLabel: "10 Apr 26",
+        timeNote: "Implementation",
+        category: "Buy Online",
+        impactArea: "Lead Generation",
+        rootCause: "Process",
+        severity: "negative",
+        severityLabel: "Process impact",
+        status: "Open",
+        title: "Buy Online flow implemented without A/B testing",
+        summary: "The UK team implemented the Buy Online process, bypassing the testing phase.",
+        details: "The change overwrote callback and sweep-behind processes on the website and within Make."
+      },
+      {
+        id: 27,
+        issueDate: "2026-04-15",
+        dateLabel: "15 Apr 26",
+        timeNote: "Impact observed",
+        category: "Lead Generation",
+        impactArea: "Lead Generation",
+        rootCause: "Process",
+        severity: "critical",
+        severityLabel: "Critical impact",
+        status: "Open",
+        title: "Direct and organic call requests flatlined",
+        summary: "Direct and organic call requests dropped to zero after Buy Online implementation.",
+        details: "These channels typically generated around 5,000 leads, which dropped to zero."
+      },
+      {
+        id: 28,
+        issueDate: "2026-04-17",
+        dateLabel: "17 Apr 26",
+        timeNote: "Escalation",
+        category: "Website",
+        impactArea: "Website",
+        rootCause: "Governance",
+        severity: "negative",
+        severityLabel: "Escalation",
+        status: "Open",
+        title: "Multiple unresolved website issues escalated",
+        summary: "Multiple unresolved website issues were escalated, including campaign updates, script errors, Hyrox updates and incorrect Vitality discounts.",
+        details: "Some issues had been raised earlier in April but remained unresolved."
+      },
+      {
+        id: 29,
+        issueDate: "2026-04-21",
+        dateLabel: "21 Apr 26",
+        timeNote: "Training",
+        category: "Website Security",
+        impactArea: "Website",
+        rootCause: "Governance",
+        severity: "positive",
+        severityLabel: "Support action",
+        status: "Resolved",
+        title: "CSP fix tutorial provided",
+        summary: "Claude provided Pieter with a tutorial on fixing CSP and cleaning scripts and pixels.",
+        details: "A Vimeo temporary solution explanation was also provided to keep videos running while resolving website issues."
+      },
+      {
+        id: 30,
+        issueDate: "2026-04-21",
+        dateLabel: "21 Apr 26",
+        timeNote: "Investigation",
+        category: "Website",
+        impactArea: "Website",
+        rootCause: "Configuration",
+        severity: "warning",
+        severityLabel: "Possible issue",
+        status: "Open",
+        title: "Possible caching issue identified",
+        summary: "Claude identified a possible website caching issue and advised Ninjas to check.",
+        details: "This was raised as part of broader website troubleshooting."
+      },
+      {
+        id: 31,
+        issueDate: "2026-04-24",
+        dateLabel: "24 Apr 26",
+        timeNote: "Mitigation planning",
+        category: "Forms",
+        impactArea: "Lead Generation",
+        rootCause: "Process",
+        severity: "planned",
+        severityLabel: "Mitigation",
+        status: "Resolved",
+        title: "Callback webforms mobilised for paid campaigns",
+        summary: "Simone was mobilised to create webforms with callback functionality for May paid campaigns.",
+        details: "This was intended to restore callback capability following Buy Online impact."
+      },
+      {
+        id: 32,
+        issueDate: "2026-05-05",
+        dateLabel: "5 May 26",
+        timeNote: "Escalation",
+        category: "Buy Online",
+        impactArea: "Revenue",
+        rootCause: "Process",
+        severity: "negative",
+        severityLabel: "Pricing issue",
+        status: "Open",
+        title: "Buy Online pricing issue escalated",
+        summary: "A Buy Online pricing issue was researched and escalated to Ninjas.",
+        details: "The issue appeared to come with the new Buy Online flow."
+      },
+      {
+        id: 33,
+        issueDate: "2026-05-07",
+        dateLabel: "7 May 26",
+        timeNote: "Fixed same day",
+        category: "Website",
+        impactArea: "Website",
+        rootCause: "Configuration",
+        severity: "warning",
+        severityLabel: "404 error",
+        status: "Resolved",
+        title: "Rulebook 404 error repaired",
+        summary: "A Rulebook 404 error was raised with Ninjas and repaired on the same day.",
+        details: "This was a website availability issue affecting access to the Rulebook."
+      },
+      {
+        id: 34,
+        issueDate: "2026-05-11",
+        dateLabel: "11 May 26",
+        timeNote: "Impact analysis",
+        category: "Buy Online",
+        impactArea: "Lead Generation",
+        rootCause: "Process",
+        severity: "planned",
+        severityLabel: "Analysis",
+        status: "Resolved",
+        title: "Callback and Buy Online ecosystem impact provided",
+        summary: "An in-depth impact assessment was provided to the Head of Growth Marketing.",
+        details: "The assessment covered changes to callback, Buy Online and the broader lead ecosystem."
+      },
+      {
+        id: 35,
+        issueDate: "2026-05-21",
+        dateLabel: "21 May 26",
+        timeNote: "Escalation",
+        category: "Mobile Experience",
+        impactArea: "Lead Generation",
+        rootCause: "Process",
+        severity: "negative",
+        severityLabel: "Mobile impact",
+        status: "Open",
+        title: "Callback option not visible on mobile",
+        summary: "The callback option was not visible on mobile devices and exit intent form did not work on mobile.",
+        details: "This was escalated to Kerrie Chamberlain. More than 80% of website visitors use mobile devices."
+      },
+      {
+        id: 36,
+        issueDate: "2026-05-22",
+        dateLabel: "22 May 26",
+        timeNote: "Process issue",
+        category: "Data Quality",
+        impactArea: "Operations",
+        rootCause: "Process",
+        severity: "negative",
+        severityLabel: "Process impact",
+        status: "Open",
+        title: "Callback attribution and form naming issues identified",
+        summary: "Desktop callbacks were captured under Direct and form naming was incorrect in the HTML script.",
+        details: "Incorrect form labels caused Make processes to behave incorrectly across Buy Online, exit intent and callback forms."
+      }
+    ];
+
+    const monthFilter = document.getElementById("monthFilter");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const impactFilter = document.getElementById("impactFilter");
+    const rootCauseFilter = document.getElementById("rootCauseFilter");
+    const timelineRail = document.getElementById("timelineRail");
+    const issueTableBody = document.getElementById("issueTableBody");
+    const emptyState = document.getElementById("emptyState");
+    const reportMonthLabel = document.getElementById("reportMonthLabel");
+    const metricTotal = document.getElementById("metricTotal");
+    const metricOpen = document.getElementById("metricOpen");
+    const metricResolved = document.getElementById("metricResolved");
+    const metricTopCategory = document.getElementById("metricTopCategory");
+    const summaryText = document.getElementById("summaryText");
+    const testResults = document.getElementById("testResults");
+
+    const DEV = false;
+
+    function uniqueValues(items, key) {
+      return [...new Set(items.map(item => item[key]).filter(Boolean))];
+    }
+
+    function parseIssueDate(dateStr) {
+      const date = new Date(dateStr + "T00:00:00");
+      return Number.isNaN(date.getTime()) ? null : date;
+    }
+
+    function getMonthLabel(dateStr) {
+      const date = parseIssueDate(dateStr);
+      if (!date) return "Unknown";
+      return new Intl.DateTimeFormat("en", { month: "long", year: "numeric" }).format(date);
+    }
+
+    function statusClass(status) {
+      const normalized = String(status).trim().toLowerCase();
+      if (normalized === "in progress") return "progress";
+      if (normalized === "resolved") return "resolved";
+      return "open";
+    }
+
+    function sortMonthLabels(labels) {
+      return [...labels].sort((a, b) => new Date(a + " 1") - new Date(b + " 1"));
+    }
+
+    function optionList(values, allLabel) {
+      return [`<option value="all">${allLabel}</option>`, ...values.map(value => `<option value="${value}">${value}</option>`)].join("");
+    }
+
+    function buildFilters() {
+      const months = sortMonthLabels(uniqueValues(issues.map(issue => ({ month: getMonthLabel(issue.issueDate) })), "month"));
+      const categories = uniqueValues(issues, "category").sort((a, b) => a.localeCompare(b));
+      const impacts = uniqueValues(issues, "impactArea").sort((a, b) => a.localeCompare(b));
+      const rootCauses = uniqueValues(issues, "rootCause").sort((a, b) => a.localeCompare(b));
+
+      monthFilter.innerHTML = months.map(month => `<option value="${month}">${month}</option>`).join("");
+      categoryFilter.innerHTML = optionList(categories, "All categories");
+      impactFilter.innerHTML = optionList(impacts, "All impact areas");
+      rootCauseFilter.innerHTML = optionList(rootCauses, "All root causes");
+
+      monthFilter.value = months.includes("March 2026") ? "March 2026" : (months[months.length - 1] || "");
+      categoryFilter.value = "all";
+      impactFilter.value = "all";
+      rootCauseFilter.value = "all";
+    }
+
+    function getFilteredIssues() {
+      const selectedMonth = monthFilter.value;
+      const selectedCategory = categoryFilter.value;
+      const selectedImpact = impactFilter.value;
+      const selectedRootCause = rootCauseFilter.value;
+
+      return [...issues]
+        .filter(issue => getMonthLabel(issue.issueDate) === selectedMonth)
+        .filter(issue => selectedCategory === "all" || issue.category === selectedCategory)
+        .filter(issue => selectedImpact === "all" || issue.impactArea === selectedImpact)
+        .filter(issue => selectedRootCause === "all" || issue.rootCause === selectedRootCause)
+        .sort((a, b) => parseIssueDate(a.issueDate) - parseIssueDate(b.issueDate));
+    }
+
+    function renderTimeline(items) {
+      timelineRail.innerHTML = items.map(issue => `
+        <article class="event ${issue.severity}">
+          <div class="event-card">
+            <div class="event-top">
+              <div class="date-block">
+                <div class="date">${issue.dateLabel}</div>
+                <div class="time-note">${issue.timeNote}</div>
+              </div>
+              <div class="tags">
+                <span class="tag category">${issue.category}</span>
+                <span class="tag severity-${issue.severity}">${issue.severityLabel}</span>
+                <span class="tag impact">${issue.impactArea}</span>
+                <span class="tag root">${issue.rootCause}</span>
+              </div>
+            </div>
+            <h3 class="event-title">${issue.title}</h3>
+            <p class="event-summary">${issue.summary}</p>
+            <details>
+              <summary>View details</summary>
+              <div class="detail-body">${issue.details}</div>
+            </details>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderTable(items) {
+      issueTableBody.innerHTML = items.map(issue => `
+        <tr>
+          <td>${issue.dateLabel}</td>
+          <td>${issue.title}</td>
+          <td>${issue.category}</td>
+          <td>${issue.impactArea}</td>
+          <td>${issue.rootCause}</td>
+          <td><span class="status ${statusClass(issue.status)}">${issue.status}</span></td>
+        </tr>
+      `).join("");
+    }
+
+    function updateMetrics(items) {
+      const total = items.length;
+      const open = items.filter(item => ["Open", "In progress"].includes(item.status)).length;
+      const resolved = items.filter(item => item.status === "Resolved").length;
+      const counts = items.reduce((acc, item) => {
+        acc[item.category] = (acc[item.category] || 0) + 1;
+        return acc;
+      }, {});
+      const topCategory = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || "-";
+
+      metricTotal.textContent = String(total);
+      metricOpen.textContent = String(open);
+      metricResolved.textContent = String(resolved);
+      metricTopCategory.textContent = topCategory;
+    }
+
+    function updateSummary(items) {
+      if (!items.length) {
+        summaryText.innerHTML = "<strong>Current view:</strong> no issues match the selected filters.";
+        return;
+      }
+
+      const resolved = items.filter(item => item.status === "Resolved").length;
+      const active = items.filter(item => item.status !== "Resolved").length;
+      const critical = items.filter(item => item.severity === "critical").length;
+      const month = monthFilter.value;
+
+      summaryText.innerHTML = `<strong>Current view:</strong> ${month} shows ${items.length} logged items. ${resolved} resolved, ${active} active, and ${critical} critical impact items are visible after filters.`;
+    }
+
+    function render() {
+      const filteredIssues = getFilteredIssues();
+      reportMonthLabel.textContent = monthFilter.value ? monthFilter.value.split(" ")[0] : "Month";
+      renderTimeline(filteredIssues);
+      renderTable(filteredIssues);
+      updateMetrics(filteredIssues);
+      updateSummary(filteredIssues);
+      emptyState.style.display = filteredIssues.length ? "none" : "block";
+    }
+
+    function runTests() {
+      const results = [];
+      const assert = (name, condition) => results.push({ name, passed: Boolean(condition) });
+
+      assert("Month label derives from issueDate", getMonthLabel("2026-03-03") === "March 2026");
+      assert("Invalid dates return Unknown", getMonthLabel("not-a-date") === "Unknown");
+      assert("Status class maps In progress to progress", statusClass("In progress") === "progress");
+      assert("Status class maps Resolved to resolved", statusClass("Resolved") === "resolved");
+      assert("Status class defaults to open", statusClass("Open") === "open");
+      assert("Issues include impactArea", issues.every(issue => issue.impactArea));
+      assert("Issues include rootCause", issues.every(issue => issue.rootCause));
+      assert("October 2025 exists", issues.some(issue => getMonthLabel(issue.issueDate) === "October 2025"));
+      assert("March 2026 exists", issues.some(issue => getMonthLabel(issue.issueDate) === "March 2026"));
+      assert("May 2026 exists", issues.some(issue => getMonthLabel(issue.issueDate) === "May 2026"));
+
+      const passed = results.filter(result => result.passed).length;
+      const failed = results.length - passed;
+
+      if (DEV) {
+        testResults.style.display = "block";
+        testResults.innerHTML = `<strong>Checks:</strong> ${passed}/${results.length} passed${failed ? `, ${failed} failed` : ""}.`;
+      } else {
+        testResults.style.display = "none";
+      }
+
+      if (failed) console.error("Self-checks failed", results);
+      else console.log("Self-checks passed", results);
+    }
+
+    buildFilters();
+    runTests();
+    render();
+
+    monthFilter.addEventListener("change", render);
+    categoryFilter.addEventListener("change", render);
+    impactFilter.addEventListener("change", render);
+    rootCauseFilter.addEventListener("change", render);
+  </script>
+</body>
+</html>
