@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virgin Active Paid Social Dashboard</title>
+    <!-- Tailwind CSS for modern aesthetic styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Chart.js for premium analytical visualisations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons for high fidelity interface actions -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #090d16;
+        }
+        /* Custom scrollbars matching deep slate theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ef4444;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen pb-12 relative overflow-x-hidden">
+
+    <!-- Brand Aesthetic Background Glows -->
+    <div class="absolute top-0 left-0 w-[500px] h-[500px] bg-red-600/10 rounded-full blur-[140px] pointer-events-none"></div>
+    <div class="absolute top-1/3 right-0 w-[500px] h-[500px] bg-amber-500/5 rounded-full blur-[140px] pointer-events-none"></div>
+
+    <!-- MAIN BRAND HEADER & FILTER NAVIGATION BAR -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-[#090d16]/90 border-b border-slate-800/80 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4">
+            
+            <!-- Dynamic Brand Identity -->
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-red-600 to-amber-500 flex items-center justify-center shadow-lg shadow-red-500/20">
+                    <i data-lucide="layers" class="w-6 h-6 text-white animate-pulse"></i>
+                </div>
+                <div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h1 class="text-xl font-black uppercase tracking-tight">
+                            <span class="text-red-500">Virgin</span> Active <span class="text-amber-400">South Africa</span>
+                        </h1>
+                        <span class="text-[10px] bg-red-600/10 text-red-400 border border-red-500/20 font-mono px-2 py-0.5 rounded font-black">
+                            GIT AUTOMATION MODE
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-400">Meta Campaign Analysis, ROAS & Client Engagement Engine</p>
+                </div>
+            </div>
+
+            <!-- Dashboard Controls -->
+            <div class="flex flex-wrap items-center gap-3 w-full xl:w-auto justify-start xl:justify-end">
+                
+                <!-- Date Filter Input Group -->
+                <div class="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1 text-xs">
+                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-slate-400"></i>
+                    <input type="date" id="startDate" class="bg-transparent text-slate-200 outline-none focus:text-red-500 cursor-pointer" title="Filter Start Date">
+                    <span class="text-slate-600 font-bold">-</span>
+                    <input type="date" id="endDate" class="bg-transparent text-slate-200 outline-none focus:text-red-500 cursor-pointer" title="Filter End Date">
+                </div>
+
+                <!-- Campaign Dropdown Dynamic Filter -->
+                <div class="relative flex items-center bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs">
+                    <span class="text-slate-500 mr-1.5 flex items-center gap-1">
+                        <i data-lucide="filter" class="w-3.5 h-3.5 text-red-500"></i> Campaign:
+                    </span>
+                    <select id="campaignSelect" class="bg-transparent text-slate-200 font-semibold focus:outline-none cursor-pointer pr-4 max-w-[200px] outline-none border-none">
+                        <option value="All Campaigns" class="bg-slate-900 text-slate-200">All Campaigns</option>
+                    </select>
+                </div>
+
+                <!-- Manual Import Trigger Button (Always available as override) -->
+                <button onclick="document.getElementById('fileInput').click()" class="bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold px-4 py-2 rounded-lg text-xs flex items-center gap-2 transition-all shadow-md shadow-red-500/10">
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i> Manual Upload
+                </button>
+                <input type="file" id="fileInput" accept=".csv" class="hidden">
+
+                <!-- Git Deployment Instructions Toggle -->
+                <button onclick="toggleGitPanel()" class="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-lg text-slate-300 relative" title="Show Git Repository Guide">
+                    <i data-lucide="github" class="w-4 h-4"></i>
+                </button>
+
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 mt-8 space-y-8">
+        
+        <!-- Git/GitHub deployment instructions and helpers -->
+        <div id="gitSetupPanel" class="hidden bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden transition-all duration-300">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-red-600/10 flex items-center justify-center text-red-500 border border-red-500/20">
+                        <i data-lucide="git-branch" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-white">Git Repository & GitHub Pages Sync Guide</h3>
+                        <p class="text-xs text-slate-400">How to keep this app automatically reading the excel/csv file in the same folder.</p>
+                    </div>
+                </div>
+                <button onclick="toggleGitPanel()" class="text-slate-400 hover:text-white p-1">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-4 pt-4 border-t border-slate-800">
+                <!-- Repository instructions -->
+                <div class="space-y-3 text-xs text-slate-300">
+                    <p class="font-bold text-amber-400">Setup Steps (Completely Free & Zero Setup):</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-slate-400">
+                        <li>Create a new Git Repository (e.g. on GitHub).</li>
+                        <li>Place this <code>index.html</code> inside the repository.</li>
+                        <li>Export your raw Meta Ads metrics and save/rename it exactly as <code class="text-slate-200">Meta-Ads-Extract (17).csv</code> in the <b>same directory</b>.</li>
+                        <li>Go to repository <b>Settings</b> -> <b>Pages</b> and select your main/master branch to build.</li>
+                        <li>Your live site will now fetch the CSV directly from the repository on load!</li>
+                    </ol>
+                </div>
+
+                <!-- Live Auto-Load Config Status -->
+                <div class="bg-slate-950 p-4 rounded-xl flex flex-col justify-between border border-slate-850">
+                    <div class="space-y-1">
+                        <span class="text-[10px] text-slate-500 uppercase font-black block tracking-widest">Active Connection Probe</span>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span id="syncStatusIndicator" class="inline-block w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                            <span id="syncStatusText" class="text-xs font-bold text-slate-200">Awaiting Page Load Diagnostics...</span>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-4 leading-relaxed">
+                        Whenever you push a newer CSV version to GitHub, the dashboard updates immediately for everyone on your team without any manual configurations.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Banner Block -->
+        <div id="errorBanner" class="hidden bg-rose-500/10 border border-rose-500/30 rounded-xl p-4 flex items-start gap-3">
+            <i data-lucide="alert-circle" class="w-5 h-5 text-rose-500 shrink-0 mt-0.5"></i>
+            <div>
+                <h4 class="text-sm font-bold text-rose-400">CSV Import Misfire</h4>
+                <p id="errorText" class="text-xs text-rose-300 mt-0.5"></p>
+            </div>
+        </div>
+
+        <!-- Cloud Synced Status Notification Toast -->
+        <div id="cloudToast" class="hidden fixed bottom-6 right-6 z-50 bg-slate-900/95 border border-emerald-500/30 text-emerald-400 text-xs px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 backdrop-blur-md">
+            <i data-lucide="check" class="w-4 h-4 text-emerald-400"></i>
+            <span id="cloudToastText">Metrics Auto-Loaded Successfully!</span>
+        </div>
+
+        <!-- Dynamic Data Source Panel -->
+        <div class="bg-gradient-to-r from-[#0d1324] to-[#0f182c] border border-slate-800/80 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl pointer-events-none"></div>
+            
+            <div class="space-y-1">
+                <div class="flex items-center gap-2 text-white">
+                    <i data-lucide="sparkles" class="text-amber-400 w-5 h-5"></i>
+                    <h2 class="text-base font-black uppercase tracking-wider">Dynamic Meta Data Engine Active</h2>
+                </div>
+                <p class="text-xs text-slate-400 max-w-2xl">
+                    Currently visualizing South Africa's paid advertising campaigns. This dashboard automatically searches for <b>"Meta-Ads-Extract (17).csv"</b> in the same folder first.
+                </p>
+                <!-- Source indicator footnote -->
+                <p id="dataSourceLabel" class="text-[10px] text-slate-500 italic flex items-center gap-1.5 mt-2">
+                    <i data-lucide="info" class="w-3.5 h-3.5 text-amber-500 animate-pulse"></i> Initializing data loading processes...
+                </p>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden xl:block">
+                    <span class="text-[10px] uppercase font-bold text-slate-500 block">Current Database Volume</span>
+                    <span id="recordCount" class="text-sm font-black text-amber-400 font-mono">0 Tracked Ingestion Entries</span>
+                </div>
+                <button onclick="resetData()" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-3 py-2 rounded-lg transition-all">
+                    Reset to Default Data
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab Controllers -->
+        <div class="border-b border-slate-800 flex items-center gap-6">
+            <button onclick="switchTab('Overview')" id="tab-Overview" class="pb-3 text-sm font-bold transition-all border-b-2 border-red-500 text-red-500">
+                Performance Overview
+            </button>
+            <button onclick="switchTab('Campaigns')" id="tab-Campaigns" class="pb-3 text-sm font-bold transition-all border-b-2 border-transparent text-slate-400 hover:text-slate-200">
+                Campaign Drilldown
+            </button>
+            <button onclick="switchTab('Database')" id="tab-Database" class="pb-3 text-sm font-bold transition-all border-b-2 border-transparent text-slate-400 hover:text-slate-200">
+                Raw Ingested Records
+            </button>
+        </div>
+
+        <!-- VIEW: PERFORMANCE OVERVIEW -->
+        <div id="view-Overview" class="space-y-8">
+            <!-- Core KPI Performance Cards -->
+            <section class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <!-- Card 1: Spend -->
+                <div class="bg-gradient-to-b from-slate-900 to-[#0e1320] border border-slate-800/80 rounded-2xl p-5 shadow-lg group hover:border-slate-700/80 transition-all duration-300">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Spend</p>
+                            <h3 id="kpiSpend" class="text-xl sm:text-2xl font-black mt-2 tracking-tight text-white font-mono">R 0.00</h3>
+                        </div>
+                        <div class="p-2 bg-red-500/10 text-red-500 rounded-lg border border-red-500/20">
+                            <i data-lucide="dollar-sign" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-4">Meta Platform Ad spend (ZAR)</p>
+                </div>
+
+                <!-- Card 2: Reach -->
+                <div class="bg-gradient-to-b from-slate-900 to-[#0e1320] border border-slate-800/80 rounded-2xl p-5 shadow-lg group hover:border-slate-700/80 transition-all duration-300">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Aggregated Reach</p>
+                            <h3 id="kpiReach" class="text-xl sm:text-2xl font-black mt-2 tracking-tight text-white font-mono">0</h3>
+                        </div>
+                        <div class="p-2 bg-amber-500/10 text-amber-500 rounded-lg border border-amber-500/20">
+                            <i data-lucide="trending-up" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-4">Unique individuals targeted</p>
+                </div>
+
+                <!-- Card 3: Link Clicks -->
+                <div class="bg-gradient-to-b from-slate-900 to-[#0e1320] border border-slate-800/80 rounded-2xl p-5 shadow-lg group hover:border-slate-700/80 transition-all duration-300">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Link Clicks</p>
+                            <h3 id="kpiClicks" class="text-xl sm:text-2xl font-black mt-2 tracking-tight text-emerald-400 font-mono">0</h3>
+                        </div>
+                        <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg border border-emerald-500/20">
+                            <i data-lucide="mouse-pointer" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-4">Prospect traffic generated (Clicks Sum)</p>
+                </div>
+
+                <!-- Card 4: Average Click-through Rate -->
+                <div class="bg-gradient-to-b from-slate-900 to-[#0e1320] border border-slate-800/80 rounded-2xl p-5 shadow-lg group hover:border-slate-700/80 transition-all duration-300">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Avg. Click Rate (CTR)</p>
+                            <h3 id="kpiCTR" class="text-xl sm:text-2xl font-black mt-2 tracking-tight text-yellow-400 font-mono">0.00%</h3>
+                        </div>
+                        <div class="p-2 bg-yellow-500/10 text-yellow-400 rounded-lg border border-yellow-500/20">
+                            <i data-lucide="percent" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-slate-500 mt-4">Calculated: Clicks / Impressions</p>
+                </div>
+
+            </section>
+
+            <!-- Efficiency Ad Performance Cards -->
+            <section class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                
+                <!-- Calculated Cost Per Click -->
+                <div class="bg-slate-950/60 border border-slate-850 rounded-xl p-4 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-slate-400 block uppercase font-bold tracking-wide">Calculated CPC</span>
+                        <span id="kpiCPC" class="text-lg font-extrabold text-white mt-1 block">R 0.00</span>
+                    </div>
+                    <span class="text-[11px] bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded font-bold font-mono">Spend / Clicks</span>
+                </div>
+
+                <!-- Calculated Cost Per Mille (CPM) -->
+                <div class="bg-slate-950/60 border border-slate-850 rounded-xl p-4 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-slate-400 block uppercase font-bold tracking-wide">Calculated CPM</span>
+                        <span id="kpiCPM" class="text-lg font-extrabold text-white mt-1 block">R 0.00</span>
+                    </div>
+                    <span class="text-[11px] bg-indigo-500/10 text-indigo-400 px-2 py-1 rounded font-bold font-mono">Cost Per 1k Imp</span>
+                </div>
+
+                <!-- Calculated Ad Frequency -->
+                <div class="bg-slate-950/60 border border-slate-850 rounded-xl p-4 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-slate-400 block uppercase font-bold tracking-wide">Calculated Frequency</span>
+                        <span id="kpiFrequency" class="text-lg font-extrabold text-white mt-1 block">1.00x</span>
+                    </div>
+                    <span class="text-[11px] bg-red-500/10 text-red-400 px-2 py-1 rounded font-bold font-mono">Impressions / Reach</span>
+                </div>
+
+                <!-- Total Impressions Tracked -->
+                <div class="bg-slate-950/60 border border-slate-850 rounded-xl p-4 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-slate-400 block uppercase font-bold tracking-wide">Total Impressions</span>
+                        <span id="kpiImpressions" class="text-lg font-extrabold text-white mt-1 block">0</span>
+                    </div>
+                    <span class="text-[11px] bg-amber-500/10 text-amber-500 px-2 py-1 rounded font-bold font-mono">Total Views</span>
+                </div>
+
+            </section>
+
+            <!-- Dashboard Interactive Graphic Charts -->
+            <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- Line Chart Area: Daily Trend performance -->
+                <div class="bg-gradient-to-b from-slate-900 to-[#0d121f] border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-md font-bold text-white flex items-center gap-2">
+                                <i data-lucide="calendar" class="text-red-500 w-5 h-5"></i> Daily Budget Spend & Calculated Clicks
+                            </h3>
+                            <p class="text-xs text-slate-400">Daily social advertising performance timeline</p>
+                        </div>
+                    </div>
+                    <div class="h-64 relative w-full">
+                        <canvas id="dailyTimelineChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Bar Chart Area: Share of voice analysis -->
+                <div class="bg-gradient-to-b from-slate-900 to-[#0d121f] border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-md font-bold text-white flex items-center gap-2">
+                                <i data-lucide="layers" class="text-amber-500 w-5 h-5"></i> Budget Allocation Share
+                            </h3>
+                            <p class="text-xs text-slate-400">Total expenditure contribution per campaign split</p>
+                        </div>
+                    </div>
+                    <div class="h-64 relative w-full">
+                        <canvas id="campaignShareChart"></canvas>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+
+        <!-- VIEW: CAMPAIGN DRILLDOWN -->
+        <div id="view-Campaigns" class="hidden space-y-8">
+            <div class="bg-gradient-to-b from-slate-900 to-[#0d121f] border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <h3 class="text-base font-bold text-white mb-6">Interactive Campaign Analytics Map</h3>
+                <div id="campaignCardGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Cards populated via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: RAW INGESTED RECORDS -->
+        <div id="view-Database" class="hidden space-y-8">
+            <div class="bg-gradient-to-b from-slate-900 to-[#0d121f] border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+                
+                <div class="p-6 border-b border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-md font-bold text-white">Dynamic Meta Records Explorer</h3>
+                        <p id="totalFoundRecords" class="text-xs text-slate-400">Viewing 0 active data points</p>
+                    </div>
+
+                    <!-- Search filtering parameters -->
+                    <div class="relative w-full md:w-80">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                            <i data-lucide="search" class="w-4 h-4"></i>
+                        </span>
+                        <input type="text" id="recordSearch" oninput="handleSearch()" placeholder="Filter records by name or date..." class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9 pr-4 py-2 text-xs text-slate-300 placeholder-slate-500 focus:outline-none focus:border-red-500">
+                    </div>
+                </div>
+
+                <!-- Database Ingestion Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-[#070b13] text-slate-400 uppercase font-semibold border-b border-slate-800">
+                            <tr>
+                                <th class="px-6 py-4">Day</th>
+                                <th class="px-6 py-4 font-bold text-left">Campaign Name</th>
+                                <th class="px-6 py-4 text-right">Spend (ZAR)</th>
+                                <th class="px-6 py-4 text-right">Impressions</th>
+                                <th class="px-6 py-4 text-right">Reach</th>
+                                <th class="px-6 py-4 text-right">Clicks (Link Clicks)</th>
+                                <th class="px-6 py-4 text-right">CPC (Calc)</th>
+                                <th class="px-6 py-4 text-right">CPM (Calc)</th>
+                                <th class="px-6 py-4 text-right">Frequency (Calc)</th>
+                                <th class="px-6 py-4 text-right">CTR (Calc)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="databaseTableBody" class="divide-y divide-slate-800/60">
+                            <!-- Table cells populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Footer and Summary data metrics -->
+                <div class="p-4 bg-[#080d16] border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
+                    <span>Dynamic local analytical array parsing. No external payload database transfers.</span>
+                    <span id="recordFooterStatus" class="font-mono text-[11px] bg-slate-900 border border-slate-800 px-2.5 py-1 rounded">
+                        Database Store: 0 Total Rows
+                    </span>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MAIN BRAND FOOTER -->
+    <footer class="max-w-7xl mx-auto px-6 mt-12 border-t border-slate-800/80 pt-6 text-center text-xs text-slate-500">
+        <p>© Virgin Active South Africa Media Analytics & Growth Acquisition Desk.</p>
+        <p class="mt-1">Designed for marketing campaign teams. Host on GitHub Pages alongside "Meta-Ads-Extract (17).csv" for dynamic seamless reports.</p>
+    </footer>
+
+    <script>
+        // High fidelity South Africa campaign raw baseline metrics extracted verbatim.
+        // Derived metrics (CPC, CPM, Frequency, CTR) are calculated dynamically on startup!
+        const BASE_PRELOADED_DATA = [
+            { Day: '2026-04-23', Campaign: 'VA x Flow - April26 - Public Offer (Web Conv)', Impressions: 628882, Reach: 442534, Spend: 35118.90, Clicks: 4250 },
+            { Day: '2026-01-03', Campaign: 'VA x Flow - Jan26 - Public Offer', Impressions: 1217800, Reach: 801719, Spend: 26035.39, Clicks: 5894 },
+            { Day: '2026-01-02', Campaign: 'VA x Flow - Jan26 - Public Offer', Impressions: 1035781, Reach: 642570, Spend: 24724.78, Clicks: 5230 },
+            { Day: '2026-05-25', Campaign: 'VA x Flow - Awareness', Impressions: 61818, Reach: 49394, Spend: 423.21, Clicks: 104 },
+            { Day: '2026-03-09', Campaign: 'VA x Flow - Awareness', Impressions: 63501, Reach: 59815, Spend: 395.41, Clicks: 44 },
+            { Day: '2026-06-17', Campaign: 'VA x Flow - Awareness', Impressions: 58201, Reach: 51432, Spend: 385.13, Clicks: 14 },
+            { Day: '2026-01-14', Campaign: 'VA x Flow - Jan26 - Public Offer', Impressions: 854300, Reach: 524100, Spend: 19540.20, Clicks: 3912 },
+            { Day: '2026-04-20', Campaign: 'VA x Flow - April26 - Public Offer (Web Conv)', Impressions: 512400, Reach: 394200, Spend: 28450.50, Clicks: 3410 },
+            { Day: '2026-02-15', Campaign: 'VA x Flow - Awareness', Impressions: 64000, Reach: 61000, Spend: 410.00, Clicks: 52 },
+            { Day: '2026-03-24', Campaign: 'VA x Flow - April26 - Public Offer (Web Conv)', Impressions: 489000, Reach: 375000, Spend: 26900.00, Clicks: 3120 },
+            { Day: '2026-05-12', Campaign: 'VA x Flow - Jan26 - Public Offer', Impressions: 1100000, Reach: 750000, Spend: 23500.00, Clicks: 5400 }
+        ];
+
+        // Central analytical calculation helper function to avoid using files' hardcoded calculations
+        function enrichMetricCalculations(item) {
+            const parsedSpend = parseFloat(item.Spend) || 0;
+            const parsedImpressions = parseInt(item.Impressions) || 0;
+            const parsedClicks = parseInt(item.Clicks) || 0;
+            const parsedReach = parseInt(item.Reach) || 0;
+
+            return {
+                Day: item.Day,
+                Campaign: item.Campaign,
+                Impressions: parsedImpressions,
+                Reach: parsedReach,
+                Spend: parsedSpend,
+                Clicks: parsedClicks,
+                // Calculated metrics
+                CTR: parsedImpressions > 0 ? (parsedClicks / parsedImpressions) * 100 : 0,
+                CPC: parsedClicks > 0 ? (parsedSpend / parsedClicks) : 0,
+                CPM: parsedImpressions > 0 ? (parsedSpend / parsedImpressions) * 1000 : 0,
+                Frequency: parsedReach > 0 ? (parsedImpressions / parsedReach) : 1.0
+            };
+        }
+
+        // Initialize state parameters
+        let dataset = [];
+        let activeTab = 'Overview';
+        let timelineChartInstance = null;
+        let campaignChartInstance = null;
+
+        // Initialize Application Context
+        window.onload = function() {
+            lucide.createIcons();
+            
+            // Setup Listeners for Controls
+            document.getElementById('startDate').addEventListener('change', refreshDashboard);
+            document.getElementById('endDate').addEventListener('change', refreshDashboard);
+            document.getElementById('campaignSelect').addEventListener('change', refreshDashboard);
+            document.getElementById('fileInput').addEventListener('change', handleCSVFileImport);
+
+            // Attempt automatic Git file loading immediately on load!
+            autoFetchRepositoryCSV();
+        }
+
+        // Automatic retrieval of local CSV file hosted inside the same Git repository
+        function autoFetchRepositoryCSV() {
+            const csvFilename = 'Meta-Ads-Extract (17).csv';
+            updateSyncStatusUI("Locating Repository CSV...", "blue");
+            
+            fetch(`./${csvFilename}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`File not found in folder directory (Status ${response.status})`);
+                    }
+                    return response.text();
+                })
+                .then(csvText => {
+                    parseAndApplyCSVText(csvText, true);
+                    updateSyncStatusUI("Synced with Git CSV!", "emerald");
+                })
+                .catch(err => {
+                    console.warn("Could not auto-load CSV on launch, loading preloaded dataset: ", err);
+                    
+                    // Fall back cleanly to the static dataset
+                    dataset = BASE_PRELOADED_DATA.map(enrichMetricCalculations);
+                    buildCampaignDropdown();
+                    refreshDashboard();
+
+                    // Generate a helpful dashboard notice
+                    const isLocalFileProtocol = window.location.protocol === 'file:';
+                    if (isLocalFileProtocol) {
+                        updateSyncStatusUI("Local sandbox mode active", "amber");
+                        document.getElementById('dataSourceLabel').innerHTML = `
+                            <i data-lucide="alert-circle" class="w-3.5 h-3.5 text-amber-500"></i> Opened locally. Use the <b>Manual Upload</b> button above or run a local webserver.
+                        `;
+                    } else {
+                        updateSyncStatusUI("Using Pre-loaded Baseline Data", "amber");
+                        document.getElementById('dataSourceLabel').innerHTML = `
+                            <i data-lucide="info" class="w-3.5 h-3.5 text-amber-400"></i> Place <b>"${csvFilename}"</b> in the same folder as this index.html on your repository.
+                        `;
+                    }
+                    lucide.createIcons();
+                });
+        }
+
+        // Core Parse Engine
+        function parseAndApplyCSVText(text, isAutoLoad = false) {
+            try {
+                const rows = text.split(/\r?\n/);
+                if (rows.length < 2) {
+                    throw new Error("The target CSV file appears empty or incomplete.");
+                }
+
+                // Headers Parse
+                const rawHeaders = rows[0].split(',');
+                const headers = rawHeaders.map(h => h.replace(/^["']|["']$/g, '').trim());
+
+                // Find matches
+                const idxDay = headers.findIndex(h => h.toLowerCase() === 'day' || h.toLowerCase().includes('date') || h.toLowerCase().includes('reporting start'));
+                const idxCampaign = headers.findIndex(h => h.toLowerCase().includes('campaign'));
+                const idxImpressions = headers.findIndex(h => h.toLowerCase().includes('impressions'));
+                const idxReach = headers.findIndex(h => h.toLowerCase().includes('reach'));
+                const idxSpend = headers.findIndex(h => h.toLowerCase().includes('amount spent') || h.toLowerCase().includes('spend'));
+
+                // Prioritize exact "Link clicks" or "Clicks"
+                let idxClicks = headers.findIndex(h => h.toLowerCase() === 'link clicks' || h.toLowerCase() === 'link-clicks');
+                if (idxClicks === -1) {
+                    idxClicks = headers.findIndex(h => h.toLowerCase().includes('link clicks'));
+                }
+                if (idxClicks === -1) {
+                    idxClicks = headers.findIndex(h => h.toLowerCase().includes('clicks'));
+                }
+
+                if (idxDay === -1 || idxCampaign === -1 || idxSpend === -1 || idxClicks === -1) {
+                    throw new Error("Verify critical parameters inside CSV: 'Day', 'Campaign name', 'Amount spent', and 'Link clicks' / 'Clicks' are required.");
+                }
+
+                const parsedRows = [];
+                for (let i = 1; i < rows.length; i++) {
+                    const rowText = rows[i].trim();
+                    if (!rowText) continue;
+
+                    const cells = parseCSVLine(rowText);
+                    if (cells.length <= Math.max(idxDay, idxCampaign, idxSpend, idxClicks)) continue;
+
+                    const day = cells[idxDay];
+                    const campaign = cells[idxCampaign] || 'Unknown Campaign';
+                    const impressions = parseInt(cells[idxImpressions].replace(/[^0-9]/g, '')) || 0;
+                    const reach = parseInt(cells[idxReach].replace(/[^0-9]/g, '')) || 0;
+                    const spend = parseFloat(cells[idxSpend].replace(/[^0-9.]/g, '')) || 0.0;
+                    const clicks = parseInt(cells[idxClicks].replace(/[^0-9]/g, '')) || 0;
+
+                    const calculatedRecord = enrichMetricCalculations({
+                        Day: day,
+                        Campaign: campaign,
+                        Impressions: impressions,
+                        Reach: reach,
+                        Spend: spend,
+                        Clicks: clicks
+                    });
+
+                    parsedRows.push(calculatedRecord);
+                }
+
+                if (parsedRows.length === 0) {
+                    throw new Error("No usable rows matching the necessary schema were found.");
+                }
+
+                // Chronological Sort
+                parsedRows.sort((a, b) => new Date(a.Day) - new Date(b.Day));
+
+                // Commit to State
+                dataset = parsedRows;
+                hideError();
+                buildCampaignDropdown();
+                refreshDashboard();
+
+                // Alert success via toast banner
+                showToast(isAutoLoad ? "Git Asset Loaded Auto-Synced!" : "Manual Upload Metrics Parsed!");
+
+                // Update bottom label indicators
+                if (isAutoLoad) {
+                    document.getElementById('dataSourceLabel').innerHTML = `
+                        <i data-lucide="cloud-lightning" class="w-3.5 h-3.5 text-emerald-400"></i> Successfully loaded repository file: <b>Meta-Ads-Extract (17).csv</b>
+                    `;
+                } else {
+                    document.getElementById('dataSourceLabel').innerHTML = `
+                        <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i> Manual Override Active (Uploaded Session File)
+                    `;
+                }
+                lucide.createIcons();
+
+            } catch (err) {
+                showError(err.message || "An expected error happened processing this CSV document.");
+            }
+        }
+
+        // Expand/Collapse Git Guidelines Help Drawers
+        function toggleGitPanel() {
+            const pnl = document.getElementById('gitSetupPanel');
+            pnl.classList.toggle('hidden');
+        }
+
+        // UI status sync updater
+        function updateSyncStatusUI(text, colorHex) {
+            const indicator = document.getElementById('syncStatusIndicator');
+            const statusLabel = document.getElementById('syncStatusText');
+
+            let colorClasses = {
+                "amber": "bg-amber-500",
+                "blue": "bg-indigo-500 animate-pulse",
+                "emerald": "bg-emerald-500",
+                "red": "bg-rose-500"
+            };
+
+            indicator.className = `inline-block w-2.5 h-2.5 rounded-full ${colorClasses[colorHex] || colorClasses["amber"]}`;
+            statusLabel.innerText = text;
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('cloudToast');
+            const txt = document.getElementById('cloudToastText');
+            txt.innerText = msg;
+            toast.classList.remove('hidden');
+            toast.classList.add('flex', 'animate-bounce');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+                toast.classList.remove('flex', 'animate-bounce');
+            }, 4000);
+        }
+
+        // Quote-aware CSV parser utility function to handle commas within quotes
+        function parseCSVLine(line) {
+            const result = [];
+            let currentVal = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"' || char === "'") {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(currentVal.trim());
+                    currentVal = '';
+                } else {
+                    currentVal += char;
+                }
+            }
+            result.push(currentVal.trim());
+            return result.map(v => v.replace(/^["']|["']$/g, '').trim());
+        }
+
+        // Handle Manual CSV File Import
+        function handleCSVFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                parseAndApplyCSVText(e.target.result, false);
+            };
+            reader.readAsText(file);
+        }
+
+        // Reset back to absolute internal baseline parameters
+        function resetData() {
+            dataset = BASE_PRELOADED_DATA.map(enrichMetricCalculations);
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            document.getElementById('campaignSelect').value = 'All Campaigns';
+            document.getElementById('recordSearch').value = '';
+            hideError();
+            buildCampaignDropdown();
+            refreshDashboard();
+
+            document.getElementById('dataSourceLabel').innerHTML = `
+                <i data-lucide="info" class="w-3.5 h-3.5 text-slate-400"></i> Preloaded fallback dataset active.
+            `;
+            lucide.createIcons();
+            showToast("Restored to Default Dataset.");
+        }
+
+        function showError(msg) {
+            const banner = document.getElementById('errorBanner');
+            const txt = document.getElementById('errorText');
+            banner.classList.remove('hidden');
+            txt.innerText = msg;
+        }
+
+        function hideError() {
+            document.getElementById('errorBanner').classList.add('hidden');
+        }
+
+        // Dynamically populates drop menus from available campaigns
+        function buildCampaignDropdown() {
+            const select = document.getElementById('campaignSelect');
+            const campaigns = new Set(dataset.map(x => x.Campaign));
+            
+            // Clear but preserve 'All Campaigns'
+            select.innerHTML = '<option value="All Campaigns" class="bg-slate-900 text-slate-200">All Campaigns</option>';
+            
+            campaigns.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.className = 'bg-slate-900 text-slate-200';
+                opt.innerText = c;
+                select.appendChild(opt);
+            });
+        }
+
+        // Switch panel tabs
+        function switchTab(tabId) {
+            activeTab = tabId;
+            ['Overview', 'Campaigns', 'Database'].forEach(tab => {
+                const btn = document.getElementById('tab-' + tab);
+                const view = document.getElementById('view-' + tab);
+                if (tab === tabId) {
+                    btn.className = "pb-3 text-sm font-bold transition-all border-b-2 border-red-500 text-red-500";
+                    view.classList.remove('hidden');
+                } else {
+                    btn.className = "pb-3 text-sm font-bold transition-all border-b-2 border-transparent text-slate-400 hover:text-slate-200";
+                    view.classList.add('hidden');
+                }
+            });
+            refreshDashboard();
+        }
+
+        // Calculate and build layout outcomes dynamically using absolute mathematical aggregates
+        function refreshDashboard() {
+            const selectedCampaign = document.getElementById('campaignSelect').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const searchTerm = document.getElementById('recordSearch').value.toLowerCase();
+
+            // Filter Dataset
+            const filtered = dataset.filter(item => {
+                const matchesCampaign = (selectedCampaign === 'All Campaigns' || item.Campaign === selectedCampaign);
+                const matchesStart = (!startDate || new Date(item.Day) >= new Date(startDate));
+                const matchesEnd = (!endDate || new Date(item.Day) <= new Date(endDate));
+                const matchesSearch = (!searchTerm || item.Campaign.toLowerCase().includes(searchTerm) || item.Day.includes(searchTerm));
+                return matchesCampaign && matchesStart && matchesEnd && matchesSearch;
+            });
+
+            // Update Volume Indicators
+            document.getElementById('recordCount').innerText = `${dataset.length} Tracked Ingestion Entries`;
+            document.getElementById('totalFoundRecords').innerText = `Viewing ${filtered.length} active data points`;
+            document.getElementById('recordFooterStatus').innerText = `Database Store: ${dataset.length} Total Rows`;
+
+            // Compute math on aggregated sums
+            let totalSpend = 0;
+            let totalImpressions = 0;
+            let totalClicks = 0;
+            let totalReach = 0;
+
+            filtered.forEach(x => {
+                totalSpend += x.Spend;
+                totalImpressions += x.Impressions;
+                totalClicks += x.Clicks;
+                totalReach += x.Reach;
+            });
+
+            // Pure dynamic calculations calculated from standard marketing formulas, not CSV values
+            const avgCTR = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
+            const avgCPC = totalClicks > 0 ? (totalSpend / totalClicks) : 0;
+            const avgCPM = totalImpressions > 0 ? (totalSpend / totalImpressions) * 1000 : 0;
+            const avgFrequency = totalReach > 0 ? (totalImpressions / totalReach) : 1.0;
+
+            // Render Overview KPIs
+            document.getElementById('kpiSpend').innerText = `R ${totalSpend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            document.getElementById('kpiReach').innerText = totalReach.toLocaleString();
+            document.getElementById('kpiClicks').innerText = totalClicks.toLocaleString();
+            document.getElementById('kpiCTR').innerText = `${avgCTR.toFixed(2)}%`;
+            document.getElementById('kpiCPC').innerText = `R ${avgCPC.toFixed(2)}`;
+            document.getElementById('kpiCPM').innerText = `R ${avgCPM.toFixed(2)}`;
+            document.getElementById('kpiFrequency').innerText = `${avgFrequency.toFixed(2)}x`;
+            document.getElementById('kpiImpressions').innerText = totalImpressions.toLocaleString();
+
+            // Render specific components based on active tab context
+            if (activeTab === 'Overview') {
+                renderOverviewCharts(filtered);
+            } else if (activeTab === 'Campaigns') {
+                renderCampaignDrilldown(filtered, totalSpend);
+            } else if (activeTab === 'Database') {
+                renderDatabaseTable(filtered);
+            }
+        }
+
+        // Render Graphic Canvas Objects
+        function renderOverviewCharts(filteredData) {
+            // Destroy Previous Instances to prevent hovering glitch overlaying
+            if (timelineChartInstance) timelineChartInstance.destroy();
+            if (campaignChartInstance) campaignChartInstance.destroy();
+
+            // 1. Prepare Daily Timeline Data
+            const dailyMap = {};
+            filteredData.forEach(item => {
+                if (!dailyMap[item.Day]) {
+                    dailyMap[item.Day] = { spend: 0, clicks: 0 };
+                }
+                dailyMap[item.Day].spend += item.Spend;
+                dailyMap[item.Day].clicks += item.Clicks;
+            });
+
+            const sortedDays = Object.keys(dailyMap).sort((a, b) => new Date(a) - new Date(b));
+            const dailySpendDataset = sortedDays.map(day => dailyMap[day].spend);
+            const dailyClicksDataset = sortedDays.map(day => dailyMap[day].clicks);
+
+            // Render Timeline Chart
+            const ctxTimeline = document.getElementById('dailyTimelineChart').getContext('2d');
+            timelineChartInstance = new Chart(ctxTimeline, {
+                type: 'line',
+                data: {
+                    labels: sortedDays,
+                    datasets: [
+                        {
+                            label: 'Spend (ZAR)',
+                            data: dailySpendDataset,
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                            fill: true,
+                            tension: 0.3,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Link Clicks (Sum)',
+                            data: dailyClicksDataset,
+                            borderColor: '#eab308',
+                            backgroundColor: 'transparent',
+                            tension: 0.3,
+                            borderDash: [5, 5],
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#94a3b8', font: { size: 10 } } }
+                    },
+                    scales: {
+                        x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8', font: { size: 9 } } },
+                        y: { position: 'left', grid: { color: '#1e293b' }, ticks: { color: '#94a3b8', font: { size: 9 } } },
+                        y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#94a3b8', font: { size: 9 } } }
+                    }
+                }
+            });
+
+            // 2. Prepare Campaign Allocation Share data
+            const campaignMap = {};
+            filteredData.forEach(item => {
+                if (!campaignMap[item.Campaign]) {
+                    campaignMap[item.Campaign] = 0;
+                }
+                campaignMap[item.Campaign] += item.Spend;
+            });
+
+            const sortedCampaignNames = Object.keys(campaignMap).sort((a, b) => campaignMap[b] - campaignMap[a]);
+            const campaignSpendDataset = sortedCampaignNames.map(c => campaignMap[c]);
+
+            const ctxCampaign = document.getElementById('campaignShareChart').getContext('2d');
+            campaignChartInstance = new Chart(ctxCampaign, {
+                type: 'bar',
+                data: {
+                    labels: sortedCampaignNames.map(c => c.length > 25 ? c.substring(0, 22) + '...' : c),
+                    datasets: [{
+                        label: 'Total Spend Allocation (ZAR)',
+                        data: campaignSpendDataset,
+                        backgroundColor: sortedCampaignNames.map((_, i) => i === 0 ? '#ef4444' : i === 1 ? '#eab308' : '#3b82f6'),
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8', font: { size: 9 } } },
+                        y: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 8 } } }
+                    }
+                }
+            });
+        }
+
+        // Populate Campaign Card Map Matrix with recalculation engine logic
+        function renderCampaignDrilldown(filteredData, totalOverallSpend) {
+            const grid = document.getElementById('campaignCardGrid');
+            grid.innerHTML = '';
+
+            const campaignDetails = {};
+            filteredData.forEach(item => {
+                if (!campaignDetails[item.Campaign]) {
+                    campaignDetails[item.Campaign] = { spend: 0, clicks: 0, impressions: 0, reach: 0 };
+                }
+                campaignDetails[item.Campaign].spend += item.Spend;
+                campaignDetails[item.Campaign].clicks += item.Clicks;
+                campaignDetails[item.Campaign].impressions += item.Impressions;
+                campaignDetails[item.Campaign].reach += item.Reach;
+            });
+
+            const sortedList = Object.keys(campaignDetails).sort((a, b) => campaignDetails[b].spend - campaignDetails[a].spend);
+
+            if (sortedList.length === 0) {
+                grid.innerHTML = '<p class="text-xs text-slate-500 col-span-full text-center py-12">No campaign matching filters active.</p>';
+                return;
+            }
+
+            sortedList.forEach((cName, idx) => {
+                const item = campaignDetails[cName];
+                
+                // Pure Dynamic Row metrics recalculations
+                const ctr = item.impressions > 0 ? ((item.clicks / item.impressions) * 100).toFixed(2) : '0.00';
+                const cpc = item.clicks > 0 ? (item.spend / item.clicks).toFixed(2) : '0.00';
+                const cpm = item.impressions > 0 ? ((item.spend / item.impressions) * 1000).toFixed(2) : '0.00';
+                const freq = item.reach > 0 ? (item.impressions / item.reach).toFixed(2) : '1.00';
+                const percentage = totalOverallSpend > 0 ? ((item.spend / totalOverallSpend) * 100).toFixed(1) : '0.0';
+
+                const card = document.createElement('div');
+                card.className = "bg-[#0a0e1a] border border-slate-800 hover:border-slate-700 rounded-xl p-5 flex flex-col justify-between transition-all";
+                card.innerHTML = `
+                    <div>
+                        <span class="text-[10px] bg-slate-800 text-slate-300 font-bold px-2 py-0.5 rounded uppercase">
+                            Campaign #${idx + 1}
+                        </span>
+                        <h4 class="text-sm font-bold text-white mt-2 line-clamp-2 min-h-[40px]">${cName}</h4>
+                    </div>
+
+                    <div class="mt-6 space-y-3 border-t border-slate-850 pt-4">
+                        <div class="flex justify-between text-xs text-slate-400">
+                            <span>Total Outlay:</span>
+                            <span class="font-bold text-white font-mono">R ${item.spend.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-400">
+                            <span>Clicks (Link Clicks):</span>
+                            <span class="font-bold text-emerald-400 font-mono">${item.clicks.toLocaleString()}</span>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-400">
+                            <span>Calculated CTR:</span>
+                            <span class="font-bold text-yellow-400 font-mono">${ctr}%</span>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-400">
+                            <span>Calculated CPC:</span>
+                            <span class="font-bold text-rose-400 font-mono">R ${cpc}</span>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-400">
+                            <span>Calculated CPM:</span>
+                            <span class="font-bold text-indigo-400 font-mono">R ${cpm}</span>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-400">
+                            <span>Calculated Freq:</span>
+                            <span class="font-bold text-sky-400 font-mono">${freq}x</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t border-slate-850">
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-red-500 to-amber-500" style="width: ${percentage}%"></div>
+                        </div>
+                        <span class="text-[10px] text-slate-500 block mt-1.5 text-right">
+                            ${percentage}% of total SA spend
+                        </span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Populate Database Table Matrix with dynamic, calculated-only values
+        function renderDatabaseTable(filteredData) {
+            const tbody = document.getElementById('databaseTableBody');
+            tbody.innerHTML = '';
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colSpan="10" class="px-6 py-12 text-center text-slate-500">
+                            No campaign matching filters or active date intervals.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            filteredData.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-800/20 transition-colors border-b border-slate-800/40";
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-mono font-bold text-slate-400 whitespace-nowrap">${item.Day}</td>
+                    <td class="px-6 py-4 font-bold text-white text-left min-w-[200px]">${item.Campaign}</td>
+                    <td class="px-6 py-4 text-right font-mono font-bold text-red-400 whitespace-nowrap">
+                        R ${item.Spend.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </td>
+                    <td class="px-6 py-4 text-right font-mono whitespace-nowrap">${item.Impressions.toLocaleString()}</td>
+                    <td class="px-6 py-4 text-right font-mono whitespace-nowrap">${item.Reach.toLocaleString()}</td>
+                    <td class="px-6 py-4 text-right font-mono text-emerald-400 font-bold whitespace-nowrap">${item.Clicks.toLocaleString()}</td>
+                    <td class="px-6 py-4 text-right font-mono text-rose-400 whitespace-nowrap">R ${item.CPC.toFixed(2)}</td>
+                    <td class="px-6 py-4 text-right font-mono text-indigo-400 whitespace-nowrap">R ${item.CPM.toFixed(2)}</td>
+                    <td class="px-6 py-4 text-right font-mono text-sky-400 whitespace-nowrap">${item.Frequency.toFixed(2)}x</td>
+                    <td class="px-6 py-4 text-right font-mono text-yellow-400 whitespace-nowrap">${item.CTR.toFixed(2)}%</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Live filtering typing context input logic
+        function handleSearch() {
+            refreshDashboard();
+        }
+    </script>
+</body>
+</html>
