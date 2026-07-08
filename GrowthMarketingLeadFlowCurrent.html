@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growth Marketing Conversion Flow Map</title>
+    <!-- Tailwind CSS for high fidelity dashboard UI overlay -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0f19;
+            overflow: hidden;
+        }
+        canvas {
+            cursor: grab;
+        }
+        canvas:active {
+            cursor: grabbing;
+        }
+        /* Custom scrollbar for sidebar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.3);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.8);
+        }
+    </style>
+</head>
+<body class="w-screen h-screen text-slate-100 flex flex-col md:flex-row select-none">
+
+    <!-- Interactive Dashboard Left Panel -->
+    <div class="w-full md:w-80 bg-slate-950/80 backdrop-blur-md border-b md:border-b-0 md:border-r border-slate-800 flex flex-col z-10 shrink-0 shadow-2xl">
+        <!-- Header -->
+        <div class="p-6 border-b border-slate-800 bg-gradient-to-r from-blue-950/20 to-indigo-950/20">
+            <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 rounded-full bg-blue-500 animate-pulse"></div>
+                <span class="text-xs font-bold tracking-wider text-blue-400 uppercase">Growth Marketing Lead Flow Current</span>
+            </div>
+            <h1 class="text-xl font-extrabold mt-1 text-white tracking-tight">Conversion Flow</h1>
+            <p class="text-xs text-slate-400 mt-1">Interactive interactive mapping of leads & campaign routing paths.</p>
+        </div>
+
+        <!-- Dynamic Context Details -->
+        <div class="flex-1 p-6 overflow-y-auto space-y-6">
+            <!-- Instructions -->
+            <div class="bg-slate-900/50 border border-slate-800/80 rounded-xl p-4">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-2 flex items-center">
+                    <svg class="w-4 h-4 mr-1.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    How to Interact
+                </h3>
+                <ul class="text-xs text-slate-400 space-y-1.5 list-disc pl-4 leading-relaxed">
+                    <li><strong class="text-slate-200">Hover</strong> over any node to highlight its entire upstream & downstream pathway.</li>
+                    <li><strong class="text-slate-200">Drag/Pan</strong> the canvas to shift view space.</li>
+                    <li><strong class="text-slate-200">Scroll Wheel</strong> to Zoom in/out.</li>
+                    <li>Watch the animated pulses trace lead flow.</li>
+                </ul>
+            </div>
+
+            <!-- Dynamic Info Box -->
+            <div id="info-box" class="space-y-4">
+                <div class="text-center py-6 text-slate-500 border border-dashed border-slate-800 rounded-xl">
+                    <svg class="w-8 h-8 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                    <span class="text-xs">Hover a node to view dynamic details & path intelligence.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="p-6 border-t border-slate-800 bg-slate-950/90 text-xs">
+            <h4 class="font-bold text-slate-400 mb-3 uppercase tracking-wider">Color Map Codes</h4>
+            <div class="grid grid-cols-2 gap-2">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded bg-blue-500 block"></span>
+                    <span class="text-slate-300">Strategy</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded bg-amber-500 block"></span>
+                    <span class="text-slate-300">Channel</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded bg-indigo-500 block"></span>
+                    <span class="text-slate-300">Tactic</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded bg-emerald-500 block"></span>
+                    <span class="text-slate-300">Form UI</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded bg-purple-400 block"></span>
+                    <span class="text-slate-300">Conversion</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-2.5 h-2.5 rounded bg-rose-500 block"></span>
+                    <span class="text-slate-300">Destination</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Canvas View Area -->
+    <div class="flex-1 relative h-full w-full">
+        <canvas id="flowCanvas" class="w-full h-full block"></canvas>
+
+        <!-- Canvas Floating Controls -->
+        <div class="absolute bottom-6 right-6 flex items-center bg-slate-900/90 backdrop-blur border border-slate-800 rounded-lg p-1.5 shadow-xl space-x-1">
+            <button onclick="zoom(0.1)" class="p-2 hover:bg-slate-800 rounded text-slate-300 transition-colors" title="Zoom In">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            </button>
+            <button onclick="zoom(-0.1)" class="p-2 hover:bg-slate-800 rounded text-slate-300 transition-colors" title="Zoom Out">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+            </button>
+            <button onclick="resetView()" class="p-2 hover:bg-slate-800 rounded text-slate-300 transition-colors" title="Fit Screen / Reset">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"></path></svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('flowCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Flow Graph Model & Node Setup
+        // Categories: 0: Main, 1: Channels, 2: Sub-Channels, 3: Form Types, 4: Conversion Types, 5: Destination Handover
+        const nodes = [
+            // Level 0: Main Node
+            { id: 'marketing', name: 'Growth Marketing', desc: 'Central tactical growth engine coordinating all leads and organic acquisition channels.', level: 0, color: '#3b82f6' },
+
+            // Level 1: Channels
+            { id: 'search', name: 'Paid Search', desc: 'Sponsorship and target keyword campaigns capturing active high-intent search requests.', level: 1, color: '#f59e0b' },
+            { id: 'social', name: 'Paid Social', desc: 'Targeted visual and vital brand advertising programs across tier-1 social networks.', level: 1, color: '#f59e0b' },
+            { id: 'organic', name: 'Organic', desc: 'Unpaid traffic incoming via search engine optimization, content indexing, and domain trust.', level: 1, color: '#f59e0b' },
+            { id: 'direct', name: 'Direct', desc: 'Direct browser visits, word-of-mouth branding, bookmarks, and untracked navigation.', level: 1, color: '#f59e0b' },
+
+            // Level 2: Sub Channels
+            // Paid Search Split
+            { id: 'brand_pub', name: 'Brand Public', desc: 'Paid Search campaign capturing brand-name queries for general/public search traffic.', level: 2, color: '#6366f1', formType: 'typeform' },
+            { id: 'brand_vit', name: 'Brand Vitality', desc: 'Paid Search campaign routing branded queries tied to dynamic brand health/vitality offers.', level: 2, color: '#6366f1', formType: 'webform' },
+            { id: 'brand_exp', name: 'Brand Expanded', desc: 'Paid Search campaign capturing broad-match variations and extensions of the key brand terms.', level: 2, color: '#6366f1', formType: 'webform' },
+            { id: 'generic', name: 'Generic', desc: 'Broad, unbranded categorical search queries representing generalized interest (e.g., "fitness club near me").', level: 2, color: '#6366f1', formType: 'typeform' },
+            { id: 'competitor', name: 'Competitor', desc: 'Targeting rival business brand names to intercept consideration traffic.', level: 2, color: '#6366f1', formType: 'webform' },
+            { id: 'pmax', name: 'PMax', desc: 'Google Performance Max automated multi-network channel leveraging target audience signals.', level: 2, color: '#6366f1', formType: 'typeform' },
+            { id: 'demand_gen', name: 'Demand Gen', desc: 'Visually rich Search/Discovery campaigns targeting intent triggers.', level: 2, color: '#6366f1', formType: 'webform' },
+
+            // Paid Social Split (all typeform)
+            { id: 'meta_pub', name: 'Meta Public', desc: 'Paid Social ads targeting public/demographic audiences on Facebook/Instagram.', level: 2, color: '#6366f1', formType: 'typeform' },
+            { id: 'meta_vit', name: 'Meta Vitality', desc: 'Paid Social ads optimized for vitality metrics and wellness conversions.', level: 2, color: '#6366f1', formType: 'typeform' },
+            { id: 'post_boosts', name: 'Post Boosts', desc: 'Direct engagement boosting on existing organic profile posts.', level: 2, color: '#6366f1', formType: 'typeform' },
+            { id: 'other_social', name: 'Other Social', desc: 'Alternate programmatic platforms (LinkedIn, Pinterest, Reddit, etc.) running ad variations.', level: 2, color: '#6366f1', formType: 'typeform' },
+            { id: 'tiktok_pub', name: 'TikTok Public', desc: 'Broad-audience demographic campaigns leveraging vertical video formats on TikTok.', level: 2, color: '#6366f1', formType: 'typeform' },
+            { id: 'inst_pub', name: 'Instagram Public', desc: 'Demographic and behavioral targeting exclusively focused on Instagram placement.', level: 2, color: '#6366f1', formType: 'typeform' },
+
+            // Direct / Organic (use Webform, and double as tactics)
+            { id: 'organic_search', name: 'Organic Search', desc: 'SEO efforts generating native unpaid visits, using local embedded web forms.', level: 2, color: '#6366f1', formType: 'webform' },
+            { id: 'direct_traffic', name: 'Direct Traffic', desc: 'Direct domain typing representing strong retention or direct physical attribution.', level: 2, color: '#6366f1', formType: 'webform' },
+
+            // Level 3: Form Interfaces
+            { id: 'typeform', name: 'Typeform', desc: 'High-converting interactive multi-step questionnaire web components.', level: 3, color: '#10b981' },
+            { id: 'webform', name: 'Webform', desc: 'Traditional static single-page inline database forms styled native to context page.', level: 3, color: '#10b981' },
+
+            // Level 4: Conversions
+            { id: 'conv_callback', name: 'Call Back Leads', desc: 'User requests a call-back setup. Path splits based on whether they selected a club.', level: 4, color: '#c084fc' },
+            { id: 'conv_dropoff', name: 'Buy Online Drop Off', desc: 'User drops off during online cart purchase. Intercepted for outbound sales.', level: 4, color: '#c084fc' },
+            { id: 'conv_completes', name: 'Buy Online Sales', desc: 'Success completes. Instantly generated and automated for tracking purposes.', level: 4, color: '#c084fc' },
+            { id: 'conv_tour', name: 'Tour Bookings', desc: 'User schedules a physical preview walkthrough of a selected location.', level: 4, color: '#c084fc' },
+            { id: 'conv_guest', name: 'Guest Passes', desc: 'User applies to receive a temporary active pass to try a facility.', level: 4, color: '#c084fc' },
+
+            // Level 5: Destinations
+            { id: 'dest_relevant_club', name: 'Relevant Club', desc: 'Direct operational handover to the local team at the user\'s selected or requested facility.', level: 5, color: '#f43f5e' },
+            { id: 'dest_tracking', name: 'Closed & Tracked', desc: 'System analytics loop recording transaction details to prevent duplicate outreach.', level: 5, color: '#f43f5e' },
+            { id: 'dest_central_sales', name: 'Central Sales Team', desc: 'Central high-velocity outreach team handling general contact queues and abandoned cart campaigns.', level: 5, color: '#f43f5e' }
+        ];
+
+        // Map Relationships (Links)
+        const links = [
+            // Growth Marketing to Channels
+            { source: 'marketing', target: 'search' },
+            { source: 'marketing', target: 'social' },
+            { source: 'marketing', target: 'organic' },
+            { source: 'marketing', target: 'direct' },
+
+            // Channels to Sub Channels / Tactics
+            { source: 'search', target: 'brand_pub' },
+            { source: 'search', target: 'brand_vit' },
+            { source: 'search', target: 'brand_exp' },
+            { source: 'search', target: 'generic' },
+            { source: 'search', target: 'competitor' },
+            { source: 'search', target: 'pmax' },
+            { source: 'search', target: 'demand_gen' },
+
+            { source: 'social', target: 'meta_pub' },
+            { source: 'social', target: 'meta_vit' },
+            { source: 'social', target: 'post_boosts' },
+            { source: 'social', target: 'other_social' },
+            { source: 'social', target: 'tiktok_pub' },
+            { source: 'social', target: 'inst_pub' },
+
+            { source: 'organic', target: 'organic_search' },
+            { source: 'direct', target: 'direct_traffic' },
+
+            // Sub channels to Forms (based on user mapping)
+            { source: 'brand_pub', target: 'typeform' },
+            { source: 'brand_vit', target: 'webform' },
+            { source: 'brand_exp', target: 'webform' },
+            { source: 'generic', target: 'typeform' },
+            { source: 'competitor', target: 'webform' },
+            { source: 'pmax', target: 'typeform' },
+            { source: 'demand_gen', target: 'webform' },
+
+            { source: 'meta_pub', target: 'typeform' },
+            { source: 'meta_vit', target: 'typeform' },
+            { source: 'post_boosts', target: 'typeform' },
+            { source: 'other_social', target: 'typeform' },
+            { source: 'tiktok_pub', target: 'typeform' },
+            { source: 'inst_pub', target: 'typeform' },
+
+            { source: 'organic_search', target: 'webform' },
+            { source: 'direct_traffic', target: 'webform' },
+
+            // Forms can generate all types of conversion events
+            { source: 'typeform', target: 'conv_callback' },
+            { source: 'typeform', target: 'conv_dropoff' },
+            { source: 'typeform', target: 'conv_completes' },
+            { source: 'typeform', target: 'conv_tour' },
+            { source: 'typeform', target: 'conv_guest' },
+
+            { source: 'webform', target: 'conv_callback' },
+            { source: 'webform', target: 'conv_dropoff' },
+            { source: 'webform', target: 'conv_completes' },
+            { source: 'webform', target: 'conv_tour' },
+            { source: 'webform', target: 'conv_guest' },
+
+            // Conversions to Destinations Routing logic
+            // 1. Guest Pass + Tour bookings -> Relevant Club
+            { source: 'conv_guest', target: 'dest_relevant_club' },
+            { source: 'conv_tour', target: 'dest_relevant_club' },
+
+            // 2. Buy Online Completes -> Closed & Tracked
+            { source: 'conv_completes', target: 'dest_tracking' },
+
+            // 3. Buy Online Drop-off -> Central Sales Team
+            { source: 'conv_dropoff', target: 'dest_central_sales' },
+
+            // 4. Call Back Leads -> split based on Selected Club choice
+            { source: 'conv_callback', target: 'dest_central_sales', label: 'No Club' },
+            { source: 'conv_callback', target: 'dest_relevant_club', label: 'Club Selected' }
+        ];
+
+        // State Machine For Camera Pan and Zoom
+        let camera = {
+            x: 0,
+            y: 0,
+            zoom: 0.85
+        };
+
+        let isDragging = false;
+        let lastMousePos = { x: 0, y: 0 };
+        let hoveredNode = null;
+        let highlightedNodes = new Set();
+        let highlightedLinks = new Set();
+
+        // Particles traveling along connections for cinematic tech aesthetic
+        let particles = [];
+        const maxParticles = 60;
+
+        // Structure sizing variables
+        const nodeWidth = 175;
+        const nodeHeight = 44;
+        const columnSpacing = 280;
+        const rowSpacing = 22;
+
+        function initGraphPositions() {
+            // Group nodes by Level
+            const levels = {};
+            nodes.forEach(node => {
+                if (!levels[node.level]) levels[node.level] = [];
+                levels[node.level].push(node);
+            });
+
+            // Space out each level column
+            Object.keys(levels).forEach(level => {
+                const colNodes = levels[level];
+                const colHeight = colNodes.length * (nodeHeight + rowSpacing);
+                const startY = -(colHeight / 2) + (nodeHeight + rowSpacing) / 2;
+
+                colNodes.forEach((node, index) => {
+                    node.x = level * columnSpacing + 100;
+                    node.y = startY + index * (nodeHeight + rowSpacing);
+                });
+            });
+
+            // Adjust positions manually slightly to give balanced visual hierarchy
+            const marketing = nodes.find(n => n.id === 'marketing');
+            if (marketing) marketing.y = 0;
+
+            const tForm = nodes.find(n => n.id === 'typeform');
+            const wForm = nodes.find(n => n.id === 'webform');
+            if (tForm) tForm.y = -100;
+            if (wForm) wForm.y = 100;
+        }
+
+        // Initialize positions once
+        initGraphPositions();
+
+        // Calculate device sharp bounds
+        function resize() {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = canvas.parentElement.clientWidth * dpr;
+            canvas.height = canvas.parentElement.clientHeight * dpr;
+            ctx.scale(dpr, dpr);
+            draw();
+        }
+
+        window.addEventListener('resize', resize);
+
+        // Helper: Convert screen coords to world coords
+        function screenToWorld(x, y) {
+            const rect = canvas.getBoundingClientRect();
+            const canvasX = (x - rect.left);
+            const canvasY = (y - rect.top);
+            return {
+                x: (canvasX - canvas.width / (2 * (window.devicePixelRatio || 1))) / camera.zoom - camera.x,
+                y: (canvasY - canvas.height / (2 * (window.devicePixelRatio || 1))) / camera.zoom - camera.y
+            };
+        }
+
+        // Tracking connections for highlighting
+        function tracePaths(startNode) {
+            highlightedNodes.clear();
+            highlightedLinks.clear();
+            if (!startNode) return;
+
+            highlightedNodes.add(startNode.id);
+
+            // Upstream discovery (parents)
+            let queue = [startNode.id];
+            while (queue.length > 0) {
+                const currentId = queue.shift();
+                links.forEach(link => {
+                    if (link.target === currentId && !highlightedNodes.has(link.source)) {
+                        highlightedNodes.add(link.source);
+                        highlightedLinks.add(link);
+                        queue.push(link.source);
+                    }
+                });
+            }
+
+            // Downstream discovery (children)
+            queue = [startNode.id];
+            while (queue.length > 0) {
+                const currentId = queue.shift();
+                links.forEach(link => {
+                    if (link.source === currentId && !highlightedNodes.has(link.target)) {
+                        highlightedNodes.add(link.target);
+                        highlightedLinks.add(link);
+                        queue.push(link.target);
+                    }
+                });
+            }
+        }
+
+        // Generate flow particles dynamic paths
+        function spawnParticles() {
+            if (particles.length < maxParticles && Math.random() < 0.2) {
+                // Select a random link
+                const link = links[Math.floor(Math.random() * links.length)];
+                const sourceNode = nodes.find(n => n.id === link.source);
+                const targetNode = nodes.find(n => n.id === link.target);
+
+                if (sourceNode && targetNode) {
+                    particles.push({
+                        source: sourceNode,
+                        target: targetNode,
+                        progress: 0,
+                        speed: 0.005 + Math.random() * 0.01,
+                        color: sourceNode.color,
+                        link: link
+                    });
+                }
+            }
+        }
+
+        // Render Canvas Flow Loop
+        function draw() {
+            ctx.fillStyle = '#0b0f19';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.save();
+            // Transform context based on Camera setup
+            const midX = canvas.width / (2 * (window.devicePixelRatio || 1));
+            const midY = canvas.height / (2 * (window.devicePixelRatio || 1));
+            ctx.translate(midX, midY);
+            ctx.scale(camera.zoom, camera.zoom);
+            ctx.translate(camera.x, camera.y);
+
+            // Draw grid backdrop
+            drawGrid();
+
+            // Render Connectors
+            links.forEach(link => {
+                const sourceNode = nodes.find(n => n.id === link.source);
+                const targetNode = nodes.find(n => n.id === link.target);
+                if (sourceNode && targetNode) {
+                    const isHigh = highlightedLinks.has(link);
+                    const isMuted = highlightedNodes.size > 0 && !isHigh;
+                    drawCurve(
+                        sourceNode.x + nodeWidth / 2, sourceNode.y,
+                        targetNode.x - nodeWidth / 2, targetNode.y,
+                        isHigh ? link.color || '#3b82f6' : 'rgba(30, 41, 59, 0.6)',
+                        isHigh ? 2.5 : 1.2,
+                        isHigh,
+                        link.label
+                    );
+                }
+            });
+
+            // Update & Draw Flow Particles
+            particles.forEach((p, index) => {
+                p.progress += p.speed;
+                if (p.progress >= 1) {
+                    particles.splice(index, 1);
+                    return;
+                }
+
+                const startX = p.source.x + nodeWidth / 2;
+                const startY = p.source.y;
+                const endX = p.target.x - nodeWidth / 2;
+                const endY = p.target.y;
+
+                // Bezier Curve positioning matching link curves
+                const cp1x = startX + (endX - startX) * 0.5;
+                const cp1y = startY;
+                const cp2x = startX + (endX - startX) * 0.5;
+                const cp2y = endY;
+
+                const t = p.progress;
+                const x = (1-t)**3 * startX + 3*(1-t)**2 * t * cp1x + 3*(1-t)*t**2 * cp2x + t**3 * endX;
+                const y = (1-t)**3 * startY + 3*(1-t)**2 * t * cp1y + 3*(1-t)*t**2 * cp2y + t**3 * endY;
+
+                // Check highlight state
+                const isHigh = highlightedLinks.has(p.link) || highlightedNodes.size === 0;
+
+                ctx.beginPath();
+                ctx.arc(x, y, isHigh ? 3.5 : 1.5, 0, Math.PI * 2);
+                ctx.fillStyle = isHigh ? p.color : 'rgba(51, 65, 85, 0.3)';
+                ctx.shadowColor = p.color;
+                ctx.shadowBlur = isHigh ? 8 : 0;
+                ctx.fill();
+                ctx.shadowBlur = 0; // reset
+            });
+
+            // Render Columns Headers Labels
+            const headers = [
+                { name: 'CAMPAIGN HUB', x: 100 },
+                { name: 'ACQUISITION CHANNELS', x: 380 },
+                { name: 'TACTICAL SEGMENTS', x: 660 },
+                { name: 'INTERFACE FORMS', x: 970 },
+                { name: 'CONVERSION EVENTS', x: 1275 },
+                { name: 'OPERATIONAL OUTCOMES', x: 1600 }
+            ];
+
+            headers.forEach(h => {
+                ctx.fillStyle = 'rgba(71, 85, 105, 0.4)';
+                ctx.font = 'bold 10px "Plus Jakarta Sans"';
+                ctx.letterSpacing = '1px';
+                ctx.textAlign = 'center';
+                ctx.fillText(h.name, h.x, -340);
+                
+                ctx.strokeStyle = 'rgba(30, 41, 59, 0.4)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(h.x, -325);
+                ctx.lineTo(h.x, 340);
+                ctx.stroke();
+            });
+
+            // Render Nodes
+            nodes.forEach(node => {
+                const isHovered = hoveredNode === node;
+                const isHigh = highlightedNodes.has(node.id);
+                const isMuted = highlightedNodes.size > 0 && !isHigh;
+                
+                ctx.save();
+                ctx.translate(node.x, node.y);
+
+                // Glow shadow if highlighted or hovered
+                if (isHigh || isHovered) {
+                    ctx.shadowColor = node.color;
+                    ctx.shadowBlur = isHovered ? 16 : 8;
+                }
+
+                // Node container backdrop
+                ctx.fillStyle = isMuted ? 'rgba(15, 23, 42, 0.15)' : 'rgba(15, 23, 42, 0.9)';
+                ctx.strokeStyle = isHigh ? node.color : (isMuted ? 'rgba(30, 41, 59, 0.15)' : 'rgba(30, 41, 59, 0.8)');
+                ctx.lineWidth = isHigh ? 2 : 1.2;
+
+                // Draw Rounded Rectangle
+                ctx.beginPath();
+                ctx.roundRect(-nodeWidth / 2, -nodeHeight / 2, nodeWidth, nodeHeight, 8);
+                ctx.fill();
+                ctx.stroke();
+                ctx.shadowBlur = 0; // reset shadow
+
+                // Level strip color accent marker on the left border of node
+                ctx.fillStyle = isMuted ? 'rgba(71, 85, 105, 0.15)' : node.color;
+                ctx.beginPath();
+                ctx.roundRect(-nodeWidth / 2, -nodeHeight / 2, 4, nodeHeight, [8, 0, 0, 8]);
+                ctx.fill();
+
+                // Typography setup
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = isMuted ? 'rgba(148, 163, 184, 0.2)' : '#ffffff';
+                ctx.font = '600 12.5px "Plus Jakarta Sans"';
+                
+                // Keep text centered vertically inside node
+                ctx.fillText(node.name, -nodeWidth / 2 + 16, 0);
+
+                // Render tiny subtle icon type marker or tag indicator
+                if (node.formType && !isMuted) {
+                    ctx.fillStyle = node.formType === 'typeform' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(59, 130, 246, 0.15)';
+                    ctx.strokeStyle = node.formType === 'typeform' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(59, 130, 246, 0.3)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.roundRect(nodeWidth / 2 - 48, -8, 40, 16, 4);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.fillStyle = node.formType === 'typeform' ? '#10b981' : '#3b82f6';
+                    ctx.font = 'bold 8px "Plus Jakarta Sans"';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(node.formType === 'typeform' ? 'Typeform' : 'Webform', nodeWidth / 2 - 28, 0);
+                }
+
+                ctx.restore();
+            });
+
+            ctx.restore();
+        }
+
+        // Draw dynamic grid lines
+        function drawGrid() {
+            ctx.strokeStyle = 'rgba(30, 41, 59, 0.15)';
+            ctx.lineWidth = 1;
+
+            const gridSpacing = 40;
+            const startX = -2000;
+            const endX = 2000;
+            const startY = -1000;
+            const endY = 1000;
+
+            for (let x = startX; x <= endX; x += gridSpacing) {
+                ctx.beginPath();
+                ctx.moveTo(x, startY);
+                ctx.lineTo(x, endY);
+                ctx.stroke();
+            }
+
+            for (let y = startY; y <= endY; y += gridSpacing) {
+                ctx.beginPath();
+                ctx.moveTo(startX, y);
+                ctx.lineTo(endX, y);
+                ctx.stroke();
+            }
+        }
+
+        // Draw Bezier Curved Connector Lines between processes
+        function drawCurve(x1, y1, x2, y2, color, width, high, label) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            
+            // control points centered horizontally between nodes
+            const cp1x = x1 + (x2 - x1) * 0.5;
+            const cp1y = y1;
+            const cp2x = x1 + (x2 - x1) * 0.5;
+            const cp2y = y2;
+            
+            ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x2, y2);
+            ctx.stroke();
+
+            // Label text over connector line (like for No Club / Selected routing split)
+            if (label && high) {
+                const t = 0.5; // midpoint of bezier curves
+                const mx = (1-t)**3 * x1 + 3*(1-t)**2 * t * cp1x + 3*(1-t)*t**2 * cp2x + t**3 * x2;
+                const my = (1-t)**3 * y1 + 3*(1-t)**2 * t * cp1y + 3*(1-t)*t**2 * cp2y + t**3 * y2;
+
+                ctx.save();
+                ctx.font = 'bold 9px "Plus Jakarta Sans"';
+                const padding = 6;
+                const textWidth = ctx.measureText(label).width;
+                
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.roundRect(mx - textWidth/2 - padding, my - 8, textWidth + padding*2, 16, 4);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#ffffff';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(label, mx, my);
+                ctx.restore();
+            }
+        }
+
+        // Sidebar Dynamic UI Update
+        function updateSidePanel(node) {
+            const container = document.getElementById('info-box');
+            if (!node) {
+                container.innerHTML = `
+                    <div class="text-center py-6 text-slate-500 border border-dashed border-slate-800 rounded-xl">
+                        <svg class="w-8 h-8 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                        <span class="text-xs">Hover a node to view dynamic details & path intelligence.</span>
+                    </div>
+                `;
+                return;
+            }
+
+            // Figure out connectivity metrics dynamically
+            const inputs = links.filter(l => l.target === node.id).map(l => nodes.find(n => n.id === l.source)?.name || '');
+            const outputs = links.filter(l => l.source === node.id).map(l => nodes.find(n => n.id === l.target)?.name || '');
+
+            let inputMarkup = inputs.length > 0 ? 
+                inputs.map(i => `<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px] inline-block mr-1 mb-1">${i}</span>`).join('') :
+                `<span class="text-[10px] text-slate-500 italic">None (Root Start)</span>`;
+
+            let outputMarkup = outputs.length > 0 ? 
+                outputs.map(o => `<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px] inline-block mr-1 mb-1">${o}</span>`).join('') :
+                `<span class="text-[10px] text-slate-500 italic">None (End Node)</span>`;
+
+            // Node category display tag styling
+            const categories = ['Strategic Goal', 'Media Channel', 'Tactic Variant', 'User Interface', 'Action Event', 'Routing Destination'];
+
+            container.innerHTML = `
+                <div class="p-4 rounded-xl border border-slate-800 bg-slate-900/40 space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] font-bold tracking-widest uppercase" style="color: ${node.color}">${categories[node.level]}</span>
+                            <span class="text-[10px] text-slate-400">Level 0${node.level + 1}</span>
+                        </div>
+                        <h2 class="text-lg font-extrabold text-white mt-1 leading-tight">${node.name}</h2>
+                    </div>
+
+                    <p class="text-xs text-slate-300 leading-relaxed">${node.desc}</p>
+
+                    <div class="space-y-2 border-t border-slate-800/80 pt-3">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Incoming Feeds</span>
+                        <div class="flex flex-wrap">${inputMarkup}</div>
+                    </div>
+
+                    <div class="space-y-2 border-t border-slate-800/80 pt-3">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Downstream Path</span>
+                        <div class="flex flex-wrap">${outputMarkup}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Camera Pan & Zoom event attachments
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastMousePos = { x: e.clientX, y: e.clientY };
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            const worldPos = screenToWorld(e.clientX, e.clientY);
+
+            // Handle Camera pan dragging state
+            if (isDragging) {
+                camera.x += (e.clientX - lastMousePos.x) / camera.zoom;
+                camera.y += (e.clientY - lastMousePos.y) / camera.zoom;
+                lastMousePos = { x: e.clientX, y: e.clientY };
+                draw();
+                return;
+            }
+
+            // Mouse hover test checking individual bounding boxes
+            let hit = null;
+            for (let i = nodes.length - 1; i >= 0; i--) {
+                const node = nodes[i];
+                if (Math.abs(worldPos.x - node.x) < nodeWidth / 2 && Math.abs(worldPos.y - node.y) < nodeHeight / 2) {
+                    hit = node;
+                    break;
+                }
+            }
+
+            if (hoveredNode !== hit) {
+                hoveredNode = hit;
+                tracePaths(hit);
+                updateSidePanel(hit);
+                draw();
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const zoomFactor = 1.1;
+            const direction = e.deltaY < 0 ? 1 : -1;
+            
+            // Smooth zoom adjustments
+            zoom(direction * 0.05);
+        }, { passive: false });
+
+        // Floating UI Control handlers
+        function zoom(amount) {
+            const oldZoom = camera.zoom;
+            camera.zoom = Math.min(Math.max(camera.zoom + amount, 0.35), 2.0);
+            draw();
+        }
+
+        function resetView() {
+            camera.x = -650;
+            camera.y = 20;
+            camera.zoom = 0.65;
+            draw();
+        }
+
+        // Frame update ticking Loop
+        function tick() {
+            spawnParticles();
+            draw();
+            requestAnimationFrame(tick);
+        }
+
+        // First Layout Alignment pre-flight trigger
+        resetView();
+        resize();
+        tick();
+    </script>
+</body>
+</html>
