@@ -122,7 +122,7 @@
         Call Center Queue (<span id="lead-count-badge">0</span>)
       </button>
       <button onclick="restartFlow()" class="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 px-2.5 py-1 rounded border border-neutral-700 text-xs" title="Reset Flow">
-        🔄 Reset
+         Reset
       </button>
     </div>
   </div>
@@ -135,9 +135,7 @@
     <header class="w-full flex items-center justify-between z-10 max-w-7xl mx-auto mb-6">
       <div class="flex items-center space-x-3 cursor-pointer" onclick="restartFlow()">
         <img src="valogo.png" alt="Virgin Active" class="h-8 object-contain" onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'),{className:'bg-red-600 text-white font-black text-xl px-3 py-1 rounded tracking-tighter italic',innerText:'VIRGIN ACTIVE'}));">
-        <span id="channel-tag" class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest bg-neutral-800/80 text-neutral-300 px-2.5 py-1 rounded-full border border-neutral-700">
-          Organic Entry View
-        </span>
+
       </div>
 
       <div id="flow-breadcrumbs" class="hidden items-center space-x-2 text-xs font-medium text-neutral-400">
@@ -178,7 +176,7 @@
               <img class="inline-block h-10 w-10 rounded-full ring-2 ring-neutral-900 object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="Member">
             </div>
             <span class="text-xs sm:text-sm font-medium text-neutral-300">
-              Join over <strong class="text-white font-semibold">120,000+ active members</strong> across South Africa
+              Join over <strong class="text-white font-semibold">600,000+ active members</strong> across South Africa
             </span>
           </div>
         </div>
@@ -187,7 +185,6 @@
           <div class="glass-card w-full max-w-md rounded-2xl p-6 sm:p-8 space-y-6">
             <div class="flex items-center justify-between border-b border-neutral-800 pb-4">
               <h3 class="font-bold text-lg text-white">Why Virgin Active?</h3>
-              <span class="text-xs bg-red-950 text-red-400 border border-red-800 px-2.5 py-0.5 rounded-full font-semibold">Live Better</span>
             </div>
             <ul class="space-y-4 text-sm text-neutral-300">
               <li class="flex items-start gap-3">
@@ -217,9 +214,7 @@
       <!-- ========================================== -->
       <div id="view-paid-landing" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         <div class="lg:col-span-7 space-y-6 text-left">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/20 border border-red-500/40 text-red-400 text-xs font-bold uppercase tracking-wider">
-            ⚡ Special Offer: Save Up to 75%
-          </div>
+       
           <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-white">
             Discovery Vitality members <span class="text-red-600">save up to 75%</span> on gym fees.
           </h1>
@@ -313,10 +308,10 @@
             <!-- Dual Action Buttons -->
             <div class="pt-4 grid grid-cols-2 gap-3">
               <button type="button" onclick="submitOrganicRequestCall()" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white font-semibold py-3 rounded-lg border border-neutral-700 text-xs transition">
-                📞 Request a Call
+                Request a Call
               </button>
               <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg text-xs transition shadow-lg shadow-red-600/30">
-                🛒 Buy Now
+                Buy Now
               </button>
             </div>
           </form>
@@ -467,7 +462,7 @@
             <!-- Success State Box -->
             <div id="vit-success-box" class="hidden p-4 bg-emerald-950/40 border border-emerald-500/50 rounded-xl space-y-2 text-xs">
               <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm">
-                <span>🎉 Vitality Benefit Verified!</span>
+                <span>Vitality Benefit Verified!</span>
               </div>
               <p class="text-neutral-300">Great news! You qualify for a <strong>75% discount</strong> on your monthly membership fee.</p>
             </div>
@@ -475,7 +470,7 @@
             <!-- Failure State Box -->
             <div id="vit-failed-box" class="hidden p-4 bg-red-950/40 border border-red-500/50 rounded-xl space-y-3 text-xs">
               <div class="text-red-400 font-bold text-sm flex items-center gap-2">
-                <span>⚠️ Unable to Verify Vitality Benefit</span>
+                <span>Unable to Verify Vitality Benefit</span>
               </div>
               <p class="text-neutral-300">We couldn't match your details with active Discovery Vitality benefit records.</p>
               
@@ -484,7 +479,7 @@
                   Continue Buying at Standard Price
                 </button>
                 <button type="button" onclick="requestCallMeBackFromVitality()" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-3 rounded-lg text-xs shadow transition">
-                  📞 Call Me Back
+                  Call Me Back
                 </button>
               </div>
             </div>
@@ -680,7 +675,7 @@
               <div class="flex items-center gap-2">
                 <strong id="rev-club" class="text-white">--</strong>
                 <button type="button" onclick="openClubAmenitiesModal()" class="text-[11px] bg-neutral-800 hover:bg-neutral-700 text-red-400 border border-neutral-700 px-2.5 py-1 rounded transition flex items-center gap-1 font-semibold">
-                  <span>📷</span> View Amenities & Images
+                  View Amenities
                 </button>
               </div>
             </div>
@@ -1119,7 +1114,7 @@
     <div class="glass-card max-w-2xl w-full rounded-2xl p-6 sm:p-8 space-y-4 relative max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center border-b border-neutral-800 pb-3">
         <h3 class="text-lg font-bold text-white flex items-center gap-2">
-          <span>📍</span> Virgin Active Club Locations
+           Virgin Active Club Locations
         </h3>
         <button onclick="closeClubLocationsModal()" class="text-neutral-400 hover:text-white p-1 text-xl">&times;</button>
       </div>
