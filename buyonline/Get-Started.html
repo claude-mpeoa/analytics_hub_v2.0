@@ -1,0 +1,2038 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virgin Active - Conversion & Onboarding Portal</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Glassmorphism Card Style */
+    .glass-card {
+      background: rgba(18, 18, 20, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    /* Underlined Form Input Style */
+    .custom-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      transition: all 0.25s ease;
+      border-radius: 0;
+    }
+    .custom-input:focus {
+      outline: none;
+      border-bottom-color: #ef4444;
+      box-shadow: 0 2px 0 0 #ef4444;
+    }
+    .custom-input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    select.custom-input option {
+      background-color: #18181b;
+      color: #ffffff;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Radio Card Custom Selection */
+    .plan-card-radio:checked + label {
+      border-color: #ef4444;
+      background-color: rgba(239, 68, 68, 0.1);
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.2);
+    }
+
+    /* Stripe Simulation Card Input */
+    .stripe-input {
+      background: rgba(24, 24, 27, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 0.5rem;
+      color: #ffffff;
+      padding: 0.75rem 1rem;
+      transition: all 0.2s;
+    }
+    .stripe-input:focus {
+      outline: none;
+      border-color: #ef4444;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+    }
+
+    /* Keyframe Animations */
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 0.8; }
+    }
+    .animate-pulse-slow {
+      animation: pulseGlow 3s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="h-full bg-neutral-950 text-white antialiased selection:bg-red-600 selection:text-white flex flex-col justify-between min-h-screen">
+
+  <!-- Demo Channel Switcher Header Bar -->
+  <div class="bg-neutral-900 border-b border-neutral-800 text-xs px-4 py-2 flex flex-wrap items-center justify-between gap-2 z-50 sticky top-0 backdrop-blur-md bg-neutral-900/90">
+    <div class="flex items-center space-x-3">
+      <span class="font-bold text-red-500 uppercase tracking-wider flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> Live Channel Simulator:
+      </span>
+      <div class="inline-flex rounded-lg bg-neutral-950 p-0.5 border border-neutral-800">
+        <button id="channel-organic-btn" onclick="setChannel('organic')" class="px-3 py-1 rounded-md text-xs font-semibold transition bg-red-600 text-white shadow">
+          Organic / Direct Traffic
+        </button>
+        <button id="channel-paid-btn" onclick="setChannel('paid')" class="px-3 py-1 rounded-md text-xs font-semibold transition text-neutral-400 hover:text-white">
+          Paid Media Campaign
+        </button>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <button onclick="toggleLeadQueueModal()" class="bg-neutral-800 hover:bg-neutral-700 text-neutral-200 px-3 py-1 rounded border border-neutral-700 text-xs flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+        Call Center Queue (<span id="lead-count-badge">0</span>)
+      </button>
+      <button onclick="restartFlow()" class="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 px-2.5 py-1 rounded border border-neutral-700 text-xs" title="Reset Flow">
+        🔄 Reset
+      </button>
+    </div>
+  </div>
+
+  <!-- Background Wrapper -->
+  <div class="relative flex-1 w-full flex flex-col justify-between p-4 sm:p-8 lg:px-16 lg:py-8 bg-cover bg-center bg-no-repeat bg-fixed transition-all duration-500"
+       style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.72) 50%, rgba(0, 0, 0, 0.85) 100%), url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070');">
+
+    <!-- Header Navigation -->
+    <header class="w-full flex items-center justify-between z-10 max-w-7xl mx-auto mb-6">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="restartFlow()">
+        <img src="valogo.png" alt="Virgin Active" class="h-8 object-contain" onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'),{className:'bg-red-600 text-white font-black text-xl px-3 py-1 rounded tracking-tighter italic',innerText:'VIRGIN ACTIVE'}));">
+        <span id="channel-tag" class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest bg-neutral-800/80 text-neutral-300 px-2.5 py-1 rounded-full border border-neutral-700">
+          Organic Entry View
+        </span>
+      </div>
+
+      <div id="flow-breadcrumbs" class="hidden items-center space-x-2 text-xs font-medium text-neutral-400">
+        <span id="bc-step-1" class="text-white font-semibold">1. Branch</span>
+        <span>&rsaquo;</span>
+        <span id="bc-step-2">2. Vitality</span>
+        <span>&rsaquo;</span>
+        <span id="bc-step-3">3. Membership</span>
+        <span>&rsaquo;</span>
+        <span id="bc-step-4">4. Review</span>
+        <span>&rsaquo;</span>
+        <span id="bc-step-5">5. Payment</span>
+      </div>
+    </header>
+
+    <!-- MAIN VIEW CONTAINER -->
+    <main class="w-full max-w-7xl mx-auto my-auto z-10 py-4">
+
+      <!-- ========================================== -->
+      <!-- VIEW 1: ORGANIC LANDING PAGE VIEW          -->
+      <!-- ========================================== -->
+      <div id="view-organic-landing" class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div class="lg:col-span-7 space-y-6 text-left">
+          <p class="text-xs sm:text-sm uppercase tracking-widest font-bold text-red-500">
+            Welcome to South Africa's Premier Wellness Community
+          </p>
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-white">
+            Transform your health with <span class="text-red-600">world-class clubs</span> & coaches.
+          </h1>
+          <p class="text-neutral-300 text-sm sm:text-base lg:text-lg max-w-2xl leading-relaxed">
+            Experience state-of-the-art equipment, heated lap pools, group exercise classes, and wellness spa facilities across South Africa.
+          </p>
+
+          <div class="pt-6 border-t border-neutral-800 flex items-center space-x-4">
+            <div class="flex -space-x-3 overflow-hidden">
+              <img class="inline-block h-10 w-10 rounded-full ring-2 ring-neutral-900 object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Member">
+              <img class="inline-block h-10 w-10 rounded-full ring-2 ring-neutral-900 object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Member">
+              <img class="inline-block h-10 w-10 rounded-full ring-2 ring-neutral-900 object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="Member">
+            </div>
+            <span class="text-xs sm:text-sm font-medium text-neutral-300">
+              Join over <strong class="text-white font-semibold">120,000+ active members</strong> across South Africa
+            </span>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 flex justify-center lg:justify-end">
+          <div class="glass-card w-full max-w-md rounded-2xl p-6 sm:p-8 space-y-6">
+            <div class="flex items-center justify-between border-b border-neutral-800 pb-4">
+              <h3 class="font-bold text-lg text-white">Why Virgin Active?</h3>
+              <span class="text-xs bg-red-950 text-red-400 border border-red-800 px-2.5 py-0.5 rounded-full font-semibold">Live Better</span>
+            </div>
+            <ul class="space-y-4 text-sm text-neutral-300">
+              <li class="flex items-start gap-3">
+                <div class="p-1.5 bg-red-600/20 text-red-500 rounded-lg shrink-0 mt-0.5">✓</div>
+                <div><strong class="text-white">130+ Premium Locations:</strong> Access clubs in Gauteng, Western Cape, KZN and more.</div>
+              </li>
+              <li class="flex items-start gap-3">
+                <div class="p-1.5 bg-red-600/20 text-red-500 rounded-lg shrink-0 mt-0.5">✓</div>
+                <div><strong class="text-white">World-Class Equipment:</strong> Technogym cardio, free weights, and functional arenas.</div>
+              </li>
+              <li class="flex items-start gap-3">
+                <div class="p-1.5 bg-red-600/20 text-red-500 rounded-lg shrink-0 mt-0.5">✓</div>
+                <div><strong class="text-white">Digital Companion:</strong> Class booking, access key, and tracking with our Mobile App.</div>
+              </li>
+            </ul>
+            <button onclick="showOrganicFormModal()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-xl text-sm shadow-lg shadow-red-600/30 transition transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2">
+              <span>Get Started</span>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- VIEW 2: PAID MEDIA LANDING VIEW WITH FORM  -->
+      <!-- ========================================== -->
+      <div id="view-paid-landing" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <div class="lg:col-span-7 space-y-6 text-left">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/20 border border-red-500/40 text-red-400 text-xs font-bold uppercase tracking-wider">
+            ⚡ Special Offer: Save Up to 75%
+          </div>
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-white">
+            Discovery Vitality members <span class="text-red-600">save up to 75%</span> on gym fees.
+          </h1>
+          <p class="text-neutral-300 text-sm sm:text-base lg:text-lg max-w-2xl leading-relaxed">
+            Discovery Vitality members save up to 75% on monthly gym membership fees and earn Vitality points for every 30+ minute workout.
+          </p>
+
+          <div class="pt-2 flex items-center space-x-4">
+            <div class="flex -space-x-3 overflow-hidden">
+              <img class="inline-block h-10 w-10 rounded-full ring-2 ring-neutral-900 object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="Member">
+              <img class="inline-block h-10 w-10 rounded-full ring-2 ring-neutral-900 object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80" alt="Member">
+              <img class="inline-block h-10 w-10 rounded-full ring-2 ring-neutral-900 object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="Member">
+            </div>
+            <span class="text-xs sm:text-sm font-medium text-neutral-300">
+              <strong class="text-white font-semibold">3,500+</strong> members have secured their spot this week
+            </span>
+          </div>
+        </div>
+
+        <!-- Qualified Lead Form Container -->
+        <div class="lg:col-span-5 w-full flex justify-center lg:justify-end">
+          <div class="glass-card w-full max-w-md rounded-2xl p-6 sm:p-7 flex flex-col justify-between relative">
+            <div class="mb-4">
+              <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Get this offer today</h2>
+              <p class="text-xs text-neutral-400 mt-1">Fill in your details and select your preferred option to proceed.</p>
+            </div>
+
+            <form id="qualified-lead-form" onsubmit="handlePaidFormSubmit(event)" class="space-y-4">
+              <div>
+                <input type="text" id="paid-firstName" required placeholder="First Name *" class="custom-input w-full py-2 text-sm">
+              </div>
+              <div>
+                <input type="text" id="paid-lastName" required placeholder="Surname *" class="custom-input w-full py-2 text-sm">
+              </div>
+              <div>
+                <input type="email" id="paid-email" required placeholder="Email Address *" class="custom-input w-full py-2 text-sm">
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="text-xs text-neutral-400 py-2 border-b border-neutral-600">🇿🇦 +27</span>
+                <input type="tel" id="paid-phone" required placeholder="Cell Number *" class="custom-input w-full py-2 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-neutral-300 mb-1">I want to </label>
+                <select id="paid-action-select" required class="custom-input w-full py-2 text-sm text-neutral-200">
+                  <option value="" disabled selected>-- Choose Option --</option>
+                  <option value="callback">Get a Call Back</option>
+                  <option value="buynow">Buy Online</option>
+                </select>
+              </div>
+
+              <div class="pt-4">
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-xl text-sm transition shadow-lg shadow-red-600/30 flex items-center justify-center gap-2">
+                  <span>Proceed</span>
+                  <span>&rsaquo;</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- VIEW 3: UNQUALIFIED LEAD MODAL (ORGANIC)   -->
+      <!-- ========================================== -->
+      <div id="modal-organic-lead" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full rounded-2xl p-6 sm:p-8 relative">
+          <button onclick="closeOrganicFormModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-white p-1">&times;</button>
+          
+          <div class="mb-5">
+            <span class="text-[10px] font-bold uppercase tracking-widest text-red-500">Organic Lead Intake</span>
+            <h3 class="text-2xl font-bold text-white mt-1">Get Started with Virgin Active</h3>
+            <p class="text-xs text-neutral-400 mt-1">Provide your contact info to join online or request a call from our membership team.</p>
+          </div>
+
+          <form id="organic-lead-form" onsubmit="handleOrganicFormSubmit(event)" class="space-y-4">
+            <div>
+              <input type="text" id="org-firstName" required placeholder="First Name *" class="custom-input w-full py-2 text-sm">
+            </div>
+            <div>
+              <input type="text" id="org-lastName" required placeholder="Surname *" class="custom-input w-full py-2 text-sm">
+            </div>
+            <div>
+              <input type="email" id="org-email" required placeholder="Email Address *" class="custom-input w-full py-2 text-sm">
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs text-neutral-400 py-2 border-b border-neutral-600">🇿🇦 +27</span>
+              <input type="tel" id="org-phone" required placeholder="Cell Phone Number *" class="custom-input w-full py-2 text-sm">
+            </div>
+
+            <!-- Dual Action Buttons -->
+            <div class="pt-4 grid grid-cols-2 gap-3">
+              <button type="button" onclick="submitOrganicRequestCall()" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white font-semibold py-3 rounded-lg border border-neutral-700 text-xs transition">
+                📞 Request a Call
+              </button>
+              <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg text-xs transition shadow-lg shadow-red-600/30">
+                🛒 Buy Now
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- VIEW 4: QUALIFYING MCQ SURVEY MODAL (PAID) -->
+      <!-- ========================================== -->
+      <div id="modal-mcq-survey" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-card max-w-xl w-full rounded-2xl p-6 sm:p-8 relative">
+          <button onclick="closeMCQModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-white p-1 text-xl">&times;</button>
+          
+          <div class="flex items-center justify-between mb-4 border-b border-neutral-800 pb-3">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-red-500">Qualifying Questions (Optional)</span>
+              <h3 class="text-lg font-bold text-white">Help Us Customize Your Experience</h3>
+            </div>
+            <span id="mcq-progress-text" class="text-xs font-mono bg-neutral-800 text-neutral-300 px-2.5 py-1 rounded-full border border-neutral-700">Question 1 of 8</span>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="w-full bg-neutral-800 h-1.5 rounded-full mb-6 overflow-hidden">
+            <div id="mcq-progress-bar" class="bg-red-600 h-full w-[12.5%] transition-all duration-300"></div>
+          </div>
+
+          <!-- MCQ Question Container -->
+          <div id="mcq-question-box" class="min-h-[220px] flex flex-col justify-between">
+            <h4 id="mcq-question-title" class="text-base sm:text-lg font-semibold text-white mb-4">
+              1. So, what made you decide to check us out?
+            </h4>
+            
+            <div id="mcq-options-container" class="space-y-2.5 my-auto">
+              <!-- Dynamically populated options -->
+            </div>
+
+            <div class="pt-6 flex justify-between items-center border-t border-neutral-800/80 mt-4">
+              <button id="mcq-prev-btn" onclick="prevMCQ()" class="text-xs text-neutral-400 hover:text-white flex items-center gap-1 disabled:opacity-30 disabled:cursor-not-allowed">
+                &lsaquo; Previous Question
+              </button>
+              <button onclick="closeMCQModal()" class="text-xs text-neutral-400 hover:text-white underline">
+                Skip Survey
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- VIEW 5: BUY ONLINE - STEP 1: BRANCH SELECT -->
+      <!-- ========================================== -->
+      <div id="view-buy-step1" class="hidden max-w-2xl mx-auto">
+        <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+          <div class="border-b border-neutral-800 pb-4">
+            <span class="text-xs font-bold uppercase tracking-wider text-red-500">Step 1 of 5 &bull; Location</span>
+            <h2 class="text-2xl font-extrabold text-white">Select Your Virgin Active Home Club</h2>
+            <p class="text-xs text-neutral-400 mt-1">Choose your preferred primary province and gym location.</p>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-neutral-300 mb-1">Select Province *</label>
+              <select id="buy-province" onchange="onProvinceChange()" class="custom-input w-full py-2.5 text-sm text-neutral-200">
+                <option value="" disabled selected>-- Choose Province --</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-neutral-300 mb-1">Select Branch *</label>
+              <select id="buy-branch" disabled class="custom-input w-full py-2.5 text-sm text-neutral-400 disabled:opacity-50">
+                <option value="" disabled selected>-- Select Province First --</option>
+              </select>
+            </div>
+
+            <div id="other-branch-box" class="hidden">
+              <label class="block text-xs font-semibold text-neutral-300 mb-1">Specify Branch Name *</label>
+              <input type="text" id="buy-other-branch" placeholder="e.g. Virgin Active Point" class="custom-input w-full py-2 text-sm">
+            </div>
+          </div>
+
+          <div class="pt-4 flex justify-between items-center border-t border-neutral-800">
+            <button onclick="restartFlow()" class="text-xs text-neutral-400 hover:text-white">Cancel</button>
+            <button onclick="proceedToVitalityStep()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3 rounded-lg text-sm shadow-lg shadow-red-600/30 transition flex items-center gap-2">
+              <span>Next: Check Vitality Benefit</span>
+              <span>&rsaquo;</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- VIEW 5.5: VITALITY BENEFIT VERIFICATION    -->
+      <!-- ========================================== -->
+      <div id="view-buy-vitality" class="hidden max-w-2xl mx-auto">
+        <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+          <div class="border-b border-neutral-800 pb-4 flex justify-between items-start">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-red-500">Step 2 of 5 &bull; Vitality Benefit Verification</span>
+              <h2 class="text-2xl font-extrabold text-white">Check Your Discovery Vitality Benefit</h2>
+              <p class="text-xs text-neutral-400 mt-1">Discovery Vitality members save up to 75% on monthly membership fees.</p>
+            </div>
+            <div class="bg-neutral-900 border border-neutral-700 p-1.5 rounded-lg text-right text-[10px]">
+              <span class="text-neutral-400 block font-semibold">Demo Test Mode:</span>
+              <label class="inline-flex items-center gap-1 cursor-pointer mt-0.5">
+                <input type="checkbox" id="vitality-sim-toggle" checked class="accent-red-600 rounded">
+                <span class="text-emerald-400 font-bold">Simulate Success</span>
+              </label>
+            </div>
+          </div>
+
+          <form onsubmit="handleCheckVitalityBenefits(event)" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-neutral-300 mb-1">First Name *</label>
+                <input type="text" id="vit-firstName" required placeholder="First Name" class="custom-input w-full py-2 text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-neutral-300 mb-1">Surname *</label>
+                <input type="text" id="vit-lastName" required placeholder="Surname" class="custom-input w-full py-2 text-sm">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-neutral-300 mb-1">Email Address *</label>
+              <input type="email" id="vit-email" required placeholder="name@domain.co.za" class="custom-input w-full py-2 text-sm">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-neutral-300 mb-1">South African ID Number (13 Digits) *</label>
+              <input type="text" id="vit-saId" maxlength="13" required oninput="handleVitalitySAIDInput(this.value)" placeholder="e.g. 9201015009087" class="custom-input w-full py-2 text-sm font-mono tracking-widest">
+              
+              <!-- Derived Info Badge -->
+              <div id="vit-derived-info" class="hidden mt-2 p-2 bg-neutral-900/80 border border-neutral-800 rounded-lg flex gap-4 text-xs">
+                <div><span class="text-neutral-400 text-[10px] block">Date of Birth:</span> <strong id="vit-dob" class="text-white">--</strong></div>
+                <div><span class="text-neutral-400 text-[10px] block">Gender:</span> <strong id="vit-gender" class="text-white">--</strong></div>
+              </div>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="vit-checking-loader" class="hidden p-4 bg-neutral-900 border border-neutral-800 rounded-xl text-center space-y-2">
+              <div class="inline-block w-6 h-6 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+              <p class="text-xs text-neutral-300 font-medium">Checking Discovery Vitality records...</p>
+            </div>
+
+            <!-- Success State Box -->
+            <div id="vit-success-box" class="hidden p-4 bg-emerald-950/40 border border-emerald-500/50 rounded-xl space-y-2 text-xs">
+              <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+                <span>🎉 Vitality Benefit Verified!</span>
+              </div>
+              <p class="text-neutral-300">Great news! You qualify for a <strong>75% discount</strong> on your monthly membership fee.</p>
+            </div>
+
+            <!-- Failure State Box -->
+            <div id="vit-failed-box" class="hidden p-4 bg-red-950/40 border border-red-500/50 rounded-xl space-y-3 text-xs">
+              <div class="text-red-400 font-bold text-sm flex items-center gap-2">
+                <span>⚠️ Unable to Verify Vitality Benefit</span>
+              </div>
+              <p class="text-neutral-300">We couldn't match your details with active Discovery Vitality benefit records.</p>
+              
+              <div class="pt-2 flex flex-col sm:flex-row gap-2">
+                <button type="button" onclick="continueWithoutVitalityDiscount()" class="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white font-semibold py-2.5 px-3 rounded-lg text-xs border border-neutral-700 transition">
+                  Continue Buying at Standard Price
+                </button>
+                <button type="button" onclick="requestCallMeBackFromVitality()" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-3 rounded-lg text-xs shadow transition">
+                  📞 Call Me Back
+                </button>
+              </div>
+            </div>
+
+            <!-- Action Button -->
+            <div id="vit-action-btn-container" class="pt-2">
+              <button type="submit" id="vit-check-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-xl text-xs shadow-lg shadow-red-600/30 transition flex items-center justify-center gap-2">
+                <span>Check Benefits</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+              </button>
+              
+              <button type="button" id="vit-proceed-discounted-btn" onclick="proceedToStep2()" class="hidden w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl text-xs shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-2">
+                <span>Proceed with 75% Discount &rsaquo;</span>
+              </button>
+            </div>
+          </form>
+
+          <div class="pt-3 border-t border-neutral-800 flex justify-between text-xs">
+            <button onclick="showStep('view-buy-step1')" class="text-neutral-400 hover:text-white">&lsaquo; Back to Location</button>
+            <button onclick="continueWithoutVitalityDiscount()" class="text-neutral-500 hover:text-neutral-300 underline">Skip Vitality Check</button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- VIEW 6: BUY ONLINE - STEP 2: TIER SELECT   -->
+      <!-- ========================================== -->
+      <div id="view-buy-step2" class="hidden space-y-6">
+        <div class="text-center max-w-2xl mx-auto space-y-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-red-500">Step 2 of 5 &bull; Membership Plan</span>
+          <h2 class="text-3xl font-extrabold text-white">Choose Your Contract & Access Tier</h2>
+          <p class="text-xs text-neutral-400">Selected Location: <strong id="step2-selected-club-label" class="text-white">--</strong></p>
+        </div>
+
+        <!-- Contract Type Toggle Switcher -->
+        <div class="flex justify-center">
+          <div class="inline-flex bg-neutral-900 p-1.5 rounded-xl border border-neutral-800 gap-1 shadow-inner">
+            <button id="toggle-flex" onclick="setContractType('flexible')" class="px-4 py-2 rounded-lg text-xs font-bold transition text-neutral-400">
+              Flexible (Month-to-Month)
+            </button>
+            <button id="toggle-12m" onclick="setContractType('12m')" class="px-4 py-2 rounded-lg text-xs font-bold transition bg-red-600 text-white shadow relative">
+              12 Months <span class="text-[9px] bg-neutral-950 text-red-400 px-1.5 py-0.5 rounded ml-1 font-extrabold uppercase">Best Balance</span>
+            </button>
+            <button id="toggle-24m" onclick="setContractType('24m')" class="px-4 py-2 rounded-lg text-xs font-bold transition text-neutral-400">
+              24 Months <span class="text-[9px] bg-emerald-950 text-emerald-400 px-1.5 py-0.5 rounded ml-1 font-extrabold uppercase">Lowest Price</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Dynamic Tier Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 pt-2">
+          
+          <!-- Card 1: Offpeak -->
+          <div class="glass-card rounded-2xl p-6 flex flex-col justify-between relative hover:border-red-500/50 transition cursor-pointer" onclick="selectTier('Offpeak')">
+            <div>
+              <div class="text-xs font-bold text-neutral-400 uppercase tracking-widest">Budget Friendly</div>
+              <h3 class="text-xl font-bold text-white mt-1">Offpeak</h3>
+              <p class="text-[11px] text-neutral-400 mt-1">Access during designated off-peak hours (8am - 4pm).</p>
+              
+              <div class="my-6">
+                <span id="price-offpeak" class="text-3xl font-extrabold text-white">R499</span>
+                <span class="text-xs text-neutral-400">/ month</span>
+              </div>
+
+              <ul class="space-y-2 text-xs text-neutral-300 mb-6">
+                <li class="flex items-center gap-2"><span class="text-red-500">✓</span> Standard gym floor access</li>
+                <li class="flex items-center gap-2"><span class="text-red-500">✓</span> Off-peak group classes</li>
+                <li class="flex items-center gap-2"><span class="text-neutral-500">✕</span> Peak hours excluded</li>
+              </ul>
+            </div>
+            <button class="w-full bg-neutral-800 hover:bg-red-600 text-white font-bold py-2.5 rounded-lg text-xs transition">
+              Select Offpeak
+            </button>
+          </div>
+
+          <!-- Card 2: Club -->
+          <div class="glass-card rounded-2xl p-6 flex flex-col justify-between relative hover:border-red-500/50 transition cursor-pointer border-neutral-700" onclick="selectTier('Club')">
+            <div>
+              <div class="text-xs font-bold text-neutral-400 uppercase tracking-widest">Home Base</div>
+              <h3 class="text-xl font-bold text-white mt-1">Club</h3>
+              <p class="text-[11px] text-neutral-400 mt-1">Full access to your single home club at any time.</p>
+              
+              <div class="my-6">
+                <span id="price-club" class="text-3xl font-extrabold text-white">R899</span>
+                <span class="text-xs text-neutral-400">/ month</span>
+              </div>
+
+              <ul class="space-y-2 text-xs text-neutral-300 mb-6">
+                <li class="flex items-center gap-2"><span class="text-red-500">✓</span> Unlimited home club access</li>
+                <li class="flex items-center gap-2"><span class="text-red-500">✓</span> Full group class timetable</li>
+                <li class="flex items-center gap-2"><span class="text-red-500">✓</span> Pool & sauna access</li>
+              </ul>
+            </div>
+            <button class="w-full bg-neutral-800 hover:bg-red-600 text-white font-bold py-2.5 rounded-lg text-xs transition">
+              Select Club
+            </button>
+          </div>
+
+          <!-- Card 3: Premier (Featured) -->
+          <div class="glass-card rounded-2xl p-6 flex flex-col justify-between relative border-2 border-red-600 bg-red-950/20 shadow-xl shadow-red-950/30 cursor-pointer" onclick="selectTier('Premier')">
+            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-red-600 text-white text-[10px] font-black uppercase tracking-wider px-3 py-0.5 rounded-full shadow">
+              Most Popular
+            </div>
+            <div>
+              <div class="text-xs font-bold text-red-400 uppercase tracking-widest mt-1">National Access</div>
+              <h3 class="text-xl font-bold text-white mt-1">Premier</h3>
+              <p class="text-[11px] text-neutral-300 mt-1">Access all standard Virgin Active clubs nationwide.</p>
+              
+              <div class="my-6">
+                <span id="price-premier" class="text-3xl font-extrabold text-white">R1,199</span>
+                <span class="text-xs text-neutral-400">/ month</span>
+              </div>
+
+              <ul class="space-y-2 text-xs text-neutral-200 mb-6">
+                <li class="flex items-center gap-2"><span class="text-red-400">✓</span> Access all national clubs</li>
+                <li class="flex items-center gap-2"><span class="text-red-400">✓</span> Guest pass privileges</li>
+                <li class="flex items-center gap-2"><span class="text-red-400">✓</span> Priority app booking</li>
+              </ul>
+            </div>
+            <button class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg text-xs shadow transition">
+              Select Premier
+            </button>
+          </div>
+
+          <!-- Card 4: Premier Select -->
+          <div class="glass-card rounded-2xl p-6 flex flex-col justify-between relative hover:border-red-500/50 transition cursor-pointer" onclick="selectTier('Premier Select')">
+            <div>
+              <div class="text-xs font-bold text-neutral-400 uppercase tracking-widest">VIP Collection</div>
+              <h3 class="text-xl font-bold text-white mt-1">Premier Select</h3>
+              <p class="text-[11px] text-neutral-400 mt-1">Unrestricted access including Collection & flagship clubs.</p>
+              
+              <div class="my-6">
+                <span id="price-select" class="text-3xl font-extrabold text-white">R1,699</span>
+                <span class="text-xs text-neutral-400">/ month</span>
+              </div>
+
+              <ul class="space-y-2 text-xs text-neutral-300 mb-6">
+                <li class="flex items-center gap-2"><span class="text-red-500">✓</span> All Collection clubs included</li>
+                <li class="flex items-center gap-2"><span class="text-red-500">✓</span> Complimentary towel service</li>
+                <li class="flex items-center gap-2"><span class="text-red-500">✓</span> VIP locker privileges</li>
+              </ul>
+            </div>
+            <button class="w-full bg-neutral-800 hover:bg-red-600 text-white font-bold py-2.5 rounded-lg text-xs transition">
+              Select Premier Select
+            </button>
+          </div>
+
+        </div>
+
+        <div class="flex justify-between items-center pt-4">
+          <button onclick="showStep('view-buy-step1')" class="text-xs text-neutral-400 hover:text-white">&lsaquo; Back to Location</button>
+        </div>
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- VIEW 7: BUY ONLINE - STEP 3: REVIEW DETAILS-->
+      <!-- ========================================== -->
+      <div id="view-buy-step3" class="hidden max-w-2xl mx-auto">
+        <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+          <div class="border-b border-neutral-800 pb-4">
+            <span class="text-xs font-bold uppercase tracking-wider text-red-500">Step 3 of 5 &bull; Order Summary</span>
+            <h2 class="text-2xl font-extrabold text-white">Review Details & Pricing</h2>
+            <p class="text-xs text-neutral-400 mt-1">Please confirm your selections before proceeding to verification.</p>
+          </div>
+
+          <!-- Customer Details Summary -->
+          <div class="bg-neutral-900/80 rounded-xl p-4 border border-neutral-800 space-y-2 text-xs">
+            <div class="text-neutral-400 uppercase font-bold text-[10px] tracking-wider mb-1">Customer Information</div>
+            <div class="grid grid-cols-2 gap-2 text-neutral-300">
+              <div>Name: <strong id="rev-name" class="text-white">--</strong></div>
+              <div>Email: <strong id="rev-email" class="text-white">--</strong></div>
+              <div>Mobile: <strong id="rev-phone" class="text-white">--</strong></div>
+              <div>Entry Path: <strong id="rev-channel" class="text-white">--</strong></div>
+            </div>
+          </div>
+
+          <!-- Membership & Pricing Breakdown -->
+          <div class="bg-neutral-900/80 rounded-xl p-4 border border-neutral-800 space-y-3 text-xs">
+            <div class="text-neutral-400 uppercase font-bold text-[10px] tracking-wider mb-1">Membership Selection</div>
+            
+            <div class="flex justify-between items-center border-b border-neutral-800 pb-2">
+              <div>
+                <span id="rev-tier" class="text-white font-bold text-sm">--</span>
+                <span id="rev-contract" class="text-neutral-400 text-xs block">--</span>
+              </div>
+              <div id="rev-monthly-fee" class="text-base font-extrabold text-white">R0</div>
+            </div>
+
+            <div class="flex justify-between items-center text-neutral-300 pt-1">
+              <span>Home Club:</span>
+              <div class="flex items-center gap-2">
+                <strong id="rev-club" class="text-white">--</strong>
+                <button type="button" onclick="openClubAmenitiesModal()" class="text-[11px] bg-neutral-800 hover:bg-neutral-700 text-red-400 border border-neutral-700 px-2.5 py-1 rounded transition flex items-center gap-1 font-semibold">
+                  <span>📷</span> View Amenities & Images
+                </button>
+              </div>
+            </div>
+            
+            <div class="flex justify-between items-center text-neutral-300">
+              <span>Pro-rata First Month Fee:</span>
+              <span class="text-white font-semibold">R0.00 (Waived)</span>
+            </div>
+
+            <div class="flex justify-between items-center text-neutral-300">
+              <span>Activation / Joining Fee:</span>
+              <span class="text-emerald-400 font-semibold">R0.00 (Promo)</span>
+            </div>
+
+            <div class="pt-3 border-t border-neutral-700 flex justify-between items-center">
+              <div>
+                <span class="text-sm font-bold text-white block">Total Due Today:</span>
+                <span class="text-[10px] text-neutral-400">First monthly debit starts next month</span>
+              </div>
+              <span id="rev-total-today" class="text-2xl font-black text-red-500">R0.00</span>
+            </div>
+          </div>
+
+          <div class="pt-2 flex justify-between items-center">
+            <button onclick="showStep('view-buy-step2')" class="text-xs text-neutral-400 hover:text-white">&lsaquo; Back to Plans</button>
+            <button onclick="proceedToStep4()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-7 py-3 rounded-lg text-sm shadow-lg shadow-red-600/30 transition">
+              Continue to Verification &rsaquo;
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- VIEW 8: BUY ONLINE - STEP 4: SA ID & OTP   -->
+      <!-- ========================================== -->
+      <div id="view-buy-step4" class="hidden max-w-2xl mx-auto">
+        <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+          <div class="border-b border-neutral-800 pb-4">
+            <span class="text-xs font-bold uppercase tracking-wider text-red-500">Step 4 of 5 &bull; Identity & Verification</span>
+            <h2 class="text-2xl font-extrabold text-white">Verify Your Identity</h2>
+            <p class="text-xs text-neutral-400 mt-1">South African ID details pre-verified from Vitality check to eliminate friction.</p>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-neutral-300 mb-1">South African ID Number (13 Digits) *</label>
+              <input type="text" id="sa-id-input" maxlength="13" oninput="handleSAIDInput(this.value)" placeholder="e.g. 9201015009087" class="custom-input w-full py-2.5 text-base tracking-widest font-mono">
+              <span id="said-error" class="text-red-500 text-[11px] hidden mt-1 block">Please enter a valid 13-digit South African ID number.</span>
+              
+              <!-- Pre-verified Badge -->
+              <div id="vitality-autofill-badge" class="hidden text-emerald-400 text-xs font-semibold mt-2 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Auto-completed and verified from Vitality check
+              </div>
+            </div>
+
+            <!-- Derived Details Output Box -->
+            <div id="derived-details-box" class="hidden bg-neutral-900/90 rounded-xl p-4 border border-emerald-500/30 space-y-2">
+              <div class="flex items-center gap-2 text-emerald-400 text-xs font-bold">
+                <span>✓ ID Number Validated</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-xs pt-1">
+                <div>
+                  <span class="text-neutral-400 block text-[10px]">Derived Birth Date:</span>
+                  <span id="derived-dob" class="text-white font-bold">--</span>
+                </div>
+                <div>
+                  <span class="text-neutral-400 block text-[10px]">Derived Gender:</span>
+                  <span id="derived-gender" class="text-white font-bold">--</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 flex justify-between items-center border-t border-neutral-800">
+            <button onclick="showStep('view-buy-step3')" class="text-xs text-neutral-400 hover:text-white">&lsaquo; Back</button>
+            <button id="trigger-otp-btn" onclick="triggerOTPModal()" disabled class="bg-red-600 hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold px-7 py-3 rounded-lg text-xs transition shadow-lg shadow-red-600/30 flex items-center gap-2">
+              <span>Send OTP Verification</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- ENHANCED SIMULATED OTP POPUP / MODAL       -->
+      <!-- ========================================== -->
+      <div id="modal-otp" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass-card max-w-sm w-full rounded-2xl p-6 text-center space-y-4 relative">
+          
+          <!-- Close / Cancel Option -->
+          <button onclick="closeOTPModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-white p-1 text-xl leading-none transition" title="Close Verification">&times;</button>
+
+          <div class="w-12 h-12 bg-red-600/20 border border-red-500/40 rounded-full flex items-center justify-center mx-auto text-red-500">
+            OTP
+          </div>
+          
+          <h3 class="text-xl font-bold text-white">Enter OTP Code</h3>
+          <p class="text-xs text-neutral-300">
+            We've sent a 4-digit code to <strong id="otp-phone-display" class="text-white">+27 --</strong>.
+          </p>
+
+          <!-- Simulated SMS Notification Pill -->
+          <div class="bg-neutral-900 border border-neutral-700 rounded-lg p-2.5 text-left text-[11px] text-neutral-300 space-y-1">
+            <div class="text-[9px] text-neutral-500 font-bold uppercase flex justify-between">
+              <span>Simulated SMS</span> <span id="sms-time-tag">Just Now</span>
+            </div>
+            <div>Your Virgin Active OTP code is: <strong id="simulated-otp-code" class="text-red-400 font-mono text-sm">4829</strong></div>
+          </div>
+
+          <!-- Main Input Form -->
+          <div id="otp-entry-section" class="space-y-3 pt-1">
+            <input type="text" id="otp-input" maxlength="4" placeholder="••••" class="w-full text-center tracking-widest font-mono text-2xl py-2 bg-neutral-900 border border-neutral-700 rounded-lg text-white focus:outline-none focus:border-red-500">
+            <button onclick="verifyOTP()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg text-xs transition shadow-lg shadow-red-600/30">
+              Verify & Proceed to Payment
+            </button>
+          </div>
+
+          <!-- Didn't get OTP Options Section -->
+          <div class="pt-3 border-t border-neutral-800/80 text-xs space-y-2">
+            <p class="text-[11px] text-neutral-400 font-semibold">Didn't get the code?</p>
+            
+            <div class="flex items-center justify-center gap-4">
+              <!-- Option 1: Resend OTP -->
+              <button id="resend-otp-btn" onclick="resendOTP()" class="text-red-400 hover:text-red-300 font-bold underline transition disabled:opacity-40 disabled:no-underline">
+                Resend OTP
+              </button>
+              
+              <span class="text-neutral-600">&bull;</span>
+              
+              <!-- Option 2: Change My Number -->
+              <button onclick="toggleChangePhoneSection(true)" class="text-neutral-300 hover:text-white font-medium underline transition">
+                Change Number
+              </button>
+            </div>
+
+            <div id="resend-alert-msg" class="hidden text-[10px] text-emerald-400 font-semibold pt-1">
+              ✓ A fresh code has been dispatched to your mobile.
+            </div>
+          </div>
+
+          <!-- Option 2 Inline Input Section (Hidden by default) -->
+          <div id="change-phone-section" class="hidden pt-3 border-t border-neutral-800 text-left space-y-2 bg-neutral-950/80 p-3 rounded-xl">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-neutral-400">Update Mobile Number</label>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs text-neutral-400">🇿🇦 +27</span>
+              <input type="tel" id="new-phone-input" placeholder="821234567" class="custom-input w-full py-1 text-xs">
+            </div>
+            <div class="flex gap-2 pt-1">
+              <button onclick="saveNewPhoneAndResend()" class="flex-1 bg-neutral-800 hover:bg-neutral-700 text-white font-semibold py-1.5 rounded text-[11px] border border-neutral-700 transition">
+                Save & Resend Code
+              </button>
+              <button onclick="toggleChangePhoneSection(false)" class="text-neutral-400 hover:text-white px-2 py-1 text-[11px]">
+                Cancel
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- VIEW 9: BUY ONLINE - STEP 5: STRIPE PAYMENT-->
+      <!-- ========================================== -->
+      <div id="view-buy-step5" class="hidden max-w-2xl mx-auto">
+        <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
+          <div class="flex items-center justify-between border-b border-neutral-800 pb-4">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-red-500">Step 5 of 5 &bull; Checkout</span>
+              <h2 class="text-2xl font-extrabold text-white">Secure Payment</h2>
+            </div>
+            <div class="flex gap-2">
+              <span class="text-xs font-semibold bg-neutral-900 border border-neutral-700 text-neutral-300 px-2.5 py-1 rounded">VISA</span>
+              <span class="text-xs font-semibold bg-neutral-900 border border-neutral-700 text-neutral-300 px-2.5 py-1 rounded">MC</span>
+            </div>
+          </div>
+
+          <form onsubmit="handlePaymentSubmit(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-neutral-300 mb-1">Cardholder Name *</label>
+              <input type="text" id="pay-cardholder" required placeholder="John Doe" class="stripe-input w-full text-sm">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-neutral-300 mb-1">Card Number *</label>
+              <input type="text" id="pay-cardnumber" maxlength="19" required placeholder="4532 •••• •••• 8890" class="stripe-input w-full text-sm font-mono tracking-wider">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-neutral-300 mb-1">Expiry Date *</label>
+                <input type="text" maxlength="5" placeholder="MM/YY" required class="stripe-input w-full text-sm font-mono">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-neutral-300 mb-1">CVC / CVV *</label>
+                <input type="password" maxlength="4" placeholder="123" required class="stripe-input w-full text-sm font-mono">
+              </div>
+            </div>
+
+            <div class="bg-neutral-900/60 p-3 rounded-lg border border-neutral-800 flex items-center justify-between text-xs text-neutral-400">
+              <span>Recurring Monthly Authorization:</span>
+              <strong id="stripe-debit-amount" class="text-white">R1,199 / mo</strong>
+            </div>
+
+            <button type="submit" id="pay-btn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3.5 rounded-xl text-sm transition shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2">
+              <span id="pay-btn-text">Pay R0.00 & Activate Membership</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- VIEW 10: CALL-ME-BACK THANK YOU PAGE      -->
+      <!-- ========================================== -->
+      <div id="view-thankyou-callback" class="hidden max-w-xl mx-auto text-center space-y-6 my-auto">
+        <div class="glass-card rounded-2xl p-8 space-y-6">
+          <div class="w-20 h-20 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-500/30">
+            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          
+          <div class="space-y-2">
+            <h2 class="text-3xl font-extrabold text-white">Thank You!</h2>
+            <p class="text-sm text-neutral-300 leading-relaxed max-w-md mx-auto">
+              Your call back request has been logged in our call center queue. A Virgin Active membership consultant will reach out to you shortly.
+            </p>
+          </div>
+
+          <!-- Actions Required: Explore Memberships or Explore Locations -->
+          <div class="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button onclick="startBuyOnlineFromThankYou()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-xl text-xs transition shadow-lg shadow-red-600/30 flex items-center justify-center gap-2">
+              <span>Explore Our Memberships</span>
+            </button>
+
+            <button onclick="openClubLocationsModal()" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white font-semibold py-3.5 px-4 rounded-xl text-xs border border-neutral-700 transition flex items-center justify-center gap-2">
+              <span>Explore Club Locations</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ========================================== -->
+      <!-- VIEW 11: SUCCESS / APP DOWNLOAD PAGE      -->
+      <!-- ========================================== -->
+      <div id="view-success-app" class="hidden max-w-4xl mx-auto space-y-8 my-auto">
+        <div class="glass-card rounded-2xl p-8 sm:p-10 space-y-8 text-center">
+          
+          <div class="space-y-4">
+            <div class="w-20 h-20 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto border border-emerald-500/30">
+              <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Welcome to the Virgin Active Family!</h2>
+            <p class="text-sm text-neutral-300 max-w-xl mx-auto">
+              Your subscription is active. Your official club digital key and workout schedule are ready in the Virgin Active Mobile App.
+            </p>
+          </div>
+
+          <!-- Mobile App Spotlight Showcase -->
+          <div class="bg-neutral-900/90 rounded-2xl p-6 border border-neutral-800 grid grid-cols-1 md:grid-cols-12 gap-6 items-center text-left">
+            <div class="md:col-span-7 space-y-4">
+              <span class="text-[10px] font-bold text-red-500 uppercase tracking-widest">Essential Companion</span>
+              <h3 class="text-2xl font-bold text-white">The Virgin Active App</h3>
+              <ul class="space-y-2.5 text-xs text-neutral-300 list-disc list-inside">
+                <li><strong class="text-white">Contactless Access:</strong> Scan into any club with your digital QR key.</li>
+                <li><strong class="text-white">Class Booking:</strong> Book Grid, Reformer Pilates, Yoga & Cycle in 1-click.</li>
+                <li><strong class="text-white">Track Progress:</strong> Sync with Apple Health, Garmin, and Vitality.</li>
+              </ul>
+
+              <!-- Download Buttons -->
+              <div class="pt-2 flex flex-wrap gap-3">
+                <button onclick="simulateAppDownload('iOS')" class="bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-white font-semibold px-5 py-3 rounded-xl text-xs transition">
+                  Download on the App Store
+                </button>
+
+                <button onclick="simulateAppDownload('Android')" class="bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-white font-semibold px-5 py-3 rounded-xl text-xs transition">
+                  GET IT ON Google Play
+                </button>
+              </div>
+            </div>
+
+            <div class="md:col-span-5 flex justify-center">
+              <div class="w-48 h-80 bg-neutral-950 border-4 border-neutral-800 rounded-3xl p-3 shadow-2xl flex flex-col justify-between relative overflow-hidden">
+                <div class="w-16 h-3 bg-neutral-800 rounded-full mx-auto"></div>
+                <div class="my-auto text-center space-y-3">
+                  <img src="valogo.png" alt="Virgin Active" class="h-6 mx-auto object-contain" onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'),{className:'w-12 h-12 bg-red-600 rounded-xl mx-auto flex items-center justify-center font-black text-white text-xl',innerText:'VA'}));">
+                  <div class="text-xs font-bold text-white">Digital Access Pass</div>
+                  
+                  <!-- Visual SVG QR Code -->
+                  <div class="bg-white p-2 rounded-lg inline-block text-neutral-950">
+                    <svg class="w-24 h-24" viewBox="0 0 100 100" fill="currentColor">
+                      <!-- Position detection patterns (corners) -->
+                      <rect x="5" y="5" width="25" height="25" fill="#000"/>
+                      <rect x="9" y="9" width="17" height="17" fill="#fff"/>
+                      <rect x="13" y="13" width="9" height="9" fill="#000"/>
+                      
+                      <rect x="70" y="5" width="25" height="25" fill="#000"/>
+                      <rect x="74" y="9" width="17" height="17" fill="#fff"/>
+                      <rect x="78" y="13" width="9" height="9" fill="#000"/>
+                      
+                      <rect x="5" y="70" width="25" height="25" fill="#000"/>
+                      <rect x="9" y="74" width="17" height="17" fill="#fff"/>
+                      <rect x="13" y="78" width="9" height="9" fill="#000"/>
+
+                      <!-- QR Code Data Cells simulation -->
+                      <rect x="35" y="10" width="6" height="6"/><rect x="45" y="10" width="6" height="6"/><rect x="55" y="10" width="6" height="6"/>
+                      <rect x="35" y="20" width="6" height="6"/><rect x="50" y="25" width="6" height="6"/><rect x="60" y="20" width="6" height="6"/>
+                      <rect x="10" y="35" width="6" height="6"/><rect x="20" y="45" width="6" height="6"/><rect x="30" y="35" width="6" height="6"/>
+                      <rect x="40" y="40" width="8" height="8"/><rect x="55" y="40" width="6" height="6"/><rect x="70" y="40" width="8" height="8"/>
+                      <rect x="80" y="35" width="6" height="6"/><rect x="90" y="45" width="6" height="6"/><rect x="85" y="55" width="6" height="6"/>
+                      <rect x="35" y="70" width="6" height="6"/><rect x="45" y="75" width="6" height="6"/><rect x="55" y="70" width="6" height="6"/>
+                      <rect x="70" y="70" width="6" height="6"/><rect x="80" y="80" width="6" height="6"/><rect x="90" y="75" width="6" height="6"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="text-[9px] text-center text-neutral-500">Virgin Active SA App</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <button onclick="restartFlow()" class="text-xs text-neutral-400 hover:text-white underline">
+              Return to Homepage
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Footer Bar -->
+    <footer class="w-full max-w-7xl mx-auto z-10 pt-6 text-center text-xs text-neutral-500 flex flex-col sm:flex-row justify-between items-center border-t border-neutral-800/80 mt-8 gap-2">
+      <p>&copy; Virgin Active South Africa. All rights reserved.</p>
+      <div class="flex space-x-4">
+        <a href="#" onclick="openClubLocationsModal(); return false;" class="hover:text-white">Club Locations</a>
+        <a href="#" onclick="toggleLeadQueueModal(); return false;" class="hover:text-white">Lead Admin Queue</a>
+      </div>
+    </footer>
+
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- MODAL: CLUB AMENITIES & GALLERY MODAL      -->
+  <!-- ========================================== -->
+  <div id="modal-club-amenities" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card max-w-2xl w-full rounded-2xl p-6 sm:p-8 space-y-6 relative max-h-[90vh] flex flex-col">
+      
+      <!-- Modal Header -->
+      <div class="flex justify-between items-start border-b border-neutral-800 pb-4">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-red-500">Selected Home Club</span>
+          <h3 id="amenities-modal-club-title" class="text-2xl font-extrabold text-white">Virgin Active Club</h3>
+          <p class="text-xs text-neutral-400 mt-0.5">Explore key features, services, and facilities offered at this location.</p>
+        </div>
+        <button onclick="closeClubAmenitiesModal()" class="text-neutral-400 hover:text-white text-2xl p-1 leading-none">&times;</button>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div class="flex-1 overflow-y-auto space-y-6 pr-1">
+        
+        <!-- Image Gallery Grid -->
+        <div>
+          <h4 class="text-xs font-bold text-neutral-300 uppercase tracking-wider mb-3">Facility Gallery</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="rounded-xl overflow-hidden border border-neutral-800 group relative">
+              <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=600&auto=format&fit=crop" alt="Gym Floor & Cardio" class="w-full h-32 object-cover group-hover:scale-105 transition duration-300">
+              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-[11px] font-medium text-white">Technogym & Free Weights</div>
+            </div>
+            <div class="rounded-xl overflow-hidden border border-neutral-800 group relative">
+              <img src="https://images.unsplash.com/photo-1576678927484-cc909957088c?q=80&w=600&auto=format&fit=crop" alt="Heated Lap Pool" class="w-full h-32 object-cover group-hover:scale-105 transition duration-300">
+              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-[11px] font-medium text-white">25m Heated Lap Pool</div>
+            </div>
+            <div class="rounded-xl overflow-hidden border border-neutral-800 group relative">
+              <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=600&auto=format&fit=crop" alt="Group Exercise Studio" class="w-full h-32 object-cover group-hover:scale-105 transition duration-300">
+              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-[11px] font-medium text-white">Group Exercise Studios</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Key Amenities Checklist & Bullet Points -->
+        <div>
+          <h4 class="text-xs font-bold text-neutral-300 uppercase tracking-wider mb-3">Key Amenities & Services Included</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-neutral-300">
+            <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
+              <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
+              <div>
+                <strong class="text-white block">Heated Pool & Hydrotherapy</strong>
+                Indoor 25m swimming pool with dedicated lap lanes, sauna, and steam rooms.
+              </div>
+            </div>
+            <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
+              <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
+              <div>
+                <strong class="text-white block">Group Classes & Pilates</strong>
+                Unlimited access to Yoga, Reformer Pilates, Grid Training, and Ride classes.
+              </div>
+            </div>
+            <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
+              <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
+              <div>
+                <strong class="text-white block">Functional Training Zone</strong>
+                Dedicated turf tracks, kettlebell racks, sled tracks, and rig equipment.
+              </div>
+            </div>
+            <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
+              <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
+              <div>
+                <strong class="text-white block">Wellness & Kauai Cafe</strong>
+                On-site fresh nutrition bar, complimentary Wi-Fi, and workspace lounge.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="pt-3 border-t border-neutral-800 flex justify-end">
+        <button onclick="closeClubAmenitiesModal()" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-5 py-2.5 rounded-lg shadow transition">
+          Got It
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- MODAL: CLUB LOCATIONS BROWSER              -->
+  <!-- ========================================== -->
+  <div id="modal-club-locations" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card max-w-2xl w-full rounded-2xl p-6 sm:p-8 space-y-4 relative max-h-[85vh] flex flex-col">
+      <div class="flex justify-between items-center border-b border-neutral-800 pb-3">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <span>📍</span> Virgin Active Club Locations
+        </h3>
+        <button onclick="closeClubLocationsModal()" class="text-neutral-400 hover:text-white p-1 text-xl">&times;</button>
+      </div>
+
+      <div class="flex gap-2">
+        <select id="locations-province-select" onchange="filterLocationsModal(this.value)" class="custom-input py-2 text-xs w-full">
+          <option value="ALL">All Provinces</option>
+        </select>
+      </div>
+
+      <div id="locations-list-container" class="flex-1 overflow-y-auto space-y-2 pr-1 pt-2 max-h-[50vh]">
+        <!-- Populated via JS -->
+      </div>
+
+      <div class="pt-3 border-t border-neutral-800 flex justify-end">
+        <button onclick="closeClubLocationsModal()" class="bg-neutral-800 hover:bg-neutral-700 text-white font-semibold text-xs px-4 py-2 rounded-lg">
+          Close Browser
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- MODAL: CALL CENTER LEAD QUEUE (ADMIN VIEW) -->
+  <!-- ========================================== -->
+  <div id="modal-lead-queue" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card max-w-3xl w-full rounded-2xl p-6 space-y-4 relative max-h-[85vh] flex flex-col">
+      <div class="flex justify-between items-center border-b border-neutral-800 pb-3">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-emerald-400">Back-End System View</span>
+          <h3 class="text-lg font-bold text-white">Call Center Lead Queue Table</h3>
+        </div>
+        <button onclick="toggleLeadQueueModal()" class="text-neutral-400 hover:text-white p-1 text-xl">&times;</button>
+      </div>
+
+      <div class="flex-1 overflow-x-auto overflow-y-auto max-h-[55vh]">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-neutral-800 text-neutral-400 font-mono">
+              <th class="p-2">Type</th>
+              <th class="p-2">Name</th>
+              <th class="p-2">Email</th>
+              <th class="p-2">Phone</th>
+              <th class="p-2">Status / Answers</th>
+            </tr>
+          </thead>
+          <tbody id="lead-queue-tbody" class="divide-y divide-neutral-800/60 text-neutral-300">
+            <!-- Dynamic lead rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pt-3 border-t border-neutral-800 flex justify-between items-center text-xs">
+        <span class="text-neutral-400">Captured in Local Storage</span>
+        <button onclick="clearLeadQueue()" class="text-red-400 hover:text-red-300 underline font-medium">
+          Clear Leads
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========================================== -->
+  <!-- JAVASCRIPT LOGIC & STATE ENGINE            -->
+  <!-- ========================================== -->
+  <script>
+    
+    // Master Province & Branch Database
+    const PROVINCE_CLUBS_DATA = {
+      "Gauteng": [
+        "Virgin Active Gym Alice Lane", "Virgin Active Gym Balfour Park", "Virgin Active Gym Bedfordview",
+        "Virgin Active Gym Bel Air", "Virgin Active Gym Boksburg", "Virgin Active Gym Braamfontein",
+        "Virgin Active Gym Bryanston", "Virgin Active Gym Carlswald", "Virgin Active Gym Cedar Square",
+        "Virgin Active Gym Centurion", "Virgin Active Gym Cresta", "Virgin Active Gym Melrose Arch",
+        "Virgin Active Gym Menlyn Maine", "Virgin Active Gym Morningside", "Virgin Active Gym Randburg"
+      ],
+      "Western Cape": [
+        "Virgin Active Gym Athlone", "Virgin Active Gym Cape Town Foreshore", "Virgin Active Gym CapeGate",
+        "Virgin Active Gym Century City", "Virgin Active Gym Claremont", "Virgin Active Gym Constantia",
+        "Virgin Active Gym Durbanville", "Virgin Active Gym Paarl", "Virgin Active Gym Point", "Virgin Active Gym Stellenbosch"
+      ],
+      "KwaZulu-Natal": [
+        "Virgin Active Gym Ballito", "Virgin Active Gym Durban CBD", "Virgin Active Gym Gateway",
+        "Virgin Active Gym Hillcrest", "Virgin Active Gym Kings Park", "Virgin Active Gym La Lucia",
+        "Virgin Active Gym Moses Mabhida", "Virgin Active Gym Pavilion", "Virgin Active Gym Pietermaritzburg"
+      ],
+      "Eastern Cape": [
+        "Virgin Active Gym Beacon Bay", "Virgin Active Gym East London", "Virgin Active Gym Greenacres", "Virgin Active Gym Humewood"
+      ],
+      "Free State": ["Virgin Active Gym Fichardt Park"],
+      "Limpopo": ["Virgin Active Gym Polokwane"],
+      "Mpumalanga": ["Virgin Active Gym Mbombela (Nelspruit)", "Virgin Active Gym Middelburg"],
+      "North West": ["Virgin Active Gym Klerksdorp", "Virgin Active Gym Potchefstroom"],
+      "Northern Cape": ["Virgin Active Gym Kimberley"]
+    };
+
+    // Pricing Matrix Structure (ZAR)
+    const PRICING_MATRIX = {
+      "flexible": { Offpeak: 599, Club: 999, Premier: 1399, "Premier Select": 1899 },
+      "12m":      { Offpeak: 499, Club: 899, Premier: 1199, "Premier Select": 1699 },
+      "24m":      { Offpeak: 399, Club: 749, Premier: 999,  "Premier Select": 1499 }
+    };
+
+    // 8 Qualifying MCQ Questions for Paid Media
+    const MCQ_QUESTIONS = [
+      {
+        title: "1. So, what made you decide to check us out today?",
+        options: ["Looking to lose weight", "Building muscle & strength", "Improving energy & fitness", "Joining social group classes", "Vitality Gym Benefit"]
+      },
+      {
+        title: "2. What's motivating you to make a change right now?",
+        options: ["Upcoming event / holiday", "Doctor or health advice", "Stress relief & wellness", "Wanting a new routine"]
+      },
+      {
+        title: "3. What role would you love exercise to play in your everyday life?",
+        options: ["Daily energizer", "2-3 times a week balance", "Weekend stress buster", "Competitive athletic training"]
+      },
+      {
+        title: "4. How soon are you looking to get started?",
+        options: ["Immediately today", "This coming week", "Next month", "Just researching for now"]
+      },
+      {
+        title: "5. Have you belonged to a gym or wellness community before?",
+        options: ["Yes, active gym member", "Yes, but stopped a while ago", "No, this would be my first time"]
+      },
+      {
+        title: "6. Have you experienced a Virgin Active club before?",
+        options: ["Yes, was a previous member", "Yes, visited with a guest pass", "No, brand new to Virgin Active"]
+      },
+      {
+        title: "7. How often would you love to pop in each week?",
+        options: ["1 - 2 days", "3 - 4 days", "5+ days a week"]
+      },
+      {
+        title: "8. If it all feels right, are you ready to start your wellness journey with us?",
+        options: ["Yes, absolutely ready!", "Yes, but need a quick call back first"]
+      }
+    ];
+
+    // Global State Application Container
+    let state = {
+      channel: 'organic', // 'organic' or 'paid'
+      isVitalityVerified: false,
+      vitalityDiscount: 1.0, // 0.25 when verified (75% off)
+      leadData: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        leadType: 'unqualified', // 'unqualified' or 'qualified'
+        mcqAnswers: []
+      },
+      selection: {
+        province: '',
+        branch: '',
+        contractType: '12m', // 'flexible', '12m', '24m'
+        tier: 'Premier',
+        monthlyFee: 1199,
+        saId: '',
+        dob: '',
+        gender: ''
+      },
+      mcqStepIndex: 0,
+      generatedOTP: '4829',
+      capturedLeadsQueue: JSON.parse(localStorage.getItem('va_leads_queue') || '[]')
+    };
+
+
+    // Initialization on Page Load
+    window.onload = function() {
+      populateProvinceDropdowns();
+      renderClubLocationsModal();
+      updateLeadBadge();
+      setChannel('organic');
+    };
+
+    // Organic Lead Form Modal Handlers & Reset Logic
+    function showOrganicFormModal() {
+      document.getElementById('modal-organic-lead').classList.remove('hidden');
+    }
+
+    function closeOrganicFormModal() {
+      document.getElementById('modal-organic-lead').classList.add('hidden');
+    }
+
+    // Modal Control: Club Amenities & Gallery
+    function openClubAmenitiesModal() {
+      const selectedClub = state.selection.branch || 'Virgin Active Gym';
+      document.getElementById('amenities-modal-club-title').textContent = selectedClub;
+      document.getElementById('modal-club-amenities').classList.remove('hidden');
+    }
+
+    function closeClubAmenitiesModal() {
+      document.getElementById('modal-club-amenities').classList.add('hidden');
+    }
+
+    function handleOrganicFormSubmit(e) {
+      e.preventDefault();
+      const firstName = document.getElementById('org-firstName').value;
+      const lastName = document.getElementById('org-lastName').value;
+      const email = document.getElementById('org-email').value;
+      const phone = document.getElementById('org-phone').value;
+
+      state.leadData = {
+        firstName,
+        lastName,
+        email,
+        phone,
+        leadType: 'unqualified',
+        mcqAnswers: []
+      };
+
+      closeOrganicFormModal();
+      showStep('view-buy-step1');
+    }
+
+    function submitOrganicRequestCall() {
+      const firstName = document.getElementById('org-firstName').value;
+      const lastName = document.getElementById('org-lastName').value;
+      const email = document.getElementById('org-email').value;
+      const phone = document.getElementById('org-phone').value;
+
+      if (!firstName || !lastName || !email || !phone) {
+        alert('Please fill in all required fields before requesting a call.');
+        return;
+      }
+
+      state.leadData = {
+        firstName,
+        lastName,
+        email,
+        phone,
+        leadType: 'unqualified',
+        mcqAnswers: []
+      };
+
+      saveLeadToQueue('Organic - Call Requested');
+      closeOrganicFormModal();
+      showStep('view-thankyou-callback');
+    }
+
+    function restartFlow() {
+      state.isVitalityVerified = false;
+      state.vitalityDiscount = 1.0;
+      state.selection.saId = '';
+      state.selection.dob = '';
+      state.selection.gender = '';
+      state.leadData = {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        leadType: 'unqualified',
+        mcqAnswers: []
+      };
+      setChannel('organic');
+    }
+
+    // Set Channel Switcher Mode
+    function setChannel(ch) {
+      state.channel = ch;
+      const orgBtn = document.getElementById('channel-organic-btn');
+      const paidBtn = document.getElementById('channel-paid-btn');
+      const tag = document.getElementById('channel-tag');
+
+      if (ch === 'organic') {
+        orgBtn.className = "px-3 py-1 rounded-md text-xs font-semibold transition bg-red-600 text-white shadow";
+        paidBtn.className = "px-3 py-1 rounded-md text-xs font-semibold transition text-neutral-400 hover:text-white";
+        tag.textContent = "Organic Entry View";
+        showStep('view-organic-landing');
+      } else {
+        paidBtn.className = "px-3 py-1 rounded-md text-xs font-semibold transition bg-red-600 text-white shadow";
+        orgBtn.className = "px-3 py-1 rounded-md text-xs font-semibold transition text-neutral-400 hover:text-white";
+        tag.textContent = "Paid Media Campaign View";
+        showStep('view-paid-landing');
+      }
+    }
+
+    // View Switcher Router
+    function showStep(viewId) {
+      const views = [
+        'view-organic-landing', 'view-paid-landing', 'view-buy-step1', 'view-buy-vitality',
+        'view-buy-step2', 'view-buy-step3', 'view-buy-step4',
+        'view-buy-step5', 'view-thankyou-callback', 'view-success-app'
+      ];
+      
+      views.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
+
+      const activeView = document.getElementById(viewId);
+      if (activeView) activeView.classList.remove('hidden');
+
+      // Update Breadcrumbs visibility
+      const bc = document.getElementById('flow-breadcrumbs');
+      if (viewId.startsWith('view-buy-step') || viewId === 'view-buy-vitality') {
+        bc.classList.remove('hidden');
+        bc.classList.add('md:flex');
+        updateBreadcrumbs(viewId);
+      } else {
+        bc.classList.add('hidden');
+        bc.classList.remove('md:flex');
+      }
+    }
+
+    function updateBreadcrumbs(viewId) {
+      const stepMap = {
+        'view-buy-step1': 1,
+        'view-buy-vitality': 2,
+        'view-buy-step2': 3,
+        'view-buy-step3': 4,
+        'view-buy-step4': 5,
+        'view-buy-step5': 5
+      };
+
+      const activeNum = stepMap[viewId] || 1;
+
+      for (let i = 1; i <= 5; i++) {
+        const stepEl = document.getElementById(`bc-step-${i}`);
+        if (stepEl) {
+          if (i === activeNum) {
+            stepEl.className = "text-white font-bold underline";
+          } else {
+            stepEl.className = "text-neutral-500 font-normal";
+          }
+        }
+      }
+    }
+
+    function proceedToVitalityStep() {
+      const prov = document.getElementById('buy-province').value;
+      const branchSel = document.getElementById('buy-branch').value;
+      let finalBranch = branchSel;
+
+      if (branchSel === 'Other') {
+        finalBranch = document.getElementById('buy-other-branch').value;
+      }
+
+      if (!prov || !finalBranch) {
+        alert('Please select both a Province and a Branch.');
+        return;
+      }
+
+      state.selection.province = prov;
+      state.selection.branch = finalBranch;
+
+      // Pre-fill fields if lead info exists
+      if (state.leadData.firstName) document.getElementById('vit-firstName').value = state.leadData.firstName;
+      if (state.leadData.lastName) document.getElementById('vit-lastName').value = state.leadData.lastName;
+      if (state.leadData.email) document.getElementById('vit-email').value = state.leadData.email;
+
+      showStep('view-buy-vitality');
+    }
+
+    function handleVitalitySAIDInput(idVal) {
+      if (idVal.length !== 13 || isNaN(idVal)) {
+        document.getElementById('vit-derived-info').classList.add('hidden');
+        return;
+      }
+
+      const yy = idVal.substring(0, 2);
+      const mm = idVal.substring(2, 4);
+      const dd = idVal.substring(4, 6);
+      const century = parseInt(yy) > 30 ? '19' : '20';
+      const fullDOB = `${century}${yy}-${mm}-${dd}`;
+      const genderCode = parseInt(idVal.substring(6, 10));
+      const gender = genderCode < 5000 ? 'Female' : 'Male';
+
+      state.selection.saId = idVal;
+      state.selection.dob = fullDOB;
+      state.selection.gender = gender;
+
+      document.getElementById('vit-dob').textContent = fullDOB;
+      document.getElementById('vit-gender').textContent = gender;
+      document.getElementById('vit-derived-info').classList.remove('hidden');
+    }
+
+    function handleCheckVitalityBenefits(e) {
+      e.preventDefault();
+      
+      // Update state lead details
+      state.leadData.firstName = document.getElementById('vit-firstName').value;
+      state.leadData.lastName = document.getElementById('vit-lastName').value;
+      state.leadData.email = document.getElementById('vit-email').value;
+
+      const vitSAID = document.getElementById('vit-saId').value;
+      if (vitSAID) {
+        handleVitalitySAIDInput(vitSAID);
+      }
+
+      const loader = document.getElementById('vit-checking-loader');
+      const checkBtn = document.getElementById('vit-check-btn');
+      const successBox = document.getElementById('vit-success-box');
+      const failedBox = document.getElementById('vit-failed-box');
+      const proceedDiscountedBtn = document.getElementById('vit-proceed-discounted-btn');
+
+      // Hide boxes & show loader
+      successBox.classList.add('hidden');
+      failedBox.classList.add('hidden');
+      loader.classList.remove('hidden');
+      checkBtn.classList.add('hidden');
+
+      setTimeout(() => {
+        loader.classList.add('hidden');
+
+        const simulateSuccess = document.getElementById('vitality-sim-toggle').checked;
+
+        if (simulateSuccess) {
+          state.isVitalityVerified = true;
+          state.vitalityDiscount = 0.25; // 75% off
+          successBox.classList.remove('hidden');
+          proceedDiscountedBtn.classList.remove('hidden');
+        } else {
+          state.isVitalityVerified = false;
+          state.vitalityDiscount = 1.0;
+          failedBox.classList.remove('hidden');
+        }
+      }, 1400);
+    }
+
+    function continueWithoutVitalityDiscount() {
+      const vitSAID = document.getElementById('vit-saId').value;
+      if (vitSAID) {
+        handleVitalitySAIDInput(vitSAID);
+      }
+      state.isVitalityVerified = false;
+      state.vitalityDiscount = 1.0;
+      proceedToStep2();
+    }
+
+    function requestCallMeBackFromVitality() {
+      saveLeadToQueue('Vitality Unverified - Call Requested');
+      showStep('view-thankyou-callback');
+    }
+
+    // Handle Paid Media Lead Submissions
+    function handlePaidFormSubmit(e) {
+      e.preventDefault();
+      const firstName = document.getElementById('paid-firstName').value;
+      const lastName = document.getElementById('paid-lastName').value;
+      const email = document.getElementById('paid-email').value;
+      const phone = document.getElementById('paid-phone').value;
+      const action = document.getElementById('paid-action-select').value;
+
+      state.leadData = {
+        firstName,
+        lastName,
+        email,
+        phone,
+        leadType: 'qualified',
+        mcqAnswers: []
+      };
+
+      if (action === 'callback') {
+        // Log to queue immediately
+        saveLeadToQueue('Qualified - Call Requested');
+        state.mcqStepIndex = 0;
+        renderMCQStep();
+        document.getElementById('modal-mcq-survey').classList.remove('hidden');
+      } else if (action === 'buynow') {
+        showStep('view-buy-step1');
+      }
+    }
+
+    function closeMCQModal() {
+      document.getElementById('modal-mcq-survey').classList.add('hidden');
+      showStep('view-thankyou-callback');
+    }
+
+    // MCQ Survey Engine (Auto Advances)
+    function renderMCQStep() {
+      const q = MCQ_QUESTIONS[state.mcqStepIndex];
+      document.getElementById('mcq-question-title').textContent = q.title;
+      document.getElementById('mcq-progress-text').textContent = `Question ${state.mcqStepIndex + 1} of 8`;
+      
+      const pct = ((state.mcqStepIndex + 1) / 8) * 100;
+      document.getElementById('mcq-progress-bar').style.width = `${pct}%`;
+
+      const optionsBox = document.getElementById('mcq-options-container');
+      optionsBox.innerHTML = '';
+
+      const currentSelected = state.leadData.mcqAnswers[state.mcqStepIndex];
+
+      q.options.forEach(opt => {
+        const isSelected = currentSelected === opt;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `w-full text-left p-3.5 rounded-xl text-xs font-semibold border transition ${
+          isSelected 
+            ? 'bg-red-600/20 border-red-500 text-white shadow' 
+            : 'bg-neutral-900 border-neutral-800 text-neutral-300 hover:border-neutral-700 hover:bg-neutral-800/80'
+        }`;
+        btn.textContent = opt;
+        btn.onclick = () => {
+          state.leadData.mcqAnswers[state.mcqStepIndex] = opt;
+          // Auto advance to next question
+          nextMCQ();
+        };
+        optionsBox.appendChild(btn);
+      });
+
+      document.getElementById('mcq-prev-btn').disabled = state.mcqStepIndex === 0;
+    }
+
+    function prevMCQ() {
+      if (state.mcqStepIndex > 0) {
+        state.mcqStepIndex--;
+        renderMCQStep();
+      }
+    }
+
+    function nextMCQ() {
+      if (state.mcqStepIndex < 7) {
+        state.mcqStepIndex++;
+        renderMCQStep();
+      } else {
+        // Completed MCQ - update stored record in queue
+        updateLatestQueueLeadAnswers();
+        document.getElementById('modal-mcq-survey').classList.add('hidden');
+        showStep('view-thankyou-callback');
+      }
+    }
+
+    function updateLatestQueueLeadAnswers() {
+      if (state.capturedLeadsQueue.length > 0) {
+        state.capturedLeadsQueue[0].answers = state.leadData.mcqAnswers.join(' | ');
+        localStorage.setItem('va_leads_queue', JSON.stringify(state.capturedLeadsQueue));
+        renderLeadQueueTable();
+      }
+    }
+
+    function populateProvinceDropdowns() {
+      const buyProv = document.getElementById('buy-province');
+      const locProv = document.getElementById('locations-province-select');
+
+      Object.keys(PROVINCE_CLUBS_DATA).forEach(prov => {
+        const opt1 = document.createElement('option');
+        opt1.value = prov;
+        opt1.textContent = prov;
+        buyProv.appendChild(opt1);
+
+        const opt2 = document.createElement('option');
+        opt2.value = prov;
+        opt2.textContent = prov;
+        locProv.appendChild(opt2);
+      });
+    }
+
+    function onProvinceChange() {
+      const prov = document.getElementById('buy-province').value;
+      state.selection.province = prov;
+
+      const branchSelect = document.getElementById('buy-branch');
+      branchSelect.innerHTML = '<option value="" disabled selected>-- Select Branch --</option>';
+      branchSelect.disabled = false;
+
+      const clubs = PROVINCE_CLUBS_DATA[prov] || [];
+      clubs.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        branchSelect.appendChild(opt);
+      });
+
+      const otherOpt = document.createElement('option');
+      otherOpt.value = 'Other';
+      otherOpt.textContent = 'Other (Specify below)';
+      branchSelect.appendChild(otherOpt);
+
+      branchSelect.onchange = function() {
+        if (this.value === 'Other') {
+          document.getElementById('other-branch-box').classList.remove('hidden');
+        } else {
+          document.getElementById('other-branch-box').classList.add('hidden');
+          state.selection.branch = this.value;
+        }
+      };
+    }
+
+    function proceedToStep2() {
+      const prov = document.getElementById('buy-province').value;
+      const branchSel = document.getElementById('buy-branch').value;
+      let finalBranch = branchSel;
+
+      if (branchSel === 'Other') {
+        finalBranch = document.getElementById('buy-other-branch').value;
+      }
+
+      if (!prov || !finalBranch) {
+        alert('Please select both a Province and a Branch.');
+        return;
+      }
+
+      state.selection.province = prov;
+      state.selection.branch = finalBranch;
+
+      document.getElementById('step2-selected-club-label').textContent = `${finalBranch} (${prov})`;
+      setContractType('12m');
+      showStep('view-buy-step2');
+    }
+
+    // Contract Type Switcher (Flexible / 12M / 24M)
+    function setContractType(type) {
+      state.selection.contractType = type;
+
+      const btnFlex = document.getElementById('toggle-flex');
+      const btn12m = document.getElementById('toggle-12m');
+      const btn24m = document.getElementById('toggle-24m');
+
+      btnFlex.className = "px-4 py-2 rounded-lg text-xs font-bold transition text-neutral-400 hover:text-white";
+      btn12m.className = "px-4 py-2 rounded-lg text-xs font-bold transition text-neutral-400 hover:text-white";
+      btn24m.className = "px-4 py-2 rounded-lg text-xs font-bold transition text-neutral-400 hover:text-white";
+
+      if (type === 'flexible') btnFlex.className = "px-4 py-2 rounded-lg text-xs font-bold transition bg-red-600 text-white shadow";
+      if (type === '12m') btn12m.className = "px-4 py-2 rounded-lg text-xs font-bold transition bg-red-600 text-white shadow";
+      if (type === '24m') btn24m.className = "px-4 py-2 rounded-lg text-xs font-bold transition bg-red-600 text-white shadow";
+
+      // Update Card Prices Dynamically with Vitality Discount applied if verified
+      const p = PRICING_MATRIX[type];
+      const mult = state.vitalityDiscount;
+
+      ['Offpeak', 'Club', 'Premier', 'Premier Select'].forEach(tier => {
+        const targetId = tier === 'Premier Select' ? 'price-select' : `price-${tier.toLowerCase()}`;
+        const basePrice = p[tier];
+        const finalPrice = Math.round(basePrice * mult);
+
+        const el = document.getElementById(targetId);
+        if (el) {
+          if (state.isVitalityVerified) {
+            el.innerHTML = `<span class="line-through text-neutral-500 text-sm font-normal mr-1">R${basePrice}</span>R${finalPrice}`;
+          } else {
+            el.textContent = `R${basePrice}`;
+          }
+        }
+      });
+    }
+
+    function selectTier(tierName) {
+      state.selection.tier = tierName;
+      const baseFee = PRICING_MATRIX[state.selection.contractType][tierName];
+      state.selection.monthlyFee = Math.round(baseFee * state.vitalityDiscount);
+
+      // Populate Review Details
+      document.getElementById('rev-name').textContent = `${state.leadData.firstName || 'Customer'} ${state.leadData.lastName || ''}`;
+      document.getElementById('rev-email').textContent = state.leadData.email || 'N/A';
+      document.getElementById('rev-phone').textContent = state.leadData.phone || 'N/A';
+      document.getElementById('rev-channel').textContent = state.channel.toUpperCase();
+
+      document.getElementById('rev-tier').textContent = `${tierName} Membership ${state.isVitalityVerified ? '(Vitality 75% Off)' : ''}`;
+      
+      const cLabel = state.selection.contractType === 'flexible' ? 'Flexible Month-to-Month' : (state.selection.contractType === '12m' ? '12-Month Contract' : '24-Month Contract');
+      document.getElementById('rev-contract').textContent = cLabel;
+      document.getElementById('rev-monthly-fee').textContent = `R${state.selection.monthlyFee} / mo`;
+      document.getElementById('rev-club').textContent = state.selection.branch;
+      document.getElementById('rev-total-today').textContent = 'R0.00';
+
+      showStep('view-buy-step3');
+    }
+
+    function proceedToStep4() {
+      showStep('view-buy-step4');
+      
+      // Auto-complete & Auto-verify SA ID if saved from Vitality step
+      if (state.selection.saId) {
+        const saInput = document.getElementById('sa-id-input');
+        if (saInput) {
+          saInput.value = state.selection.saId;
+          handleSAIDInput(state.selection.saId);
+        }
+      }
+    }
+
+
+    // South African ID Auto-Parser
+    function handleSAIDInput(idVal) {
+      state.selection.saId = idVal;
+      const errEl = document.getElementById('said-error');
+      const boxEl = document.getElementById('derived-details-box');
+      const triggerBtn = document.getElementById('trigger-otp-btn');
+      const autoBadge = document.getElementById('vitality-autofill-badge');
+
+      if (idVal.length !== 13 || isNaN(idVal)) {
+        errEl.classList.remove('hidden');
+        boxEl.classList.add('hidden');
+        if (autoBadge) autoBadge.classList.add('hidden');
+        triggerBtn.disabled = true;
+        return;
+      }
+
+      errEl.classList.add('hidden');
+
+      // Extract Date of Birth YYMMDD
+      const yy = idVal.substring(0, 2);
+      const mm = idVal.substring(2, 4);
+      const dd = idVal.substring(4, 6);
+      
+      const century = parseInt(yy) > 30 ? '19' : '20';
+      const fullDOB = `${century}${yy}-${mm}-${dd}`;
+
+      // Extract Gender (4 digits SSSS)
+      const genderCode = parseInt(idVal.substring(6, 10));
+      const gender = genderCode < 5000 ? 'Female' : 'Male';
+
+      state.selection.saId = idVal;
+      state.selection.dob = fullDOB;
+      state.selection.gender = gender;
+
+      document.getElementById('derived-dob').textContent = fullDOB;
+      document.getElementById('derived-gender').textContent = gender;
+
+      boxEl.classList.remove('hidden');
+      if (autoBadge && state.selection.saId) autoBadge.classList.remove('hidden');
+      triggerBtn.disabled = false;
+    }
+
+    // OTP Modal Controls
+    function triggerOTPModal() {
+      generateAndDisplayOTP();
+      document.getElementById('modal-otp').classList.remove('hidden');
+      toggleChangePhoneSection(false);
+    }
+
+    function closeOTPModal() {
+      document.getElementById('modal-otp').classList.add('hidden');
+    }
+
+    function generateAndDisplayOTP() {
+      state.generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+      document.getElementById('simulated-otp-code').textContent = state.generatedOTP;
+      document.getElementById('otp-phone-display').textContent = state.leadData.phone || '+27 82 000 0000';
+      document.getElementById('sms-time-tag').textContent = 'Just Now';
+    }
+
+    // Option 1: Resend OTP
+    function resendOTP() {
+      generateAndDisplayOTP();
+      document.getElementById('otp-input').value = '';
+      
+      const msg = document.getElementById('resend-alert-msg');
+      msg.classList.remove('hidden');
+      setTimeout(() => msg.classList.add('hidden'), 3500);
+    }
+
+    // Option 2: Change Phone Number Handlers
+    function toggleChangePhoneSection(show) {
+      const sec = document.getElementById('change-phone-section');
+      if (show) {
+        sec.classList.remove('hidden');
+        document.getElementById('new-phone-input').focus();
+      } else {
+        sec.classList.add('hidden');
+      }
+    }
+
+    function saveNewPhoneAndResend() {
+      const newPhone = document.getElementById('new-phone-input').value.trim();
+      if (!newPhone) {
+        alert('Please enter a valid mobile number.');
+        return;
+      }
+      
+      // Update phone in local state
+      state.leadData.phone = `+27 ${newPhone}`;
+      toggleChangePhoneSection(false);
+      resendOTP();
+    }
+
+    function verifyOTP() {
+      const code = document.getElementById('otp-input').value;
+      if (code === state.generatedOTP || code === '1234') {
+        document.getElementById('modal-otp').classList.add('hidden');
+        document.getElementById('stripe-debit-amount').textContent = `R${state.selection.monthlyFee} / mo`;
+        document.getElementById('pay-btn-text').textContent = `Pay R0.00 & Activate Membership`;
+        showStep('view-buy-step5');
+      } else {
+        alert('Invalid OTP code. Please check the code shown in the simulated SMS.');
+      }
+    }
+
+    // Payment Form Submission
+    function handlePaymentSubmit(e) {
+      e.preventDefault();
+      const payBtn = document.getElementById('pay-btn');
+      payBtn.disabled = true;
+      document.getElementById('pay-btn-text').textContent = 'Processing Authorization...';
+
+      setTimeout(() => {
+        payBtn.disabled = false;
+        saveLeadToQueue('Converted Buy Online');
+        showStep('view-success-app');
+      }, 1500);
+    }
+
+
+    function startBuyOnlineFromThankYou() {
+      showStep('view-buy-step1');
+    }
+
+    function simulateAppDownload(platform) {
+      alert(`Simulating redirect to ${platform} App Store for Virgin Active App...`);
+    }
+
+    // Lead Queue Management Logic
+    function saveLeadToQueue(status) {
+      const newLead = {
+        id: Date.now(),
+        type: state.leadData.leadType,
+        name: `${state.leadData.firstName} ${state.leadData.lastName}`,
+        email: state.leadData.email,
+        phone: state.leadData.phone,
+        status: status,
+        answers: state.leadData.mcqAnswers.join(' | ') || 'N/A'
+      };
+
+      state.capturedLeadsQueue.unshift(newLead);
+      localStorage.setItem('va_leads_queue', JSON.stringify(state.capturedLeadsQueue));
+      updateLeadBadge();
+    }
+
+    function updateLeadBadge() {
+      document.getElementById('lead-count-badge').textContent = state.capturedLeadsQueue.length;
+    }
+
+    function toggleLeadQueueModal() {
+      const modal = document.getElementById('modal-lead-queue');
+      if (modal.classList.contains('hidden')) {
+        renderLeadQueueTable();
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function renderLeadQueueTable() {
+      const tbody = document.getElementById('lead-queue-tbody');
+      tbody.innerHTML = '';
+
+      if (state.capturedLeadsQueue.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-neutral-500">No leads captured yet.</td></tr>';
+        return;
+      }
+
+      state.capturedLeadsQueue.forEach(l => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-neutral-900/60";
+        tr.innerHTML = `
+          <td class="p-2 uppercase font-bold text-[10px] ${l.type === 'qualified' ? 'text-emerald-400' : 'text-neutral-400'}">${l.type}</td>
+          <td class="p-2 font-semibold text-white">${l.name}</td>
+          <td class="p-2">${l.email}</td>
+          <td class="p-2 font-mono">${l.phone}</td>
+          <td class="p-2"><span class="bg-neutral-800 text-neutral-200 px-2 py-0.5 rounded text-[10px]">${l.status}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function clearLeadQueue() {
+      state.capturedLeadsQueue = [];
+      localStorage.removeItem('va_leads_queue');
+      updateLeadBadge();
+      renderLeadQueueTable();
+    }
+
+    // Club Location Browser Modal
+    function openClubLocationsModal() {
+      document.getElementById('modal-club-locations').classList.remove('hidden');
+    }
+    function closeClubLocationsModal() {
+      document.getElementById('modal-club-locations').classList.add('hidden');
+    }
+
+    function renderClubLocationsModal(provinceFilter = 'ALL') {
+      const container = document.getElementById('locations-list-container');
+      container.innerHTML = '';
+
+      Object.keys(PROVINCE_CLUBS_DATA).forEach(prov => {
+        if (provinceFilter !== 'ALL' && prov !== provinceFilter) return;
+
+        const provHeader = document.createElement('div');
+        provHeader.className = "text-xs font-bold text-red-500 uppercase tracking-widest pt-2 pb-1 border-b border-neutral-800";
+        provHeader.textContent = prov;
+        container.appendChild(provHeader);
+
+        PROVINCE_CLUBS_DATA[prov].forEach(club => {
+          const item = document.createElement('div');
+          item.className = "p-2 bg-neutral-900/70 rounded border border-neutral-800 text-xs flex justify-between items-center text-neutral-200 hover:border-neutral-700";
+          item.innerHTML = `
+            <span>🏋️ ${club}</span>
+            <button onclick="selectClubFromLocationBrowser('${prov}', '${club}')" class="text-[10px] bg-red-600/30 hover:bg-red-600 text-red-300 hover:text-white px-2 py-1 rounded transition">
+              Select Club
+            </button>
+          `;
+          container.appendChild(item);
+        });
+      });
+    }
+
+    function filterLocationsModal(prov) {
+      renderClubLocationsModal(prov);
+    }
+
+    function selectClubFromLocationBrowser(prov, club) {
+      closeClubLocationsModal();
+      state.selection.province = prov;
+      state.selection.branch = club;
+      
+      // Navigate to Step 2 directly
+      document.getElementById('step2-selected-club-label').textContent = `${club} (${prov})`;
+      setContractType('12m');
+      showStep('view-buy-step2');
+    }
+  </script>
+</body>
+</html>
