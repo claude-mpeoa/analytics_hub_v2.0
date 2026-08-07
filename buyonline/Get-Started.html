@@ -98,7 +98,7 @@
     }
   </style>
 </head>
-<body class="h-full bg-neutral-950 text-white antialiased selection:bg-red-600 selection:text-white flex flex-col justify-between min-h-screen">
+<body class="h-full bg-neutral-950 text-white antialiased selection:bg-red-600 selection:text-white flex flex-col justify-between min-h-screen pb-16 sm:pb-0">
 
   <!-- Demo Channel Switcher Header Bar -->
   <div class="bg-neutral-900 border-b border-neutral-800 text-xs px-4 py-2 flex flex-wrap items-center justify-between gap-2 z-50 sticky top-0 backdrop-blur-md bg-neutral-900/90">
@@ -122,7 +122,7 @@
         Call Center Queue (<span id="lead-count-badge">0</span>)
       </button>
       <button onclick="restartFlow()" class="bg-neutral-800 hover:bg-neutral-700 text-neutral-300 px-2.5 py-1 rounded border border-neutral-700 text-xs" title="Reset Flow">
-         Reset
+        🔄 Reset
       </button>
     </div>
   </div>
@@ -135,7 +135,9 @@
     <header class="w-full flex items-center justify-between z-10 max-w-7xl mx-auto mb-6">
       <div class="flex items-center space-x-3 cursor-pointer" onclick="restartFlow()">
         <img src="valogo.png" alt="Virgin Active" class="h-8 object-contain" onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'),{className:'bg-red-600 text-white font-black text-xl px-3 py-1 rounded tracking-tighter italic',innerText:'VIRGIN ACTIVE'}));">
-
+        <span id="channel-tag" class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-widest bg-neutral-800/80 text-neutral-300 px-2.5 py-1 rounded-full border border-neutral-700">
+          Organic Entry View
+        </span>
       </div>
 
       <div id="flow-breadcrumbs" class="hidden items-center space-x-2 text-xs font-medium text-neutral-400">
@@ -176,7 +178,7 @@
               <img class="inline-block h-10 w-10 rounded-full ring-2 ring-neutral-900 object-cover" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80" alt="Member">
             </div>
             <span class="text-xs sm:text-sm font-medium text-neutral-300">
-              Join over <strong class="text-white font-semibold">600,000+ active members</strong> across South Africa
+              Join over <strong class="text-white font-semibold">120,000+ active members</strong> across South Africa
             </span>
           </div>
         </div>
@@ -185,6 +187,7 @@
           <div class="glass-card w-full max-w-md rounded-2xl p-6 sm:p-8 space-y-6">
             <div class="flex items-center justify-between border-b border-neutral-800 pb-4">
               <h3 class="font-bold text-lg text-white">Why Virgin Active?</h3>
+              <span class="text-xs bg-red-950 text-red-400 border border-red-800 px-2.5 py-0.5 rounded-full font-semibold">Live Better</span>
             </div>
             <ul class="space-y-4 text-sm text-neutral-300">
               <li class="flex items-start gap-3">
@@ -214,7 +217,9 @@
       <!-- ========================================== -->
       <div id="view-paid-landing" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         <div class="lg:col-span-7 space-y-6 text-left">
-       
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/20 border border-red-500/40 text-red-400 text-xs font-bold uppercase tracking-wider">
+            ⚡ Special Offer: Save Up to 75%
+          </div>
           <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-white">
             Discovery Vitality members <span class="text-red-600">save up to 75%</span> on gym fees.
           </h1>
@@ -257,10 +262,10 @@
                 <input type="tel" id="paid-phone" required placeholder="Cell Number *" class="custom-input w-full py-2 text-sm">
               </div>
               <div>
-                <label class="block text-xs font-semibold text-neutral-300 mb-1">I want to </label>
+                <label class="block text-xs font-semibold text-neutral-300 mb-1">Select Action *</label>
                 <select id="paid-action-select" required class="custom-input w-full py-2 text-sm text-neutral-200">
                   <option value="" disabled selected>-- Choose Option --</option>
-                  <option value="callback">Get a Call Back</option>
+                  <option value="callback">Call Me Back</option>
                   <option value="buynow">Buy Online</option>
                 </select>
               </div>
@@ -308,10 +313,10 @@
             <!-- Dual Action Buttons -->
             <div class="pt-4 grid grid-cols-2 gap-3">
               <button type="button" onclick="submitOrganicRequestCall()" class="w-full bg-neutral-800 hover:bg-neutral-700 text-white font-semibold py-3 rounded-lg border border-neutral-700 text-xs transition">
-                Request a Call
+                📞 Request a Call
               </button>
               <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-lg text-xs transition shadow-lg shadow-red-600/30">
-                Buy Now
+                🛒 Buy Now
               </button>
             </div>
           </form>
@@ -393,6 +398,17 @@
               <label class="block text-xs font-semibold text-neutral-300 mb-1">Specify Branch Name *</label>
               <input type="text" id="buy-other-branch" placeholder="e.g. Virgin Active Point" class="custom-input w-full py-2 text-sm">
             </div>
+
+            <!-- VIEW AMENITIES BUTTON MOVED DIRECTLY TO STEP 1 -->
+            <div id="step1-amenities-btn-container" class="hidden pt-1">
+              <button type="button" onclick="openClubAmenitiesModal()" class="w-full bg-neutral-900/90 hover:bg-neutral-800 text-red-400 border border-neutral-700/80 p-3 rounded-xl transition flex items-center justify-between text-xs font-semibold group">
+                <span class="flex items-center gap-2">
+                  <span>📷</span>
+                  <span>Explore <strong id="step1-selected-branch-name" class="text-white font-bold">Selected Club</strong> Amenities & Facility Gallery</span>
+                </span>
+                <span class="text-neutral-400 group-hover:text-white transition">&rsaquo;</span>
+              </button>
+            </div>
           </div>
 
           <div class="pt-4 flex justify-between items-center border-t border-neutral-800">
@@ -462,7 +478,7 @@
             <!-- Success State Box -->
             <div id="vit-success-box" class="hidden p-4 bg-emerald-950/40 border border-emerald-500/50 rounded-xl space-y-2 text-xs">
               <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm">
-                <span>Vitality Benefit Verified!</span>
+                <span>🎉 Vitality Benefit Verified!</span>
               </div>
               <p class="text-neutral-300">Great news! You qualify for a <strong>75% discount</strong> on your monthly membership fee.</p>
             </div>
@@ -470,7 +486,7 @@
             <!-- Failure State Box -->
             <div id="vit-failed-box" class="hidden p-4 bg-red-950/40 border border-red-500/50 rounded-xl space-y-3 text-xs">
               <div class="text-red-400 font-bold text-sm flex items-center gap-2">
-                <span>Unable to Verify Vitality Benefit</span>
+                <span>⚠️ Unable to Verify Vitality Benefit</span>
               </div>
               <p class="text-neutral-300">We couldn't match your details with active Discovery Vitality benefit records.</p>
               
@@ -479,7 +495,7 @@
                   Continue Buying at Standard Price
                 </button>
                 <button type="button" onclick="requestCallMeBackFromVitality()" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-3 rounded-lg text-xs shadow transition">
-                  Call Me Back
+                  📞 Call Me Back
                 </button>
               </div>
             </div>
@@ -672,12 +688,7 @@
 
             <div class="flex justify-between items-center text-neutral-300 pt-1">
               <span>Home Club:</span>
-              <div class="flex items-center gap-2">
-                <strong id="rev-club" class="text-white">--</strong>
-                <button type="button" onclick="openClubAmenitiesModal()" class="text-[11px] bg-neutral-800 hover:bg-neutral-700 text-red-400 border border-neutral-700 px-2.5 py-1 rounded transition flex items-center gap-1 font-semibold">
-                  View Amenities
-                </button>
-              </div>
+              <strong id="rev-club" class="text-white">--</strong>
             </div>
             
             <div class="flex justify-between items-center text-neutral-300">
@@ -761,17 +772,14 @@
       </div>
 
 
-      <!-- ========================================== -->
-      <!-- ENHANCED SIMULATED OTP POPUP / MODAL       -->
-      <!-- ========================================== -->
+      <!-- ENHANCED SIMULATED OTP POPUP / MODAL -->
       <div id="modal-otp" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
         <div class="glass-card max-w-sm w-full rounded-2xl p-6 text-center space-y-4 relative">
           
-          <!-- Close / Cancel Option -->
           <button onclick="closeOTPModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-white p-1 text-xl leading-none transition" title="Close Verification">&times;</button>
 
           <div class="w-12 h-12 bg-red-600/20 border border-red-500/40 rounded-full flex items-center justify-center mx-auto text-red-500">
-            OTP
+            📲
           </div>
           
           <h3 class="text-xl font-bold text-white">Enter OTP Code</h3>
@@ -800,16 +808,14 @@
             <p class="text-[11px] text-neutral-400 font-semibold">Didn't get the code?</p>
             
             <div class="flex items-center justify-center gap-4">
-              <!-- Option 1: Resend OTP -->
-              <button id="resend-otp-btn" onclick="resendOTP()" class="text-red-400 hover:text-red-300 font-bold underline transition disabled:opacity-40 disabled:no-underline">
-                Resend OTP
+              <button id="resend-otp-btn" onclick="resendOTP()" class="text-red-400 hover:text-red-300 font-bold underline transition">
+                Option 1: Resend OTP
               </button>
               
               <span class="text-neutral-600">&bull;</span>
               
-              <!-- Option 2: Change My Number -->
               <button onclick="toggleChangePhoneSection(true)" class="text-neutral-300 hover:text-white font-medium underline transition">
-                Change Number
+                Option 2: Change Number
               </button>
             </div>
 
@@ -818,7 +824,7 @@
             </div>
           </div>
 
-          <!-- Option 2 Inline Input Section (Hidden by default) -->
+          <!-- Option 2 Inline Input Section -->
           <div id="change-phone-section" class="hidden pt-3 border-t border-neutral-800 text-left space-y-2 bg-neutral-950/80 p-3 rounded-xl">
             <label class="block text-[10px] font-bold uppercase tracking-wider text-neutral-400">Update Mobile Number</label>
             <div class="flex items-center space-x-2">
@@ -840,7 +846,7 @@
 
 
       <!-- ========================================== -->
-      <!-- VIEW 9: BUY ONLINE - STEP 5: STRIPE PAYMENT-->
+      <!-- VIEW 9: BUY ONLINE - STEP 5: CHECKOUT      -->
       <!-- ========================================== -->
       <div id="view-buy-step5" class="hidden max-w-2xl mx-auto">
         <div class="glass-card rounded-2xl p-6 sm:p-8 space-y-6">
@@ -882,6 +888,15 @@
               <strong id="stripe-debit-amount" class="text-white">R1,199 / mo</strong>
             </div>
 
+            <!-- CLEANED & MINIMAL TRUST ELEMENTS -->
+            <div class="pt-2 flex items-center justify-between border-t border-neutral-800/80 text-[11px] text-neutral-400 px-1">
+              <span>256-Bit SSL Encrypted</span>
+              <span class="text-neutral-600">&bull;</span>
+              <span>PCI-DSS Level 1 Compliant</span>
+              <span class="text-neutral-600">&bull;</span>
+              <span>3D Secure Verified</span>
+            </div>
+
             <button type="submit" id="pay-btn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold py-3.5 rounded-xl text-sm transition shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2">
               <span id="pay-btn-text">Pay R0.00 & Activate Membership</span>
             </button>
@@ -902,11 +917,10 @@
           <div class="space-y-2">
             <h2 class="text-3xl font-extrabold text-white">Thank You!</h2>
             <p class="text-sm text-neutral-300 leading-relaxed max-w-md mx-auto">
-              Your call back request has been logged in our call center queue. A Virgin Active membership consultant will reach out to you shortly.
+              Your request has been logged. A Virgin Active consultant will reach out shortly or your guest pass will be issued via SMS.
             </p>
           </div>
 
-          <!-- Actions Required: Explore Memberships or Explore Locations -->
           <div class="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button onclick="startBuyOnlineFromThankYou()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-xl text-xs transition shadow-lg shadow-red-600/30 flex items-center justify-center gap-2">
               <span>Explore Our Memberships</span>
@@ -936,7 +950,6 @@
             </p>
           </div>
 
-          <!-- Mobile App Spotlight Showcase -->
           <div class="bg-neutral-900/90 rounded-2xl p-6 border border-neutral-800 grid grid-cols-1 md:grid-cols-12 gap-6 items-center text-left">
             <div class="md:col-span-7 space-y-4">
               <span class="text-[10px] font-bold text-red-500 uppercase tracking-widest">Essential Companion</span>
@@ -947,7 +960,6 @@
                 <li><strong class="text-white">Track Progress:</strong> Sync with Apple Health, Garmin, and Vitality.</li>
               </ul>
 
-              <!-- Download Buttons -->
               <div class="pt-2 flex flex-wrap gap-3">
                 <button onclick="simulateAppDownload('iOS')" class="bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 text-white font-semibold px-5 py-3 rounded-xl text-xs transition">
                   Download on the App Store
@@ -966,23 +978,17 @@
                   <img src="valogo.png" alt="Virgin Active" class="h-6 mx-auto object-contain" onerror="this.onerror=null; this.replaceWith(Object.assign(document.createElement('div'),{className:'w-12 h-12 bg-red-600 rounded-xl mx-auto flex items-center justify-center font-black text-white text-xl',innerText:'VA'}));">
                   <div class="text-xs font-bold text-white">Digital Access Pass</div>
                   
-                  <!-- Visual SVG QR Code -->
                   <div class="bg-white p-2 rounded-lg inline-block text-neutral-950">
                     <svg class="w-24 h-24" viewBox="0 0 100 100" fill="currentColor">
-                      <!-- Position detection patterns (corners) -->
                       <rect x="5" y="5" width="25" height="25" fill="#000"/>
                       <rect x="9" y="9" width="17" height="17" fill="#fff"/>
                       <rect x="13" y="13" width="9" height="9" fill="#000"/>
-                      
                       <rect x="70" y="5" width="25" height="25" fill="#000"/>
                       <rect x="74" y="9" width="17" height="17" fill="#fff"/>
                       <rect x="78" y="13" width="9" height="9" fill="#000"/>
-                      
                       <rect x="5" y="70" width="25" height="25" fill="#000"/>
                       <rect x="9" y="74" width="17" height="17" fill="#fff"/>
                       <rect x="13" y="78" width="9" height="9" fill="#000"/>
-
-                      <!-- QR Code Data Cells simulation -->
                       <rect x="35" y="10" width="6" height="6"/><rect x="45" y="10" width="6" height="6"/><rect x="55" y="10" width="6" height="6"/>
                       <rect x="35" y="20" width="6" height="6"/><rect x="50" y="25" width="6" height="6"/><rect x="60" y="20" width="6" height="6"/>
                       <rect x="10" y="35" width="6" height="6"/><rect x="20" y="45" width="6" height="6"/><rect x="30" y="35" width="6" height="6"/>
@@ -1021,85 +1027,49 @@
   </div>
 
 
-  <!-- ========================================== -->
-  <!-- MODAL: CLUB AMENITIES & GALLERY MODAL      -->
-  <!-- ========================================== -->
+  <!-- MOBILE STICKY SUMMARY BOTTOM BAR -->
+  <div id="mobile-sticky-bar" class="hidden sm:hidden fixed bottom-0 inset-x-0 bg-neutral-900/95 border-t border-neutral-800 p-3 z-40 backdrop-blur-md justify-between items-center text-xs">
+    <div>
+      <span id="mobile-sticky-club" class="font-bold text-white block truncate max-w-[170px]">Virgin Active</span>
+      <span id="mobile-sticky-price" class="text-red-400 font-extrabold">R1,199 / mo</span>
+    </div>
+    <button id="mobile-sticky-btn" onclick="triggerMobileStickyAction()" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-lg shadow">
+      Proceed &rsaquo;
+    </button>
+  </div>
+
+
+  <!-- MODAL: DYNAMIC CLUB AMENITIES & GALLERY -->
   <div id="modal-club-amenities" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
     <div class="glass-card max-w-2xl w-full rounded-2xl p-6 sm:p-8 space-y-6 relative max-h-[90vh] flex flex-col">
       
-      <!-- Modal Header -->
       <div class="flex justify-between items-start border-b border-neutral-800 pb-4">
         <div>
           <span class="text-[10px] font-bold uppercase tracking-widest text-red-500">Selected Home Club</span>
           <h3 id="amenities-modal-club-title" class="text-2xl font-extrabold text-white">Virgin Active Club</h3>
-          <p class="text-xs text-neutral-400 mt-0.5">Explore key features, services, and facilities offered at this location.</p>
+          <p id="amenities-modal-subtitle" class="text-xs text-neutral-400 mt-0.5">Explore key features, services, and facilities offered at this location.</p>
         </div>
         <button onclick="closeClubAmenitiesModal()" class="text-neutral-400 hover:text-white text-2xl p-1 leading-none">&times;</button>
       </div>
 
-      <!-- Modal Body (Scrollable) -->
       <div class="flex-1 overflow-y-auto space-y-6 pr-1">
         
-        <!-- Image Gallery Grid -->
         <div>
           <h4 class="text-xs font-bold text-neutral-300 uppercase tracking-wider mb-3">Facility Gallery</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div class="rounded-xl overflow-hidden border border-neutral-800 group relative">
-              <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=600&auto=format&fit=crop" alt="Gym Floor & Cardio" class="w-full h-32 object-cover group-hover:scale-105 transition duration-300">
-              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-[11px] font-medium text-white">Technogym & Free Weights</div>
-            </div>
-            
-            <div class="rounded-xl overflow-hidden border border-neutral-800 group relative">
-              <img src="https://images.unsplash.com/photo-1530549387789-4c1017266635?q=80&w=600&auto=format&fit=crop" alt="Heated Indoor Gym Lap Pool" class="w-full h-32 object-cover group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1519315901367-f34ff9154487?q=80&w=600&auto=format&fit=crop';">
-              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-[11px] font-medium text-white">25m Heated Indoor Lap Pool</div>
-            </div>
-           
-            <div class="rounded-xl overflow-hidden border border-neutral-800 group relative">
-              <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=600&auto=format&fit=crop" alt="Group Exercise Studio" class="w-full h-32 object-cover group-hover:scale-105 transition duration-300">
-              <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-[11px] font-medium text-white">Group Exercise Studios</div>
-           
-            </div>
+          <div id="amenities-gallery-container" class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <!-- Dynamically populated per club tier -->
           </div>
         </div>
 
-        <!-- Key Amenities Checklist & Bullet Points -->
         <div>
           <h4 class="text-xs font-bold text-neutral-300 uppercase tracking-wider mb-3">Key Amenities & Services Included</h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-neutral-300">
-            <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
-              <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
-              <div>
-                <strong class="text-white block">Heated Pool & Hydrotherapy</strong>
-                Indoor 25m swimming pool with dedicated lap lanes, sauna, and steam rooms.
-              </div>
-            </div>
-            <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
-              <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
-              <div>
-                <strong class="text-white block">Group Classes & Pilates</strong>
-                Unlimited access to Yoga, Reformer Pilates, Grid Training, and Ride classes.
-              </div>
-            </div>
-            <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
-              <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
-              <div>
-                <strong class="text-white block">Functional Training Zone</strong>
-                Dedicated turf tracks, kettlebell racks, sled tracks, and rig equipment.
-              </div>
-            </div>
-            <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
-              <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
-              <div>
-                <strong class="text-white block">Wellness & Kauai Cafe</strong>
-                On-site fresh nutrition bar, complimentary Wi-Fi, and workspace lounge.
-              </div>
-            </div>
+          <div id="amenities-checklist-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-neutral-300">
+            <!-- Dynamically populated per club tier -->
           </div>
         </div>
 
       </div>
 
-      <!-- Modal Footer -->
       <div class="pt-3 border-t border-neutral-800 flex justify-end">
         <button onclick="closeClubAmenitiesModal()" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs px-5 py-2.5 rounded-lg shadow transition">
           Got It
@@ -1110,14 +1080,70 @@
   </div>
 
 
-  <!-- ========================================== -->
-  <!-- MODAL: CLUB LOCATIONS BROWSER              -->
-  <!-- ========================================== -->
+  <!-- ENHANCED EXIT-INTENT FREE GUEST PASS MODAL -->
+  <div id="modal-exit-intent" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card max-w-md w-full rounded-2xl p-6 text-left space-y-4 relative">
+      <button onclick="closeExitIntentModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-white p-1 text-xl leading-none">&times;</button>
+      
+      <div class="space-y-1">
+        <span class="text-[10px] font-bold uppercase tracking-widest text-red-500">Before You Go</span>
+        <h3 class="text-2xl font-extrabold text-white">Claim Your Free 1-Day Pass</h3>
+        <p class="text-xs text-neutral-300">Experience our facilities before deciding. Select your club location below.</p>
+      </div>
+
+      <form onsubmit="handleExitIntentSubmit(event)" class="space-y-3 pt-2">
+        
+        <!-- Smart Pre-Filled User Details Notification -->
+        <div id="exit-user-summary" class="bg-neutral-900/80 p-2.5 rounded-lg border border-neutral-800 text-xs text-neutral-300 space-y-1">
+          <div>Claiming pass for: <strong id="exit-display-name" class="text-white">Guest</strong></div>
+          <div class="text-[11px] text-neutral-400">Contact: <span id="exit-display-contact">--</span></div>
+        </div>
+
+        <!-- Optional Name/Email inputs only if missing in session -->
+        <div id="exit-missing-inputs" class="hidden space-y-2">
+          <input type="text" id="exit-name" placeholder="Full Name *" class="custom-input w-full py-1.5 text-xs">
+          <input type="email" id="exit-email" placeholder="Email Address *" class="custom-input w-full py-1.5 text-xs">
+        </div>
+
+        <!-- Anti-Gaming South African ID Field -->
+        <div>
+          <label class="block text-[11px] font-semibold text-neutral-300 mb-1">South African ID Number (Required) *</label>
+          <input type="text" id="exit-said" maxlength="13" required placeholder="e.g. 9201015009087" class="custom-input w-full py-2 text-xs font-mono tracking-wider">
+          <span class="text-[10px] text-neutral-500 block mt-1">Limit 1 free guest pass per South African ID per year.</span>
+        </div>
+
+        <!-- Location Selection: Province & Branch -->
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-semibold text-neutral-300 mb-1">Select Province *</label>
+            <select id="exit-province" required onchange="onExitProvinceChange()" class="custom-input w-full py-2 text-xs text-neutral-200">
+              <option value="" disabled selected>-- Province --</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-neutral-300 mb-1">Select Club *</label>
+            <select id="exit-branch" required disabled class="custom-input w-full py-2 text-xs text-neutral-400 disabled:opacity-50">
+              <option value="" disabled selected>-- Choose --</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl text-xs transition shadow-lg shadow-red-600/30">
+            Send My Free 1-Day Pass SMS
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- MODAL: CLUB LOCATIONS BROWSER -->
   <div id="modal-club-locations" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
     <div class="glass-card max-w-2xl w-full rounded-2xl p-6 sm:p-8 space-y-4 relative max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center border-b border-neutral-800 pb-3">
         <h3 class="text-lg font-bold text-white flex items-center gap-2">
-           Virgin Active Club Locations
+          <span>📍</span> Virgin Active Club Locations
         </h3>
         <button onclick="closeClubLocationsModal()" class="text-neutral-400 hover:text-white p-1 text-xl">&times;</button>
       </div>
@@ -1141,9 +1167,7 @@
   </div>
 
 
-  <!-- ========================================== -->
   <!-- MODAL: CALL CENTER LEAD QUEUE (ADMIN VIEW) -->
-  <!-- ========================================== -->
   <div id="modal-lead-queue" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
     <div class="glass-card max-w-3xl w-full rounded-2xl p-6 space-y-4 relative max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center border-b border-neutral-800 pb-3">
@@ -1260,21 +1284,21 @@
 
     // Global State Application Container
     let state = {
-      channel: 'organic', // 'organic' or 'paid'
+      channel: 'organic',
       isVitalityVerified: false,
-      vitalityDiscount: 1.0, // 0.25 when verified (75% off)
+      vitalityDiscount: 1.0,
       leadData: {
         firstName: '',
         lastName: '',
         email: '',
         phone: '',
-        leadType: 'unqualified', // 'unqualified' or 'qualified'
+        leadType: 'unqualified',
         mcqAnswers: []
       },
       selection: {
         province: '',
         branch: '',
-        contractType: '12m', // 'flexible', '12m', '24m'
+        contractType: '12m',
         tier: 'Premier',
         monthlyFee: 1199,
         saId: '',
@@ -1283,6 +1307,7 @@
       },
       mcqStepIndex: 0,
       generatedOTP: '4829',
+      hasTriggeredExitIntent: false,
       capturedLeadsQueue: JSON.parse(localStorage.getItem('va_leads_queue') || '[]')
     };
 
@@ -1292,10 +1317,201 @@
       populateProvinceDropdowns();
       renderClubLocationsModal();
       updateLeadBadge();
+      loadStateFromSessionStorage();
+      setupExitIntentListener();
       setChannel('organic');
     };
 
-    // Organic Lead Form Modal Handlers & Reset Logic
+    function saveStateToSessionStorage() {
+      sessionStorage.setItem('va_flow_state', JSON.stringify(state));
+    }
+
+    function loadStateFromSessionStorage() {
+      const saved = sessionStorage.getItem('va_flow_state');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          state = { ...state, ...parsed };
+        } catch(e) {}
+      }
+    }
+
+    // EXIT INTENT TRIGGER & SMART DATA PRE-FILL
+    function setupExitIntentListener() {
+      document.addEventListener('mouseleave', function(e) {
+        if (e.clientY < 10 && !state.hasTriggeredExitIntent) {
+          const currentView = document.querySelector('main > div:not(.hidden)');
+          if (currentView && (currentView.id.includes('step2') || currentView.id.includes('step3'))) {
+            state.hasTriggeredExitIntent = true;
+            openExitIntentModal();
+          }
+        }
+      });
+    }
+
+    function openExitIntentModal() {
+      const name = `${state.leadData.firstName || ''} ${state.leadData.lastName || ''}`.trim();
+      const contact = state.leadData.email || state.leadData.phone || 'N/A';
+      
+      const summaryBox = document.getElementById('exit-user-summary');
+      const missingInputs = document.getElementById('exit-missing-inputs');
+
+      if (name) {
+        document.getElementById('exit-display-name').textContent = name;
+        document.getElementById('exit-display-contact').textContent = contact;
+        summaryBox.classList.remove('hidden');
+        missingInputs.classList.add('hidden');
+      } else {
+        summaryBox.classList.add('hidden');
+        missingInputs.classList.remove('hidden');
+      }
+
+      if (state.selection.saId) {
+        document.getElementById('exit-said').value = state.selection.saId;
+      }
+
+      if (state.selection.province) {
+        document.getElementById('exit-province').value = state.selection.province;
+        onExitProvinceChange();
+        if (state.selection.branch) {
+          document.getElementById('exit-branch').value = state.selection.branch;
+        }
+      }
+
+      document.getElementById('modal-exit-intent').classList.remove('hidden');
+    }
+
+    function onExitProvinceChange() {
+      const prov = document.getElementById('exit-province').value;
+      const branchSel = document.getElementById('exit-branch');
+      branchSel.innerHTML = '<option value="" disabled selected>-- Select Club --</option>';
+      branchSel.disabled = false;
+
+      const clubs = PROVINCE_CLUBS_DATA[prov] || [];
+      clubs.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c;
+        opt.textContent = c;
+        branchSel.appendChild(opt);
+      });
+    }
+
+    function closeExitIntentModal() {
+      document.getElementById('modal-exit-intent').classList.add('hidden');
+    }
+
+    function handleExitIntentSubmit(e) {
+      e.preventDefault();
+      
+      const said = document.getElementById('exit-said').value.trim();
+      if (said.length !== 13 || isNaN(said)) {
+        alert('Please enter a valid 13-digit South African ID number.');
+        return;
+      }
+
+      if (!state.leadData.firstName) {
+        state.leadData.firstName = document.getElementById('exit-name').value || 'Guest Pass User';
+        state.leadData.email = document.getElementById('exit-email').value || '';
+      }
+
+      const selectedBranch = document.getElementById('exit-branch').value;
+      state.selection.saId = said;
+      
+      saveLeadToQueue(`1-Day Pass Claimed (${selectedBranch}) - ID: ${said}`);
+      closeExitIntentModal();
+      showStep('view-thankyou-callback');
+    }
+
+    // Dynamic Club Amenity Ingestion Logic
+    function openClubAmenitiesModal() {
+      const selectedClub = state.selection.branch || 'Virgin Active Gym';
+      document.getElementById('amenities-modal-club-title').textContent = selectedClub;
+
+      const galleryContainer = document.getElementById('amenities-gallery-container');
+      const checklistContainer = document.getElementById('amenities-checklist-container');
+      const subtitleEl = document.getElementById('amenities-modal-subtitle');
+
+      const isCollection = selectedClub.includes('Alice Lane') || selectedClub.includes('Point') || selectedClub.includes('Melrose Arch');
+      
+      if (isCollection) {
+        subtitleEl.textContent = 'Flagship Collection Club • Premium Luxury Facilities & Services Included.';
+        galleryContainer.innerHTML = `
+          <div class="rounded-xl overflow-hidden border border-neutral-800 group relative">
+            <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=600&auto=format&fit=crop" class="w-full h-32 object-cover group-hover:scale-105 transition duration-300">
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-[11px] font-medium text-white">Technogym Biostrength</div>
+          </div>
+          <div class="rounded-xl overflow-hidden border border-neutral-800 group relative">
+            <img src="https://images.unsplash.com/photo-1530549387789-4c1017266635?q=80&w=600&auto=format&fit=crop" class="w-full h-32 object-cover group-hover:scale-105 transition duration-300">
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-[11px] font-medium text-white">25m Heated Lap Pool</div>
+          </div>
+          <div class="rounded-xl overflow-hidden border border-neutral-800 group relative">
+            <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=600&auto=format&fit=crop" class="w-full h-32 object-cover group-hover:scale-105 transition duration-300">
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-[11px] font-medium text-white">Reformer Pilates & Yoga Studio</div>
+          </div>
+        `;
+
+        checklistContainer.innerHTML = `
+          <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
+            <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
+            <div><strong class="text-white block">Complimentary Towel Service</strong>Fresh luxury bath towels on every visit.</div>
+          </div>
+          <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
+            <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
+            <div><strong class="text-white block">Hydrotherapy Spa & Saunas</strong>Infrared saunas, steam rooms, and plunge pools.</div>
+          </div>
+          <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
+            <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
+            <div><strong class="text-white block">Reformer Pilates Included</strong>Unlimited reformer classes with certified instructors.</div>
+          </div>
+          <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
+            <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
+            <div><strong class="text-white block">Private Executive Lockers</strong>Keyless secure lockers with hair care stations.</div>
+          </div>
+        `;
+      } else {
+        subtitleEl.textContent = 'Full Service Home Club • State-of-the-art wellness & fitness amenities.';
+        galleryContainer.innerHTML = `
+          <div class="rounded-xl overflow-hidden border border-neutral-800 group relative">
+            <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=600&auto=format&fit=crop" class="w-full h-32 object-cover group-hover:scale-105 transition duration-300">
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-[11px] font-medium text-white">Cardio & Free Weights Arena</div>
+          </div>
+          <div class="rounded-xl overflow-hidden border border-neutral-800 group relative">
+            <img src="https://images.unsplash.com/photo-1530549387789-4c1017266635?q=80&w=600&auto=format&fit=crop" class="w-full h-32 object-cover group-hover:scale-105 transition duration-300">
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-[11px] font-medium text-white">25m Heated Indoor Lap Pool</div>
+          </div>
+          <div class="rounded-xl overflow-hidden border border-neutral-800 group relative">
+            <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=600&auto=format&fit=crop" class="w-full h-32 object-cover group-hover:scale-105 transition duration-300">
+            <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent p-2 text-[11px] font-medium text-white">Group Exercise Studios</div>
+          </div>
+        `;
+
+        checklistContainer.innerHTML = `
+          <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
+            <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
+            <div><strong class="text-white block">Heated Indoor Swimming Pool</strong>25m lap pool with dedicated swimming lanes.</div>
+          </div>
+          <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
+            <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
+            <div><strong class="text-white block">Group Classes & Cycle</strong>Ride, Yoga, Grid Training, and Zumba timetables.</div>
+          </div>
+          <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
+            <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
+            <div><strong class="text-white block">Functional Rig & Turf Track</strong>Kettlebells, sled tracks, and powerlifting rigs.</div>
+          </div>
+          <div class="flex items-start gap-2.5 p-2.5 bg-neutral-900/60 rounded-lg border border-neutral-800">
+            <span class="text-red-500 font-bold shrink-0 mt-0.5">✓</span>
+            <div><strong class="text-white block">Kauai Health Cafe & Lounge</strong>On-site smoothies, meals, and workspace Wi-Fi.</div>
+          </div>
+        `;
+      }
+
+      document.getElementById('modal-club-amenities').classList.remove('hidden');
+    }
+
+    function closeClubAmenitiesModal() {
+      document.getElementById('modal-club-amenities').classList.add('hidden');
+    }
+
     function showOrganicFormModal() {
       document.getElementById('modal-organic-lead').classList.remove('hidden');
     }
@@ -1304,56 +1520,29 @@
       document.getElementById('modal-organic-lead').classList.add('hidden');
     }
 
-    // Modal Control: Club Amenities & Gallery
-    function openClubAmenitiesModal() {
-      const selectedClub = state.selection.branch || 'Virgin Active Gym';
-      document.getElementById('amenities-modal-club-title').textContent = selectedClub;
-      document.getElementById('modal-club-amenities').classList.remove('hidden');
-    }
-
-    function closeClubAmenitiesModal() {
-      document.getElementById('modal-club-amenities').classList.add('hidden');
-    }
-
     function handleOrganicFormSubmit(e) {
       e.preventDefault();
-      const firstName = document.getElementById('org-firstName').value;
-      const lastName = document.getElementById('org-lastName').value;
-      const email = document.getElementById('org-email').value;
-      const phone = document.getElementById('org-phone').value;
+      state.leadData.firstName = document.getElementById('org-firstName').value;
+      state.leadData.lastName = document.getElementById('org-lastName').value;
+      state.leadData.email = document.getElementById('org-email').value;
+      state.leadData.phone = document.getElementById('org-phone').value;
+      state.leadData.leadType = 'unqualified';
 
-      state.leadData = {
-        firstName,
-        lastName,
-        email,
-        phone,
-        leadType: 'unqualified',
-        mcqAnswers: []
-      };
-
+      saveStateToSessionStorage();
       closeOrganicFormModal();
       showStep('view-buy-step1');
     }
 
     function submitOrganicRequestCall() {
-      const firstName = document.getElementById('org-firstName').value;
-      const lastName = document.getElementById('org-lastName').value;
-      const email = document.getElementById('org-email').value;
-      const phone = document.getElementById('org-phone').value;
+      state.leadData.firstName = document.getElementById('org-firstName').value;
+      state.leadData.lastName = document.getElementById('org-lastName').value;
+      state.leadData.email = document.getElementById('org-email').value;
+      state.leadData.phone = document.getElementById('org-phone').value;
 
-      if (!firstName || !lastName || !email || !phone) {
-        alert('Please fill in all required fields before requesting a call.');
+      if (!state.leadData.firstName || !state.leadData.phone) {
+        alert('Please fill in required fields.');
         return;
       }
-
-      state.leadData = {
-        firstName,
-        lastName,
-        email,
-        phone,
-        leadType: 'unqualified',
-        mcqAnswers: []
-      };
 
       saveLeadToQueue('Organic - Call Requested');
       closeOrganicFormModal();
@@ -1361,23 +1550,16 @@
     }
 
     function restartFlow() {
+      sessionStorage.removeItem('va_flow_state');
       state.isVitalityVerified = false;
       state.vitalityDiscount = 1.0;
       state.selection.saId = '';
       state.selection.dob = '';
       state.selection.gender = '';
-      state.leadData = {
-        firstName: '',
-        lastName: '',
-        email: '',
-        phone: '',
-        leadType: 'unqualified',
-        mcqAnswers: []
-      };
+      state.leadData = { firstName: '', lastName: '', email: '', phone: '', leadType: 'unqualified', mcqAnswers: [] };
       setChannel('organic');
     }
 
-    // Set Channel Switcher Mode
     function setChannel(ch) {
       state.channel = ch;
       const orgBtn = document.getElementById('channel-organic-btn');
@@ -1397,7 +1579,7 @@
       }
     }
 
-    // View Switcher Router
+    // View Router & Sticky Bar Sync
     function showStep(viewId) {
       const views = [
         'view-organic-landing', 'view-paid-landing', 'view-buy-step1', 'view-buy-vitality',
@@ -1413,7 +1595,7 @@
       const activeView = document.getElementById(viewId);
       if (activeView) activeView.classList.remove('hidden');
 
-      // Update Breadcrumbs visibility
+      // Update Breadcrumbs
       const bc = document.getElementById('flow-breadcrumbs');
       if (viewId.startsWith('view-buy-step') || viewId === 'view-buy-vitality') {
         bc.classList.remove('hidden');
@@ -1423,28 +1605,41 @@
         bc.classList.add('hidden');
         bc.classList.remove('md:flex');
       }
+
+      // Update Mobile Sticky Bottom Bar
+      updateMobileStickyBar(viewId);
+      saveStateToSessionStorage();
+    }
+
+    function updateMobileStickyBar(viewId) {
+      const bar = document.getElementById('mobile-sticky-bar');
+      if (viewId === 'view-buy-step2' || viewId === 'view-buy-step3' || viewId === 'view-buy-step4') {
+        bar.classList.remove('hidden');
+        bar.classList.add('flex');
+        
+        document.getElementById('mobile-sticky-club').textContent = state.selection.branch || 'Select Club';
+        document.getElementById('mobile-sticky-price').textContent = `R${state.selection.monthlyFee} / mo`;
+      } else {
+        bar.classList.add('hidden');
+        bar.classList.remove('flex');
+      }
+    }
+
+    function triggerMobileStickyAction() {
+      const active = document.querySelector('main > div:not(.hidden)').id;
+      if (active === 'view-buy-step2') selectTier(state.selection.tier);
+      else if (active === 'view-buy-step3') proceedToStep4();
+      else if (active === 'view-buy-step4') triggerOTPModal();
     }
 
     function updateBreadcrumbs(viewId) {
-      const stepMap = {
-        'view-buy-step1': 1,
-        'view-buy-vitality': 2,
-        'view-buy-step2': 3,
-        'view-buy-step3': 4,
-        'view-buy-step4': 5,
-        'view-buy-step5': 5
-      };
-
+      const stepMap = { 'view-buy-step1': 1, 'view-buy-vitality': 2, 'view-buy-step2': 3, 'view-buy-step3': 4, 'view-buy-step4': 5, 'view-buy-step5': 5 };
       const activeNum = stepMap[viewId] || 1;
 
       for (let i = 1; i <= 5; i++) {
         const stepEl = document.getElementById(`bc-step-${i}`);
         if (stepEl) {
-          if (i === activeNum) {
-            stepEl.className = "text-white font-bold underline";
-          } else {
-            stepEl.className = "text-neutral-500 font-normal";
-          }
+          stepEl.className = (i === activeNum) ? "text-white font-bold underline" : "text-neutral-500 font-normal";
         }
       }
     }
@@ -1452,11 +1647,7 @@
     function proceedToVitalityStep() {
       const prov = document.getElementById('buy-province').value;
       const branchSel = document.getElementById('buy-branch').value;
-      let finalBranch = branchSel;
-
-      if (branchSel === 'Other') {
-        finalBranch = document.getElementById('buy-other-branch').value;
-      }
+      let finalBranch = (branchSel === 'Other') ? document.getElementById('buy-other-branch').value : branchSel;
 
       if (!prov || !finalBranch) {
         alert('Please select both a Province and a Branch.');
@@ -1466,7 +1657,6 @@
       state.selection.province = prov;
       state.selection.branch = finalBranch;
 
-      // Pre-fill fields if lead info exists
       if (state.leadData.firstName) document.getElementById('vit-firstName').value = state.leadData.firstName;
       if (state.leadData.lastName) document.getElementById('vit-lastName').value = state.leadData.lastName;
       if (state.leadData.email) document.getElementById('vit-email').value = state.leadData.email;
@@ -1485,8 +1675,7 @@
       const dd = idVal.substring(4, 6);
       const century = parseInt(yy) > 30 ? '19' : '20';
       const fullDOB = `${century}${yy}-${mm}-${dd}`;
-      const genderCode = parseInt(idVal.substring(6, 10));
-      const gender = genderCode < 5000 ? 'Female' : 'Male';
+      const gender = (parseInt(idVal.substring(6, 10)) < 5000) ? 'Female' : 'Male';
 
       state.selection.saId = idVal;
       state.selection.dob = fullDOB;
@@ -1499,16 +1688,12 @@
 
     function handleCheckVitalityBenefits(e) {
       e.preventDefault();
-      
-      // Update state lead details
       state.leadData.firstName = document.getElementById('vit-firstName').value;
       state.leadData.lastName = document.getElementById('vit-lastName').value;
       state.leadData.email = document.getElementById('vit-email').value;
 
       const vitSAID = document.getElementById('vit-saId').value;
-      if (vitSAID) {
-        handleVitalitySAIDInput(vitSAID);
-      }
+      if (vitSAID) handleVitalitySAIDInput(vitSAID);
 
       const loader = document.getElementById('vit-checking-loader');
       const checkBtn = document.getElementById('vit-check-btn');
@@ -1516,7 +1701,6 @@
       const failedBox = document.getElementById('vit-failed-box');
       const proceedDiscountedBtn = document.getElementById('vit-proceed-discounted-btn');
 
-      // Hide boxes & show loader
       successBox.classList.add('hidden');
       failedBox.classList.add('hidden');
       loader.classList.remove('hidden');
@@ -1524,12 +1708,11 @@
 
       setTimeout(() => {
         loader.classList.add('hidden');
-
         const simulateSuccess = document.getElementById('vitality-sim-toggle').checked;
 
         if (simulateSuccess) {
           state.isVitalityVerified = true;
-          state.vitalityDiscount = 0.25; // 75% off
+          state.vitalityDiscount = 0.25;
           successBox.classList.remove('hidden');
           proceedDiscountedBtn.classList.remove('hidden');
         } else {
@@ -1541,10 +1724,6 @@
     }
 
     function continueWithoutVitalityDiscount() {
-      const vitSAID = document.getElementById('vit-saId').value;
-      if (vitSAID) {
-        handleVitalitySAIDInput(vitSAID);
-      }
       state.isVitalityVerified = false;
       state.vitalityDiscount = 1.0;
       proceedToStep2();
@@ -1555,26 +1734,17 @@
       showStep('view-thankyou-callback');
     }
 
-    // Handle Paid Media Lead Submissions
     function handlePaidFormSubmit(e) {
       e.preventDefault();
-      const firstName = document.getElementById('paid-firstName').value;
-      const lastName = document.getElementById('paid-lastName').value;
-      const email = document.getElementById('paid-email').value;
-      const phone = document.getElementById('paid-phone').value;
+      state.leadData.firstName = document.getElementById('paid-firstName').value;
+      state.leadData.lastName = document.getElementById('paid-lastName').value;
+      state.leadData.email = document.getElementById('paid-email').value;
+      state.leadData.phone = document.getElementById('paid-phone').value;
+      state.leadData.leadType = 'qualified';
+
       const action = document.getElementById('paid-action-select').value;
 
-      state.leadData = {
-        firstName,
-        lastName,
-        email,
-        phone,
-        leadType: 'qualified',
-        mcqAnswers: []
-      };
-
       if (action === 'callback') {
-        // Log to queue immediately
         saveLeadToQueue('Qualified - Call Requested');
         state.mcqStepIndex = 0;
         renderMCQStep();
@@ -1589,7 +1759,6 @@
       showStep('view-thankyou-callback');
     }
 
-    // MCQ Survey Engine (Auto Advances)
     function renderMCQStep() {
       const q = MCQ_QUESTIONS[state.mcqStepIndex];
       document.getElementById('mcq-question-title').textContent = q.title;
@@ -1615,7 +1784,6 @@
         btn.textContent = opt;
         btn.onclick = () => {
           state.leadData.mcqAnswers[state.mcqStepIndex] = opt;
-          // Auto advance to next question
           nextMCQ();
         };
         optionsBox.appendChild(btn);
@@ -1636,7 +1804,6 @@
         state.mcqStepIndex++;
         renderMCQStep();
       } else {
-        // Completed MCQ - update stored record in queue
         updateLatestQueueLeadAnswers();
         document.getElementById('modal-mcq-survey').classList.add('hidden');
         showStep('view-thankyou-callback');
@@ -1654,6 +1821,7 @@
     function populateProvinceDropdowns() {
       const buyProv = document.getElementById('buy-province');
       const locProv = document.getElementById('locations-province-select');
+      const exitProv = document.getElementById('exit-province');
 
       Object.keys(PROVINCE_CLUBS_DATA).forEach(prov => {
         const opt1 = document.createElement('option');
@@ -1665,6 +1833,11 @@
         opt2.value = prov;
         opt2.textContent = prov;
         locProv.appendChild(opt2);
+
+        const opt3 = document.createElement('option');
+        opt3.value = prov;
+        opt3.textContent = prov;
+        exitProv.appendChild(opt3);
       });
     }
 
@@ -1675,6 +1848,9 @@
       const branchSelect = document.getElementById('buy-branch');
       branchSelect.innerHTML = '<option value="" disabled selected>-- Select Branch --</option>';
       branchSelect.disabled = false;
+
+      // Hide amenities trigger on province change until a branch is chosen
+      document.getElementById('step1-amenities-btn-container').classList.add('hidden');
 
       const clubs = PROVINCE_CLUBS_DATA[prov] || [];
       clubs.forEach(c => {
@@ -1692,9 +1868,14 @@
       branchSelect.onchange = function() {
         if (this.value === 'Other') {
           document.getElementById('other-branch-box').classList.remove('hidden');
+          document.getElementById('step1-amenities-btn-container').classList.add('hidden');
         } else {
           document.getElementById('other-branch-box').classList.add('hidden');
           state.selection.branch = this.value;
+          
+          // Show View Amenities Button on Step 1
+          document.getElementById('step1-selected-branch-name').textContent = this.value;
+          document.getElementById('step1-amenities-btn-container').classList.remove('hidden');
         }
       };
     }
@@ -1702,11 +1883,7 @@
     function proceedToStep2() {
       const prov = document.getElementById('buy-province').value;
       const branchSel = document.getElementById('buy-branch').value;
-      let finalBranch = branchSel;
-
-      if (branchSel === 'Other') {
-        finalBranch = document.getElementById('buy-other-branch').value;
-      }
+      let finalBranch = (branchSel === 'Other') ? document.getElementById('buy-other-branch').value : branchSel;
 
       if (!prov || !finalBranch) {
         alert('Please select both a Province and a Branch.');
@@ -1721,7 +1898,6 @@
       showStep('view-buy-step2');
     }
 
-    // Contract Type Switcher (Flexible / 12M / 24M)
     function setContractType(type) {
       state.selection.contractType = type;
 
@@ -1737,7 +1913,6 @@
       if (type === '12m') btn12m.className = "px-4 py-2 rounded-lg text-xs font-bold transition bg-red-600 text-white shadow";
       if (type === '24m') btn24m.className = "px-4 py-2 rounded-lg text-xs font-bold transition bg-red-600 text-white shadow";
 
-      // Update Card Prices Dynamically with Vitality Discount applied if verified
       const p = PRICING_MATRIX[type];
       const mult = state.vitalityDiscount;
 
@@ -1762,7 +1937,6 @@
       const baseFee = PRICING_MATRIX[state.selection.contractType][tierName];
       state.selection.monthlyFee = Math.round(baseFee * state.vitalityDiscount);
 
-      // Populate Review Details
       document.getElementById('rev-name').textContent = `${state.leadData.firstName || 'Customer'} ${state.leadData.lastName || ''}`;
       document.getElementById('rev-email').textContent = state.leadData.email || 'N/A';
       document.getElementById('rev-phone').textContent = state.leadData.phone || 'N/A';
@@ -1781,8 +1955,6 @@
 
     function proceedToStep4() {
       showStep('view-buy-step4');
-      
-      // Auto-complete & Auto-verify SA ID if saved from Vitality step
       if (state.selection.saId) {
         const saInput = document.getElementById('sa-id-input');
         if (saInput) {
@@ -1792,8 +1964,6 @@
       }
     }
 
-
-    // South African ID Auto-Parser
     function handleSAIDInput(idVal) {
       state.selection.saId = idVal;
       const errEl = document.getElementById('said-error');
@@ -1811,17 +1981,12 @@
 
       errEl.classList.add('hidden');
 
-      // Extract Date of Birth YYMMDD
       const yy = idVal.substring(0, 2);
       const mm = idVal.substring(2, 4);
       const dd = idVal.substring(4, 6);
-      
       const century = parseInt(yy) > 30 ? '19' : '20';
       const fullDOB = `${century}${yy}-${mm}-${dd}`;
-
-      // Extract Gender (4 digits SSSS)
-      const genderCode = parseInt(idVal.substring(6, 10));
-      const gender = genderCode < 5000 ? 'Female' : 'Male';
+      const gender = (parseInt(idVal.substring(6, 10)) < 5000) ? 'Female' : 'Male';
 
       state.selection.saId = idVal;
       state.selection.dob = fullDOB;
@@ -1835,7 +2000,6 @@
       triggerBtn.disabled = false;
     }
 
-    // OTP Modal Controls
     function triggerOTPModal() {
       generateAndDisplayOTP();
       document.getElementById('modal-otp').classList.remove('hidden');
@@ -1853,17 +2017,14 @@
       document.getElementById('sms-time-tag').textContent = 'Just Now';
     }
 
-    // Option 1: Resend OTP
     function resendOTP() {
       generateAndDisplayOTP();
       document.getElementById('otp-input').value = '';
-      
       const msg = document.getElementById('resend-alert-msg');
       msg.classList.remove('hidden');
       setTimeout(() => msg.classList.add('hidden'), 3500);
     }
 
-    // Option 2: Change Phone Number Handlers
     function toggleChangePhoneSection(show) {
       const sec = document.getElementById('change-phone-section');
       if (show) {
@@ -1880,8 +2041,6 @@
         alert('Please enter a valid mobile number.');
         return;
       }
-      
-      // Update phone in local state
       state.leadData.phone = `+27 ${newPhone}`;
       toggleChangePhoneSection(false);
       resendOTP();
@@ -1899,7 +2058,6 @@
       }
     }
 
-    // Payment Form Submission
     function handlePaymentSubmit(e) {
       e.preventDefault();
       const payBtn = document.getElementById('pay-btn');
@@ -1913,7 +2071,6 @@
       }, 1500);
     }
 
-
     function startBuyOnlineFromThankYou() {
       showStep('view-buy-step1');
     }
@@ -1922,7 +2079,6 @@
       alert(`Simulating redirect to ${platform} App Store for Virgin Active App...`);
     }
 
-    // Lead Queue Management Logic
     function saveLeadToQueue(status) {
       const newLead = {
         id: Date.now(),
@@ -1983,7 +2139,6 @@
       renderLeadQueueTable();
     }
 
-    // Club Location Browser Modal
     function openClubLocationsModal() {
       document.getElementById('modal-club-locations').classList.remove('hidden');
     }
@@ -2026,7 +2181,6 @@
       state.selection.province = prov;
       state.selection.branch = club;
       
-      // Navigate to Step 2 directly
       document.getElementById('step2-selected-club-label').textContent = `${club} (${prov})`;
       setContractType('12m');
       showStep('view-buy-step2');
