@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Marketing Performance Infographic (ZAR)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- PapaParse for robust client-side CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2canvas for capturing DOM as PNG -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 4px 20px -2px rgba(50, 50, 93, 0.05), 0 2px 10px -1px rgba(0, 0, 0, 0.02);
+        }
+        /* Scrollbar styles */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen pb-12">
+
+    <!-- Primary Dashboard Wrapper -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+
+        <!-- Main Infographic Container (Target for PNG Capture) -->
+        <div id="infographic-container" class="bg-[#f8fafc] rounded-3xl p-1 sm:p-4 md:p-6 border border-slate-100">
+            
+            <!-- Navigation / Header -->
+            <header class="gradient-bg text-white rounded-2xl shadow-lg my-4 overflow-hidden">
+                <div class="px-6 py-6 md:py-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-indigo-600 p-3 rounded-xl shadow-md flex items-center justify-center">
+                            <i class="fa-solid fa-chart-pie text-2xl text-white"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h1 class="text-2xl font-extrabold tracking-tight">Marketing Performance Infographic</h1>
+                                <span class="text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded-full border border-emerald-500/30">ZA Run-Rate</span>
+                            </div>
+                            <p class="text-xs text-indigo-200 mt-0.5">Automated Weekly Performance Analytics &amp; Dynamic Projection Engine</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap items-center gap-3">
+                        <!-- Active Week Selector -->
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-xs font-medium text-indigo-200">Active Week:</span>
+                            <select id="activeWeekSelector" onchange="changeActiveWeek()" class="bg-white/10 border border-white/20 text-white rounded-lg px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="" class="text-slate-800">Select data...</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Configuration Trigger Button (Opens Settings Modal) -->
+                        <button onclick="toggleModal(true)" class="bg-slate-700 hover:bg-slate-600 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-gear"></i> Data Settings
+                        </button>
+
+                        <!-- Download PNG Button -->
+                        <button id="downloadPngBtn" onclick="downloadPNG()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition-colors flex items-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-file-image"></i> Download PNG
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Body -->
+            <div id="dashboard-content" class="opacity-40 pointer-events-none transition-opacity duration-300">
+                
+                <!-- KPI Metrics Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
+                    <!-- Spend Card -->
+                    <div class="bg-white p-5 rounded-2xl card-shadow border border-slate-100 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Spend</span>
+                                <span class="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 text-xs"><i class="fa-solid fa-credit-card"></i></span>
+                            </div>
+                            <h3 id="kpi-spend" class="text-2xl font-extrabold text-slate-900">R0</h3>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1">
+                            <span id="kpi-spend-wow" class="text-xs font-semibold text-slate-400 flex items-center gap-1">
+                                — <span class="text-slate-400 font-normal">WoW</span>
+                            </span>
+                            <span id="kpi-spend-mom" class="text-[10px] text-slate-400 font-semibold flex items-center gap-1">
+                                — <span class="text-slate-400 font-normal">MoM</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Leads Card -->
+                    <div class="bg-white p-5 rounded-2xl card-shadow border border-slate-100 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Leads</span>
+                                <span class="p-1.5 rounded-lg bg-amber-50 text-amber-600 text-xs"><i class="fa-solid fa-users"></i></span>
+                            </div>
+                            <h3 id="kpi-leads" class="text-2xl font-extrabold text-slate-900">0</h3>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1">
+                            <span id="kpi-leads-wow" class="text-xs font-semibold text-slate-400 flex items-center gap-1">
+                                — <span class="text-slate-400 font-normal">WoW</span>
+                            </span>
+                            <span id="kpi-leads-mom" class="text-[10px] text-slate-400 font-semibold flex items-center gap-1">
+                                — <span class="text-slate-400 font-normal">MoM</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Sales Card -->
+                    <div class="bg-white p-5 rounded-2xl card-shadow border border-slate-100 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Sales</span>
+                                <span class="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 text-xs"><i class="fa-solid fa-cart-shopping"></i></span>
+                            </div>
+                            <h3 id="kpi-sales" class="text-2xl font-extrabold text-slate-900">0</h3>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1">
+                            <span id="kpi-sales-wow" class="text-xs font-semibold text-slate-400 flex items-center gap-1">
+                                — <span class="text-slate-400 font-normal">WoW</span>
+                            </span>
+                            <span id="kpi-sales-mom" class="text-[10px] text-slate-400 font-semibold flex items-center gap-1">
+                                — <span class="text-slate-400 font-normal">MoM</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Conversion Rate Card -->
+                    <div class="bg-white p-5 rounded-2xl card-shadow border border-slate-100 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Conv. Rate</span>
+                                <span class="p-1.5 rounded-lg bg-teal-50 text-teal-600 text-xs"><i class="fa-solid fa-percentage"></i></span>
+                            </div>
+                            <h3 id="kpi-cvr" class="text-2xl font-extrabold text-slate-900">0.0%</h3>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1">
+                            <span id="kpi-cvr-wow" class="text-xs font-semibold text-slate-400 flex items-center gap-1">
+                                — <span class="text-slate-400 font-normal">WoW</span>
+                            </span>
+                            <span id="kpi-cvr-mom" class="text-[10px] text-slate-400 font-semibold flex items-center gap-1">
+                                — <span class="text-slate-400 font-normal">MoM</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- CPL Card -->
+                    <div class="bg-white p-5 rounded-2xl card-shadow border border-slate-100 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Avg CPL</span>
+                                <span class="p-1.5 rounded-lg bg-violet-50 text-violet-600 text-xs"><i class="fa-solid fa-filter"></i></span>
+                            </div>
+                            <h3 id="kpi-cpl" class="text-2xl font-extrabold text-slate-900">R0.00</h3>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1">
+                            <span id="kpi-cpl-wow" class="text-xs font-semibold text-slate-400 flex items-center gap-1">
+                                — <span class="text-slate-400 font-normal">WoW</span>
+                            </span>
+                            <span id="kpi-cpl-mom" class="text-[10px] text-slate-400 font-semibold flex items-center gap-1">
+                                — <span class="text-slate-400 font-normal">MoM</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- CPS Card -->
+                    <div class="bg-white p-5 rounded-2xl card-shadow border border-slate-100 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Avg CPS</span>
+                                <span class="p-1.5 rounded-lg bg-rose-50 text-rose-600 text-xs"><i class="fa-solid fa-sack-dollar"></i></span>
+                            </div>
+                            <h3 id="kpi-cps" class="text-2xl font-extrabold text-slate-900">R0.00</h3>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-col gap-1">
+                            <span id="kpi-cps-wow" class="text-xs font-semibold text-slate-400 flex items-center gap-1">
+                                — <span class="text-slate-400 font-normal">WoW</span>
+                            </span>
+                            <span id="kpi-cps-mom" class="text-[10px] text-slate-400 font-semibold flex items-center gap-1">
+                                — <span class="text-slate-400 font-normal">MoM</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 1: Week on Week Performance Comparisons -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                    <!-- Chart Card (This Week vs Last Week) -->
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl card-shadow border border-slate-100">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h2 class="text-lg font-bold text-slate-900">Week over Week (WoW) Daily Performance</h2>
+                                <p class="text-xs text-slate-400">Comparing active week's marketing run to previous week (Sunday start)</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <select id="wowMetricSelector" onchange="updateWoWChart()" class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="spend">Spend (ZAR)</option>
+                                    <option value="leads" selected>Leads</option>
+                                    <option value="sales">Sales</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="relative h-80">
+                            <canvas id="wowComparisonChart"></canvas>
+                        </div>
+
+                        <div class="mt-6 pt-5 border-t border-slate-100 flex items-start gap-3 bg-slate-50 p-4 rounded-xl">
+                            <div class="text-indigo-600 mt-0.5"><i class="fa-solid fa-circle-question text-base"></i></div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-700 mb-0.5">Understanding WoW Trends</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">
+                                    This chart isolates current performance against last week's exact calendar match days. Evaluating day-of-week behaviors ensures you account for predictable consumer activity drops, such as weekends. Unrecorded days are shown blank.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- WoW Comparison Metrics breakdown table & highlight -->
+                    <div class="bg-white p-6 rounded-2xl card-shadow border border-slate-100 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900 mb-1">Weekly Summary</h3>
+                            <p class="text-xs text-slate-400 mb-6">Detailed side-by-side snapshot comparison</p>
+
+                            <div class="space-y-4">
+                                <!-- Row 1: Spend -->
+                                <div class="pb-3 border-b border-slate-100">
+                                    <div class="flex justify-between text-xs font-bold text-slate-500 uppercase mb-1">
+                                        <span>Spend Comparison</span>
+                                        <span id="weekly-spend-diff" class="text-slate-500">—</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm font-semibold">
+                                        <span class="text-slate-400 text-xs">Last Wk: <span id="weekly-spend-last" class="text-slate-600 font-medium">—</span></span>
+                                        <span id="weekly-spend-this" class="text-indigo-950">—</span>
+                                    </div>
+                                </div>
+
+                                <!-- Row 2: Leads -->
+                                <div class="pb-3 border-b border-slate-100">
+                                    <div class="flex justify-between text-xs font-bold text-slate-500 uppercase mb-1">
+                                        <span>Leads Generated</span>
+                                        <span id="weekly-leads-diff" class="text-slate-500">—</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm font-semibold">
+                                        <span class="text-slate-400 text-xs">Last Wk: <span id="weekly-leads-last" class="text-slate-600 font-medium">—</span></span>
+                                        <span id="weekly-leads-this" class="text-indigo-950">—</span>
+                                    </div>
+                                </div>
+
+                                <!-- Row 3: Sales -->
+                                <div class="pb-3 border-b border-slate-100">
+                                    <div class="flex justify-between text-xs font-bold text-slate-500 uppercase mb-1">
+                                        <span>Sales Volume</span>
+                                        <span id="weekly-sales-diff" class="text-slate-500">—</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm font-semibold">
+                                        <span class="text-slate-400 text-xs">Last Wk: <span id="weekly-sales-last" class="text-slate-600 font-medium">—</span></span>
+                                        <span id="weekly-sales-this" class="text-indigo-950">—</span>
+                                    </div>
+                                </div>
+
+                                <!-- Row 4: CVR -->
+                                <div class="pb-3 border-b border-slate-100">
+                                    <div class="flex justify-between text-xs font-bold text-slate-500 uppercase mb-1">
+                                        <span>Avg Conv. Rate</span>
+                                        <span id="weekly-cvr-diff" class="text-slate-500">—</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm font-semibold">
+                                        <span class="text-slate-400 text-xs">Last Wk: <span id="weekly-cvr-last" class="text-slate-600 font-medium">—</span></span>
+                                        <span id="weekly-cvr-this" class="text-indigo-950">—</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Strategic recommendation (CONDITIONAL INSIGHTS GENERATOR) -->
+                        <div id="nlp-insight-card" class="mt-6 p-4 rounded-xl transition-all duration-300">
+                            <span class="font-bold text-xs uppercase flex items-center gap-1.5 mb-1" id="nlp-insight-title">
+                                <i class="fa-solid fa-lightbulb"></i> Performance insight
+                            </span>
+                            <p class="text-xs leading-relaxed" id="nlp-insight-text">
+                                No week data evaluated yet.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 2: Day of Week Performance and Distribution Analysis -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                    <!-- DOW Metric Distribution -->
+                    <div class="bg-white p-6 rounded-2xl card-shadow border border-slate-100 lg:col-span-2">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h2 class="text-lg font-bold text-slate-900">Day of Week Performance Contribution</h2>
+                                <p class="text-xs text-slate-400">Distributing daily performance percentages (Sun-Sat)</p>
+                            </div>
+                            <select id="dowDistributionSelector" onchange="updateDowChart()" class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="spend">Spend Distribution</option>
+                                <option value="leads">Leads Distribution</option>
+                                <option value="sales" selected>Sales Distribution</option>
+                            </select>
+                        </div>
+
+                        <div class="relative h-80">
+                            <canvas id="dowDistributionChart"></canvas>
+                        </div>
+
+                        <div class="mt-6 pt-5 border-t border-slate-100 flex items-start gap-3 bg-slate-50 p-4 rounded-xl">
+                            <div class="text-indigo-600 mt-0.5"><i class="fa-solid fa-chart-pie text-base"></i></div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-700 mb-0.5">DOW Insights &amp; Bid Multipliers</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">
+                                    This reveals when customers engage most. Use these benchmarks to configure <strong>Bid Multipliers</strong> in Google/Meta Ads (e.g., scaling back budgets during Sunday slump hours and boosting spend on peak conversion days).
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Heatmap / Table Representation of DOW Performance -->
+                    <div class="bg-white p-6 rounded-2xl card-shadow border border-slate-100">
+                        <h3 class="text-base font-bold text-slate-900 mb-1">DOW Performance Ranking</h3>
+                        <p class="text-xs text-slate-400 mb-5">Ranked by weekly efficiency (Conversion Rate &amp; CPS)</p>
+
+                        <div id="dow-ranking-container" class="space-y-3.5">
+                            <!-- Dynamic ranks injected by JS -->
+                            <p class="text-xs text-slate-400 text-center py-10">Load data to show rankings...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 3: Month over Month Projections & Expectation Line Trend -->
+                <div class="bg-white p-6 rounded-2xl card-shadow border border-slate-100 mb-8">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Cumulative Monthly Sales Trend &amp; Projections</h2>
+                            <p class="text-xs text-slate-400">Actual performance tracking versus standard growth forecast model</p>
+                        </div>
+                        
+                        <!-- Interactive Slider Control -->
+                        <div class="bg-indigo-50/50 border border-indigo-100 p-4 rounded-xl flex flex-col md:flex-row items-start md:items-center gap-4 w-full md:w-auto">
+                            <div>
+                                <label for="projectionModifier" class="block text-xs font-bold text-indigo-950 uppercase tracking-wide">
+                                    Simulate Growth target
+                                </label>
+                                <span class="text-[10px] text-slate-500">Adjust expectation model line dynamically</span>
+                            </div>
+                            <div class="flex items-center gap-3 w-full md:w-48">
+                                <input type="range" id="projectionModifier" min="-25" max="25" value="0" step="5" oninput="updateProjectionTrend()" class="w-full accent-indigo-600 h-1.5 bg-slate-200 rounded-lg cursor-pointer">
+                                <span id="modifierValue" class="text-xs font-bold text-indigo-700 w-10 text-right">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Projection Chart Container -->
+                    <div class="relative h-96">
+                        <canvas id="monthlyProjectionChart"></canvas>
+                    </div>
+
+                    <!-- Under-graph explanation details -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-5 border-t border-slate-100">
+                        <div class="flex gap-3">
+                            <div class="text-indigo-600 mt-0.5"><i class="fa-solid fa-lightbulb text-base"></i></div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-700 mb-1">Calculations &amp; Forecasting Logic</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">
+                                    <strong>Baseline Target Line</strong> represents typical performance computed from historically weighted performance cycles over past fiscal quarters. The <strong>Modified Expectation Curve</strong> maps how tactical media improvements, optimized budget allocation patterns, and better conversion factors influence cumulative run-rate trajectories across remaining dates of the active month.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3">
+                            <div class="text-indigo-600 mt-0.5"><i class="fa-solid fa-arrow-trend-up text-base"></i></div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-700 mb-1">How To Act On This Data</h4>
+                                <p class="text-xs text-slate-500 leading-relaxed">
+                                    When <strong>Actual Cumulative Sales</strong> begins indexing 5%+ above baseline trajectories, it justifies launching strategic stretch budgets. If tracking below baseline levels, restrict high-CPL traffic sources instantly to safeguard underlying CPA (Cost Per Acquisition) margins.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabular Raw Data Overview -->
+                <div class="bg-white rounded-2xl border border-slate-100 card-shadow overflow-hidden mb-8">
+                    <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                        <div>
+                            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">This Week's Daily Metrics Table</h2>
+                            <p class="text-xs text-slate-400">Standard operational dataset metrics index. Missing days are gracefully omitted.</p>
+                        </div>
+                        <span class="text-xs font-bold text-slate-500 bg-white border border-slate-200 px-3 py-1 rounded-lg">Sunday - Saturday Week</span>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-100">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3.5 text-left text-[10px] font-bold text-slate-400 uppercase tracking-wider">Day (DOW)</th>
+                                    <th scope="col" class="px-6 py-3.5 text-left text-[10px] font-bold text-slate-400 uppercase tracking-wider">Date</th>
+                                    <th scope="col" class="px-6 py-3.5 text-right text-[10px] font-bold text-slate-400 uppercase tracking-wider">Spend</th>
+                                    <th scope="col" class="px-6 py-3.5 text-right text-[10px] font-bold text-slate-400 uppercase tracking-wider">Leads</th>
+                                    <th scope="col" class="px-6 py-3.5 text-right text-[10px] font-bold text-slate-400 uppercase tracking-wider">Sales</th>
+                                    <th scope="col" class="px-6 py-3.5 text-right text-[10px] font-bold text-slate-400 uppercase tracking-wider">Conversion</th>
+                                    <th scope="col" class="px-6 py-3.5 text-right text-[10px] font-bold text-slate-400 uppercase tracking-wider">CPL</th>
+                                    <th scope="col" class="px-6 py-3.5 text-right text-[10px] font-bold text-slate-400 uppercase tracking-wider">CPS</th>
+                                </tr>
+                            </tbody>
+                            <tbody class="bg-white divide-y divide-slate-100 text-xs text-slate-600 font-medium" id="rawMetricTable">
+                                <tr>
+                                    <td colspan="8" class="text-center py-8 text-slate-400">Please upload or load sample data in settings above to view results.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Metric Definitions Callout Section (At Bottom) -->
+                <div class="bg-white rounded-2xl border border-indigo-100 p-6 card-shadow">
+                    <h3 class="text-sm font-bold text-indigo-950 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-indigo-500"></i> Marketing Metric Formulas & Interpretation
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <span class="w-2 h-2 rounded-full bg-teal-500"></span>
+                                <span class="font-bold text-xs text-slate-700">Conversion Rate (CVR)</span>
+                            </div>
+                            <code class="text-xs bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono font-semibold">
+                                (Sales / Leads) × 100
+                            </code>
+                            <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                                Measures the efficiency of your lead nurturing pipeline. A positive trend means leads are of higher quality or sales processes are closing more effectively.
+                            </p>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <span class="w-2 h-2 rounded-full bg-violet-500"></span>
+                                <span class="font-bold text-xs text-slate-700">Cost Per Lead (CPL)</span>
+                            </div>
+                            <code class="text-xs bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono font-semibold">
+                                Total Spend / Total Leads
+                            </code>
+                            <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                                Evaluates customer acquisition efficiency. Lower CPL indicates successful campaign ad targeting adjustments or lower bid costs on South African target ad exchange networks.
+                            </p>
+                        </div>
+
+                        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200/60">
+                            <div class="flex items-center gap-2 mb-1.5">
+                                <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                                <span class="font-bold text-xs text-slate-700">Cost Per Sale (CPS)</span>
+                            </div>
+                            <code class="text-xs bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono font-semibold">
+                                Total Spend / Total Sales
+                            </code>
+                            <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                                Calculates final acquisition cost in Rands. This metric is directly linked to your profit margins. Ideally, your average deal value should far exceed CPS.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div> <!-- End Dashboard Body -->
+        </div> <!-- End Infographic Container -->
+    </div> <!-- End Main Max-Width Wrapper -->
+
+    <!-- Interactive Import & Settings Modal Overlay -->
+    <div id="settings-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+            
+            <!-- Modal Header -->
+            <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <div>
+                    <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up text-indigo-600"></i> Marketing Data Settings
+                    </h2>
+                    <p class="text-xs text-slate-500">Upload your `weeklydata.csv` performance records.</p>
+                </div>
+                <button onclick="toggleModal(false)" class="text-slate-400 hover:text-slate-600 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content (Scrollable) -->
+            <div class="p-6 overflow-y-auto space-y-6">
+                
+                <!-- Quick actions -->
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-semibold text-slate-500">Import Datasets</span>
+                    <div class="flex gap-2">
+                        <button onclick="fetchWeeklyCsv()" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">
+                            <i class="fa-solid fa-rotate mr-1"></i> Reload CSV from Server
+                        </button>
+                        <button onclick="loadSampleDataset()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">
+                            <i class="fa-solid fa-database mr-1"></i> Load Demo Data
+                        </button>
+                        <button onclick="clearImportedData()" class="bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition-all">
+                            <i class="fa-solid fa-trash-can mr-1"></i> Reset Data
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Import options grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Option 1: File selector -->
+                    <div class="border border-dashed border-slate-200 rounded-xl p-4 bg-slate-50/50 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Option 1: Manual CSV Upload</h3>
+                            <p class="text-[11px] text-slate-400 mb-4">Select `weeklydata.csv` performance document from local disk</p>
+                        </div>
+                        <div>
+                            <label class="block">
+                                <span class="sr-only">Choose File</span>
+                                <input type="file" id="csvFileInput" accept=".csv" onchange="handleCSVFileSelect(event)" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"/>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Option 2: Paste container -->
+                    <div class="flex flex-col">
+                        <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Option 2: Paste Raw CSV</h3>
+                        <p class="text-[11px] text-slate-400 mb-2">DOW,Date,Spend,Leads,Sales</p>
+                        <textarea id="rawCsvTextArea" placeholder="DOW,Date,Spend,Leads,Sales&#10;Fri,03/07/2026,37870,251,36..." class="w-full h-24 p-2 text-xs font-mono border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/20"></textarea>
+                        <button onclick="processRawPaste()" class="mt-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-1.5 px-4 rounded-lg transition-colors self-end">
+                            Apply Raw Text
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Parse feedback message -->
+                <div id="importStatusMessage" class="hidden p-3 rounded-xl text-xs flex items-center gap-2">
+                    <!-- Parsed dynamic feedback goes here -->
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end">
+                <button onclick="toggleModal(false)" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-xl text-xs font-bold transition-colors">
+                    Done &amp; Apply
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Store parsed global data
+        let globalProcessedData = []; 
+        let globalWeeksMap = {}; // Sunday-keyed weeks map
+        let selectedWeekKey = ""; // selected active Sunday start date YYYY-MM-DD
+
+        // Charts global hooks
+        let wowChart = null;
+        let dowChart = null;
+        let projectionChart = null;
+
+        // Automatically fetch weeklydata.csv from the directory on GitHub/Server
+        async function fetchWeeklyCsv() {
+            try {
+                // Add timestamp query parameter to defeat browser caching when CSV updates on GitHub
+                const response = await fetch(`weeklydata.csv?v=${new Date().getTime()}`);
+                if (!response.ok) {
+                    throw new Error(`CSV file 'weeklydata.csv' not found (${response.status})`);
+                }
+                const csvText = await response.text();
+                document.getElementById('rawCsvTextArea').value = csvText;
+                processRawData(csvText);
+            } catch (error) {
+                console.warn("Automated fetch failed. Falling back to built-in demo dataset:", error.message);
+                showImportStatus(`Could not auto-load 'weeklydata.csv' from repository root. Loaded demo dataset instead.`, false);
+                loadSampleDataset();
+            }
+        }
+
+        // Toggles Modal Overlay
+        function toggleModal(open) {
+            const modal = document.getElementById('settings-modal');
+            if (open) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        // Clean template for Sunday-Start week (Sunday=0 to Saturday=6)
+        function createEmptyWeek(sundayDateStr) {
+            const dows = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const days = [];
+            const parts = sundayDateStr.split('-');
+            const baseDate = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10), 0, 0, 0, 0);
+            
+            for (let i = 0; i < 7; i++) {
+                const current = new Date(baseDate.getTime());
+                current.setDate(baseDate.getDate() + i);
+                const dateString = formatDateLocal(current);
+                days.push({
+                    dow: dows[i],
+                    date: dateString,
+                    spend: null,
+                    leads: null,
+                    sales: null,
+                    hasData: false
+                });
+            }
+            return days;
+        }
+
+        // Parse date DD/MM/YYYY or YYYY-MM-DD correctly in local timezone
+        function parseCustomDate(dateStr) {
+            if (!dateStr) return null;
+            dateStr = dateStr.trim();
+            let parts;
+            if (dateStr.includes('/')) {
+                parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    const day = parseInt(parts[0], 10);
+                    const month = parseInt(parts[1], 10) - 1; // 0-based
+                    const year = parseInt(parts[2], 10);
+                    return new Date(year, month, day, 0, 0, 0, 0);
+                }
+            } else if (dateStr.includes('-')) {
+                parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    const year = parseInt(parts[0], 10);
+                    const month = parseInt(parts[1], 10) - 1;
+                    const day = parseInt(parts[2], 10);
+                    return new Date(year, month, day, 0, 0, 0, 0);
+                }
+            }
+            return new Date(dateStr);
+        }
+
+        // Helper to format Date objects as local YYYY-MM-DD strings
+        function formatDateLocal(dateObj) {
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const day = String(dateObj.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Helper to find Sunday starting date of any date object (purely in local timezone)
+        function getSundayStart(dateObj) {
+            const temp = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), 0, 0, 0, 0);
+            const day = temp.getDay(); // 0 = Sunday, 1 = Monday...
+            temp.setDate(temp.getDate() - day);
+            return formatDateLocal(temp);
+        }
+
+        // Helper to format currency in South African style
+        function formatZAR(val) {
+            if (val === null || val === undefined || isNaN(val)) return "R—";
+            return "R" + Math.round(val).toLocaleString('en-ZA').replace(/,/g, ' ');
+        }
+
+        function formatDecimalZAR(val) {
+            if (val === null || val === undefined || isNaN(val)) return "R—";
+            return "R" + parseFloat(val).toFixed(2).toLocaleString('en-ZA').replace(/,/g, ' ');
+        }
+
+        // Cleansing currency strings with potential 'R', spaces, or commas
+        function sanitizeNumeric(val) {
+            if (val === null || val === undefined) return 0;
+            if (typeof val === 'number') return val;
+            
+            // Strip out R, spaces, quotes, and replace inner commas if used as thousands separator
+            let clean = val.toString().replace(/[R\s"']/gi, '');
+            // Check if commas are used as thousand separators (e.g., 71,953.14) vs decimal
+            if (clean.includes(',') && clean.includes('.')) {
+                clean = clean.replace(/,/g, ''); // strip out thousand commas
+            } else if (clean.includes(',') && !clean.includes('.')) {
+                // If it contains only a comma, check if it looks like a decimal separator
+                const parts = clean.split(',');
+                if (parts[1].length === 2) {
+                    clean = clean.replace(',', '.'); // convert decimal comma
+                } else {
+                    clean = clean.replace(/,/g, ''); // remove separator comma
+                }
+            }
+            const num = parseFloat(clean);
+            return isNaN(num) ? 0 : num;
+        }
+
+        // Demonstration July YTD raw CSV matching weeklydata.csv structure (strictly aligned)
+        const demoYtdCsvData = `DOW,Date,Spend,Leads,Sales,Conversion,CPL,CPS
+Fri,26/06/2026," R37,869.98 ",251,36,14.3%, R150.88 ," R1,051.94 "
+Sat,27/06/2026," R40,274.79 ",204,24,11.8%, R197.43 ," R1,678.12 "
+Sun,28/06/2026," R35,400.00 ",185,20,10.8%, R191.35 ," R1,770.00 "
+Mon,29/06/2026," R36,500.00 ",240,30,12.5%, R152.08 ," R1,216.67 "
+Tue,30/06/2026," R38,000.00 ",265,38,14.3%, R143.40 ," R1,000.00 "
+Wed,01/07/2026," R35,800.00 ",250,35,14.0%, R143.20 ," R1,022.86 "
+Thu,02/07/2026," R37,376.18 ",287,42,14.6%, R130.23 , R889.91 
+Fri,03/07/2026," R37,870.00 ",251,36,14.3%, R150.88 ," R1,051.94 "
+Sat,04/07/2026," R40,275.00 ",204,24,11.8%, R197.43 ," R1,678.12 "
+Sun,05/07/2026," R35,400.00 ",185,20,10.8%, R191.35 ," R1,770.00 "
+Mon,06/07/2026," R36,500.00 ",240,30,12.5%, R152.08 ," R1,216.67 "
+Tue,07/07/2026," R38,000.00 ",265,38,14.3%, R143.40 ," R1,000.00 "
+Wed,08/07/2026," R35,800.00 ",250,35,14.0%, R143.20 ," R1,022.86 "
+Thu,09/07/2026," R37,376.18 ",287,42,14.6%, R130.23 , R889.91 `;
+
+        // Process imported CSV data via PapaParse
+        function processRawData(csvText) {
+            Papa.parse(csvText, {
+                header: true,
+                dynamicTyping: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    if (results.errors.length > 0 && results.data.length === 0) {
+                        showImportStatus("Error parsing raw CSV data. Please check formatting.", false);
+                        return;
+                    }
+                    
+                    const rows = results.data;
+                    let validRecordsCount = 0;
+                    
+                    // Normalize header mapping
+                    const normalizedRows = rows.map(row => {
+                        const normalized = {};
+                        for (const key in row) {
+                            if (row.hasOwnProperty(key)) {
+                                normalized[key.trim().toLowerCase()] = row[key];
+                            }
+                        }
+                        return normalized;
+                    }).filter(r => r.date);
+
+                    if (normalizedRows.length === 0) {
+                        showImportStatus("No valid entries with dates found in dataset.", false);
+                        return;
+                    }
+
+                    // Reset weekly maps
+                    globalProcessedData = normalizedRows;
+                    globalWeeksMap = {};
+
+                    // Sort ascending by parsed date value
+                    globalProcessedData.sort((a, b) => parseCustomDate(a.date) - parseCustomDate(b.date));
+
+                    // Parse and insert records into clean Sunday-Start weeks
+                    globalProcessedData.forEach(row => {
+                        const dateObj = parseCustomDate(row.date);
+                        if (!dateObj || isNaN(dateObj.getTime())) return;
+
+                        const dateStr = formatDateLocal(dateObj);
+                        const sundayStartStr = getSundayStart(dateObj);
+                        
+                        if (!globalWeeksMap[sundayStartStr]) {
+                            globalWeeksMap[sundayStartStr] = createEmptyWeek(sundayStartStr);
+                        }
+
+                        // Determine index of day of week (0 to 6, Sunday is 0)
+                        const dayIndex = dateObj.getDay();
+
+                        // Clean up currencies explicitly to protect calculations
+                        const cleanedSpend = sanitizeNumeric(row.spend);
+                        const cleanedLeads = parseInt(row.leads) || 0;
+                        const cleanedSales = parseInt(row.sales) || 0;
+
+                        globalWeeksMap[sundayStartStr][dayIndex] = {
+                            dow: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][dayIndex],
+                            date: dateStr,
+                            spend: cleanedSpend,
+                            leads: cleanedLeads,
+                            sales: cleanedSales,
+                            // Recalculating metrics strictly
+                            cvr: cleanedLeads > 0 ? (cleanedSales / cleanedLeads) * 100 : 0,
+                            cpl: cleanedLeads > 0 ? (cleanedSpend / cleanedLeads) : 0,
+                            cps: cleanedSales > 0 ? (cleanedSpend / cleanedSales) : 0,
+                            hasData: true
+                        };
+                        validRecordsCount++;
+                    });
+
+                    populateWeekDropdown();
+                    showImportStatus(`Loaded ${validRecordsCount} daily records across ${Object.keys(globalWeeksMap).length} Sunday-start weeks.`, true);
+                    
+                    // Enable Dashboard View
+                    document.getElementById('dashboard-content').classList.remove('opacity-40', 'pointer-events-none');
+                }
+            });
+        }
+
+        // Load pre-made demo data
+        function loadSampleDataset() {
+            document.getElementById('rawCsvTextArea').value = demoYtdCsvData;
+            processRawData(demoYtdCsvData);
+        }
+
+        // Process raw copy-paste
+        function processRawPaste() {
+            const val = document.getElementById('rawCsvTextArea').value;
+            if (!val.trim()) {
+                showImportStatus("Text area is empty! Please paste data or load sample data.", false);
+                return;
+            }
+            processRawData(val);
+        }
+
+        // File browser input selection 
+        function handleCSVFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                document.getElementById('rawCsvTextArea').value = text;
+                processRawData(text);
+            };
+            reader.readAsText(file);
+        }
+
+        function showImportStatus(msg, isSuccess) {
+            const el = document.getElementById('importStatusMessage');
+            el.className = `p-3 rounded-xl text-xs flex items-center gap-2 ${isSuccess ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-amber-50 text-amber-800 border border-amber-200'}`;
+            el.innerHTML = isSuccess ? `<i class="fa-solid fa-circle-check"></i> ${msg}` : `<i class="fa-solid fa-circle-exclamation"></i> ${msg}`;
+            el.classList.remove('hidden');
+        }
+
+        function clearImportedData() {
+            globalProcessedData = [];
+            globalWeeksMap = {};
+            selectedWeekKey = "";
+            document.getElementById('csvFileInput').value = "";
+            document.getElementById('rawCsvTextArea').value = "";
+            document.getElementById('importStatusMessage').classList.add('hidden');
+            
+            // Re-disable dashboard
+            document.getElementById('dashboard-content').classList.add('opacity-40', 'pointer-events-none');
+            
+            // Reset dropdown
+            const selector = document.getElementById('activeWeekSelector');
+            selector.innerHTML = '<option value="">Select data...</option>';
+        }
+
+        // Populates week selection dropdown menu starting on Sunday and ending on Saturday
+        function populateWeekDropdown() {
+            const selector = document.getElementById('activeWeekSelector');
+            selector.innerHTML = '';
+
+            const sortedSundays = Object.keys(globalWeeksMap).sort().reverse(); // Decending
+            
+            sortedSundays.forEach(sunDate => {
+                const parts = sunDate.split('-');
+                const endWeekDate = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10), 0, 0, 0, 0);
+                endWeekDate.setDate(endWeekDate.getDate() + 6);
+                const endWeekStr = formatDateLocal(endWeekDate);
+                
+                const opt = document.createElement('option');
+                opt.value = sunDate;
+                opt.text = `Week: Sunday ${sunDate} to Saturday ${endWeekStr}`;
+                opt.className = "text-slate-800";
+                selector.appendChild(opt);
+            });
+
+            // Auto-select latest week available 
+            if (sortedSundays.length > 0) {
+                selector.value = sortedSundays[0];
+                selectedWeekKey = sortedSundays[0];
+                renderActiveDashboard();
+            }
+        }
+
+        function changeActiveWeek() {
+            selectedWeekKey = document.getElementById('activeWeekSelector').value;
+            if (selectedWeekKey) {
+                renderActiveDashboard();
+            }
+        }
+
+        // Refresh all charts, analytics and KPI grids for the selected active week
+        function renderActiveDashboard() {
+            if (!selectedWeekKey || !globalWeeksMap[selectedWeekKey]) return;
+
+            const thisWeek = globalWeeksMap[selectedWeekKey];
+            
+            // Derive previous week Sunday
+            const parts = selectedWeekKey.split('-');
+            const prevSundayDate = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10), 0, 0, 0, 0);
+            prevSundayDate.setDate(prevSundayDate.getDate() - 7);
+            const prevWeekKey = formatDateLocal(prevSundayDate);
+            const lastWeek = globalWeeksMap[prevWeekKey] || createEmptyWeek(prevWeekKey); // fallback to empty if unavailable
+
+            // Compute totals
+            const totals = calculateTotals(thisWeek);
+            const prevTotals = calculateTotals(lastWeek);
+
+            // Calculate WoW Changes
+            const wowSpend = computePercentageDiff(totals.spend, prevTotals.spend);
+            const wowLeads = computePercentageDiff(totals.leads, prevTotals.leads);
+            const wowSales = computePercentageDiff(totals.sales, prevTotals.sales);
+            const wowCvr = computePercentageDiff(totals.cvr, prevTotals.cvr);
+            const wowCpl = computePercentageDiff(totals.cpl, prevTotals.cpl);
+            const wowCps = computePercentageDiff(totals.cps, prevTotals.cps);
+
+            // Compute MoM Comparison
+            const momResults = calculateMoM(selectedWeekKey);
+
+            // Bind Top-level KPIs
+            document.getElementById('kpi-spend').innerText = formatZAR(totals.spend);
+            document.getElementById('kpi-leads').innerText = totals.leads.toLocaleString();
+            document.getElementById('kpi-sales').innerText = totals.sales.toLocaleString();
+            document.getElementById('kpi-cvr').innerText = totals.cvr.toFixed(1) + "%";
+            document.getElementById('kpi-cpl').innerText = formatDecimalZAR(totals.cpl);
+            document.getElementById('kpi-cps').innerText = formatDecimalZAR(totals.cps);
+
+            // Set WoW Visual indicators
+            setWowKpiIndicator('kpi-spend-wow', wowSpend, true); // lower spend is preferred
+            setWowKpiIndicator('kpi-leads-wow', wowLeads, false); // higher leads is preferred
+            setWowKpiIndicator('kpi-sales-wow', wowSales, false); 
+            setWowKpiIndicator('kpi-cvr-wow', wowCvr, false);
+            setWowKpiIndicator('kpi-cpl-wow', wowCpl, true); // lower CPL is preferred
+            setWowKpiIndicator('kpi-cps-wow', wowCps, true); // lower CPS is preferred
+
+            // Set MoM Visual Indicators
+            setMomKpiIndicator('kpi-spend-mom', momResults.spend, true);
+            setMomKpiIndicator('kpi-leads-mom', momResults.leads, false);
+            setMomKpiIndicator('kpi-sales-mom', momResults.sales, false);
+            setMomKpiIndicator('kpi-cvr-mom', momResults.cvr, false);
+            setMomKpiIndicator('kpi-cpl-mom', momResults.cpl, true);
+            setMomKpiIndicator('kpi-cps-mom', momResults.cps, true);
+
+            // Bind Side Summary Panel
+            document.getElementById('weekly-spend-this').innerText = formatZAR(totals.spend);
+            document.getElementById('weekly-spend-last').innerText = formatZAR(prevTotals.spend);
+            setDiffText('weekly-spend-diff', totals.spend - prevTotals.spend, true, true);
+
+            document.getElementById('weekly-leads-this').innerText = totals.leads.toLocaleString();
+            document.getElementById('weekly-leads-last').innerText = prevTotals.leads.toLocaleString();
+            setDiffText('weekly-leads-diff', totals.leads - prevTotals.leads, false, false);
+
+            document.getElementById('weekly-sales-this').innerText = totals.sales.toLocaleString();
+            document.getElementById('weekly-sales-last').innerText = prevTotals.sales.toLocaleString();
+            setDiffText('weekly-sales-diff', totals.sales - prevTotals.sales, false, false);
+
+            document.getElementById('weekly-cvr-this').innerText = totals.cvr.toFixed(1) + "%";
+            document.getElementById('weekly-cvr-last').innerText = prevTotals.cvr.toFixed(1) + "%";
+            setDiffText('weekly-cvr-diff', totals.cvr - prevTotals.cvr, false, false, "%");
+
+            // Process Natural Language NLP Insight based on performance vectors
+            generateNlpInsight(totals, prevTotals, wowSales, wowCps);
+
+            // Fill tabular rows
+            renderMetricTable(thisWeek);
+
+            // Render/Update charts
+            renderWoWLineChart(thisWeek, lastWeek);
+            renderDowContributionBarChart(thisWeek);
+            renderProjectionMonthlyTrend();
+            renderDowRankingList(thisWeek);
+        }
+
+        function calculateTotals(week) {
+            let spend = 0, leads = 0, sales = 0;
+            let activeDaysCount = 0;
+            
+            week.forEach(day => {
+                if (day.hasData) {
+                    spend += day.spend;
+                    leads += day.leads;
+                    sales += day.sales;
+                    activeDaysCount++;
+                }
+            });
+
+            return {
+                spend,
+                leads,
+                sales,
+                cvr: leads > 0 ? (sales / leads) * 100 : 0,
+                cpl: leads > 0 ? spend / leads : 0,
+                cps: sales > 0 ? spend / sales : 0,
+                activeDaysCount
+            };
+        }
+
+        function computePercentageDiff(curr, prev) {
+            if (!prev || prev === 0) return null;
+            return ((curr - prev) / prev) * 100;
+        }
+
+        // Apply tailored visual styles for WoW indicators
+        function setWowKpiIndicator(elementId, val, isLowerBetter = false) {
+            const el = document.getElementById(elementId);
+            if (val === null) {
+                el.innerHTML = `<span class="text-slate-400 font-medium">— WoW</span>`;
+                return;
+            }
+
+            const formattedVal = val.toFixed(1) + "%";
+            const isGrowth = val > 0;
+            const isSteady = Math.abs(val) < 0.1;
+
+            if (isSteady) {
+                el.innerHTML = `<span class="text-slate-500 font-bold"><i class="fa-solid fa-arrows-left-right"></i> Stable</span> <span class="text-slate-400 font-normal">WoW</span>`;
+            } else if ((isGrowth && !isLowerBetter) || (!isGrowth && isLowerBetter)) {
+                // Favorable performance movement
+                el.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-arrow-trend-up"></i> ${isGrowth ? '+' : ''}${formattedVal}</span> <span class="text-slate-400 font-normal">WoW</span>`;
+            } else {
+                // Diluting performance movement
+                el.innerHTML = `<span class="text-rose-600 font-bold"><i class="fa-solid fa-arrow-trend-down"></i> ${isGrowth ? '+' : ''}${formattedVal}</span> <span class="text-slate-400 font-normal">WoW</span>`;
+            }
+        }
+
+        // Set MoM Indicators dynamically
+        function setMomKpiIndicator(elementId, val, isLowerBetter = false) {
+            const el = document.getElementById(elementId);
+            if (val === null) {
+                el.innerHTML = `<span class="text-slate-400 font-medium">— MoM</span>`;
+                return;
+            }
+
+            const formattedVal = val.toFixed(1) + "%";
+            const isGrowth = val > 0;
+
+            if ((isGrowth && !isLowerBetter) || (!isGrowth && isLowerBetter)) {
+                el.innerHTML = `<span class="text-emerald-600 font-bold"><i class="fa-solid fa-arrow-trend-up"></i> ${isGrowth ? '+' : ''}${formattedVal}</span> <span class="text-slate-400 font-normal">MoM</span>`;
+            } else {
+                el.innerHTML = `<span class="text-rose-600 font-bold"><i class="fa-solid fa-arrow-trend-down"></i> ${isGrowth ? '+' : ''}${formattedVal}</span> <span class="text-slate-400 font-normal">MoM</span>`;
+            }
+        }
+
+        // Dynamic helper for differences text values
+        function setDiffText(elementId, diff, isCurrency = false, isLowerBetter = false, suffix = "") {
+            const el = document.getElementById(elementId);
+            const prefix = diff > 0 ? "+" : "";
+            const isSteady = Math.abs(diff) < 0.01;
+
+            let formatted = "";
+            if (isCurrency) {
+                formatted = formatZAR(diff);
+            } else {
+                formatted = diff.toLocaleString() + suffix;
+            }
+
+            if (isSteady) {
+                el.className = "text-slate-500 font-bold";
+                el.innerHTML = "Stable";
+            } else if ((diff > 0 && !isLowerBetter) || (diff < 0 && isLowerBetter)) {
+                el.className = "text-emerald-600 font-bold";
+                el.innerHTML = `${prefix}${formatted}`;
+            } else {
+                el.className = "text-rose-600 font-bold";
+                el.innerHTML = `${prefix}${formatted}`;
+            }
+        }
+
+        // Computes aggregated Month-on-Month values from parsed records
+        function calculateMoM(activeSundayStr) {
+            // Find current active month from activeSundayDate (constructed locally)
+            const parts = activeSundayStr.split('-');
+            const activeYear = parseInt(parts[0], 10);
+            const activeMonthNum = parseInt(parts[1], 10) - 1; // 0-11
+
+            // Target previous month matching
+            let prevYear = activeYear;
+            let prevMonthNum = activeMonthNum - 1;
+            if (prevMonthNum < 0) {
+                prevMonthNum = 11;
+                prevYear--;
+            }
+
+            // Sum matches inside global YTD dataset
+            let currentMonthSpend = 0, currentMonthLeads = 0, currentMonthSales = 0;
+            let prevMonthSpend = 0, prevMonthLeads = 0, prevMonthSales = 0;
+
+            globalProcessedData.forEach(row => {
+                const rowDate = parseCustomDate(row.date);
+                if (!rowDate) return;
+                const rYear = rowDate.getFullYear();
+                const rMonth = rowDate.getMonth();
+
+                if (rYear === activeYear && rMonth === activeMonthNum) {
+                    currentMonthSpend += sanitizeNumeric(row.spend);
+                    currentMonthLeads += parseInt(row.leads) || 0;
+                    currentMonthSales += parseInt(row.sales) || 0;
+                } else if (rYear === prevYear && rMonth === prevMonthNum) {
+                    prevMonthSpend += sanitizeNumeric(row.spend);
+                    prevMonthLeads += parseInt(row.leads) || 0;
+                    prevMonthSales += parseInt(row.sales) || 0;
+                }
+            });
+
+            // Convert to rates
+            const currentMonthCvr = currentMonthLeads > 0 ? (currentMonthSales / currentMonthLeads) * 100 : 0;
+            const currentMonthCpl = currentMonthLeads > 0 ? currentMonthSpend / currentMonthLeads : 0;
+            const currentMonthCps = currentMonthSales > 0 ? currentMonthSpend / currentMonthSales : 0;
+
+            const prevMonthCvr = prevMonthLeads > 0 ? (prevMonthSales / prevMonthLeads) * 100 : 0;
+            const prevMonthCpl = prevMonthLeads > 0 ? prevMonthSpend / prevMonthLeads : 0;
+            const prevMonthCps = prevMonthSales > 0 ? prevMonthSpend / prevMonthSales : 0;
+
+            return {
+                spend: computePercentageDiff(currentMonthSpend, prevMonthSpend),
+                leads: computePercentageDiff(currentMonthLeads, prevMonthLeads),
+                sales: computePercentageDiff(currentMonthSales, prevMonthSales),
+                cvr: computePercentageDiff(currentMonthCvr, prevMonthCvr),
+                cpl: computePercentageDiff(currentMonthCpl, prevMonthCpl),
+                cps: computePercentageDiff(currentMonthCps, prevMonthCps)
+            };
+        }
+
+        // Generates natural NLP interpretations based on performance conditions
+        function generateNlpInsight(totals, prevTotals, salesChange, cpsChange) {
+            const card = document.getElementById('nlp-insight-card');
+            const title = document.getElementById('nlp-insight-title');
+            const text = document.getElementById('nlp-insight-text');
+
+            if (salesChange === null || cpsChange === null) {
+                card.className = "mt-6 p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-700";
+                title.innerHTML = `<i class="fa-solid fa-circle-info"></i> Base Reference`;
+                text.innerHTML = "Provide multi-week performance data in the import panel above to start generating comparative optimization insights.";
+                return;
+            }
+
+            // Positive Result: Sales expanded >= 5% or Cost per Sale reduced >= 5%
+            if (salesChange >= 5 || cpsChange <= -5) {
+                card.className = "mt-6 p-4 rounded-xl bg-emerald-50/70 border border-emerald-200/50 text-emerald-950";
+                title.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i> Positive Growth Signal Observed`;
+                text.innerHTML = `🚀 <strong>Excellent Efficiency Optimization!</strong> Weekly sales shifted by <strong>${salesChange >= 0 ? '+' : ''}${salesChange.toFixed(1)}%</strong> while Cost Per Sale (CPS) scaled down to <strong>${formatDecimalZAR(totals.cps)}</strong>. Bidding adjustments executed on core weekdays have resulted in higher qualified transactional intent. We recommend scaling active daily allocations by 10-15%.`;
+            } 
+            // Negative Result: Sales contracted >= 5% or Acquisition cost escalated >= 5%
+            else if (salesChange <= -5 || cpsChange >= 5) {
+                card.className = "mt-6 p-4 rounded-xl bg-rose-50/70 border border-rose-200/50 text-rose-950";
+                title.innerHTML = `<i class="fa-solid fa-circle-exclamation text-rose-600"></i> Budget Pressure Alert`;
+                text.innerHTML = `⚠️ <strong>Margin Squeeze Alert!</strong> Overall sales volume contracted by <strong>${salesChange.toFixed(1)}%</strong> accompanied by a <strong>+${cpsChange.toFixed(1)}%</strong> surge in CPS. High CPL ad placements, particularly during Sunday/Saturday slump segments, are dampening margins. Adjust bid modifiers down for lower-performing weekend audiences immediately.`;
+            } 
+            // Neutral Result: Performance stabilized within narrow bands
+            else {
+                card.className = "mt-6 p-4 rounded-xl bg-indigo-50/50 border border-indigo-100/50 text-indigo-950";
+                title.innerHTML = `<i class="fa-solid fa-chart-line text-indigo-600"></i> Stable Run-rate Benchmarks`;
+                text.innerHTML = `📊 <strong>Consistent Performance Baseline.</strong> Campaign parameters are executing highly in-line with prior run benchmarks. Core KPIs shifted minimally (Sales: <strong>${salesChange >= 0 ? '+' : ''}${salesChange.toFixed(1)}%</strong>). Conversion efficiency is steady. This provides a risk-free baseline to deploy and A/B test fresh creative messaging structures.`;
+            }
+        }
+
+        // Render Table Rows with missing day safety checks
+        function renderMetricTable(week) {
+            const tbody = document.getElementById('rawMetricTable');
+            tbody.innerHTML = '';
+
+            week.forEach(day => {
+                let conversionStr = "—";
+                let cplStr = "—";
+                let cpsStr = "—";
+                let spendStr = "—";
+                let leadsStr = "—";
+                let salesStr = "—";
+
+                if (day.hasData) {
+                    conversionStr = day.leads > 0 ? ((day.sales / day.leads) * 100).toFixed(1) + "%" : "0.0%";
+                    cplStr = formatDecimalZAR(day.spend / day.leads);
+                    cpsStr = formatDecimalZAR(day.spend / day.sales);
+                    spendStr = formatZAR(day.spend);
+                    leadsStr = day.leads.toLocaleString();
+                    salesStr = day.sales.toLocaleString();
+                }
+
+                const rowHtml = `
+                    <tr class="hover:bg-slate-50 transition-colors ${!day.hasData ? 'bg-slate-50/30' : ''}">
+                        <td class="px-6 py-4 whitespace-nowrap font-bold text-slate-800">${day.dow}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-slate-400 font-medium">${day.date || '—'}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right font-semibold text-slate-700">${spendStr}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-slate-600">${leadsStr}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-slate-600">${salesStr}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-teal-600 font-bold">${conversionStr}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-slate-600">${cplStr}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-slate-600 font-bold">${cpsStr}</td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', rowHtml);
+            });
+        }
+
+        // Render WoW comparative line chart
+        function renderWoWLineChart(thisWeek, lastWeek) {
+            const ctx = document.getElementById('wowComparisonChart').getContext('2d');
+            
+            if (wowChart) {
+                wowChart.destroy();
+            }
+
+            const thisWeekGrad = ctx.createLinearGradient(0, 0, 0, 300);
+            thisWeekGrad.addColorStop(0, 'rgba(79, 70, 229, 0.35)');
+            thisWeekGrad.addColorStop(1, 'rgba(79, 70, 229, 0)');
+
+            const lastWeekGrad = ctx.createLinearGradient(0, 0, 0, 300);
+            lastWeekGrad.addColorStop(0, 'rgba(148, 163, 184, 0.25)');
+            lastWeekGrad.addColorStop(1, 'rgba(148, 163, 184, 0)');
+
+            const activeSelector = document.getElementById('wowMetricSelector').value;
+
+            // Extract values (leaving unrecorded points as null for Chart.js)
+            const mapMetric = (day) => {
+                if (!day.hasData) return null;
+                return day[activeSelector];
+            };
+
+            const thisWeekSeries = thisWeek.map(mapMetric);
+            const lastWeekSeries = lastWeek.map(mapMetric);
+
+            wowChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: thisWeek.map(d => d.dow),
+                    datasets: [
+                        {
+                            label: 'Active Week Run',
+                            data: thisWeekSeries,
+                            backgroundColor: thisWeekGrad,
+                            borderColor: '#4f46e5',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.35,
+                            pointBackgroundColor: '#4f46e5',
+                            pointHoverRadius: 7,
+                            spanGaps: true // bridge missing days elegantly
+                        },
+                        {
+                            label: 'Prior Comparison Week',
+                            data: lastWeekSeries,
+                            backgroundColor: lastWeekGrad,
+                            borderColor: '#94a3b8',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            fill: true,
+                            tension: 0.35,
+                            pointBackgroundColor: '#94a3b8',
+                            pointHoverRadius: 5,
+                            spanGaps: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                boxWidth: 12,
+                                usePointStyle: true,
+                                font: { size: 11, weight: '500' }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            padding: 12,
+                            titleFont: { size: 12, weight: '700' },
+                            bodyFont: { size: 11 },
+                            usePointStyle: true,
+                            callbacks: {
+                                label: function(context) {
+                                    const val = context.parsed.y;
+                                    if (activeSelector === 'spend') {
+                                        return `${context.dataset.label}: ${formatZAR(val)}`;
+                                    }
+                                    return `${context.dataset.label}: ${val.toLocaleString()}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: { color: '#f1f5f9' },
+                            ticks: { 
+                                font: { size: 10, weight: '500' }, 
+                                color: '#64748b',
+                                callback: function(value) {
+                                    if (activeSelector === 'spend') {
+                                        return formatZAR(value);
+                                    }
+                                    return value.toLocaleString();
+                                }
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 10, weight: '500' }, color: '#64748b' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateWoWChart() {
+            if (wowChart) {
+                const activeWeek = globalWeeksMap[selectedWeekKey];
+                
+                const parts = selectedWeekKey.split('-');
+                const prevSundayDate = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10), 0, 0, 0, 0);
+                prevSundayDate.setDate(prevSundayDate.getDate() - 7);
+                const prevWeekKey = formatDateLocal(prevSundayDate);
+                const lastWeek = globalWeeksMap[prevWeekKey] || createEmptyWeek(prevWeekKey);
+
+                const activeSelector = document.getElementById('wowMetricSelector').value;
+                const mapMetric = (day) => day.hasData ? day[activeSelector] : null;
+
+                wowChart.data.datasets[0].data = activeWeek.map(mapMetric);
+                wowChart.data.datasets[1].data = lastWeek.map(mapMetric);
+                wowChart.update();
+            }
+        }
+
+        // Render Day of Week Distribution contribution percentage chart
+        function renderDowContributionBarChart(thisWeek) {
+            const ctx = document.getElementById('dowDistributionChart').getContext('2d');
+            
+            if (dowChart) {
+                dowChart.destroy();
+            }
+
+            const selector = document.getElementById('dowDistributionSelector').value;
+            let values = [];
+            let bgColor = '#0d9488';
+            let label = 'Contribution (%)';
+
+            // Filter down to valid entries
+            const total = thisWeek.reduce((sum, day) => sum + (day.hasData ? day[selector] : 0), 0);
+
+            const contributions = thisWeek.map(day => {
+                if (!day.hasData || total === 0) return 0;
+                return parseFloat(((day[selector] / total) * 100).toFixed(1));
+            });
+
+            if (selector === 'spend') {
+                bgColor = '#4f46e5';
+                label = 'Spend Contribution (%)';
+            } else if (selector === 'leads') {
+                bgColor = '#f59e0b';
+                label = 'Leads Contribution (%)';
+            } else {
+                bgColor = '#0d9488';
+                label = 'Sales Contribution (%)';
+            }
+
+            dowChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: thisWeek.map(d => d.dow),
+                    datasets: [
+                        {
+                            label: label,
+                            data: contributions,
+                            backgroundColor: bgColor,
+                            borderColor: bgColor,
+                            borderWidth: 1,
+                            borderRadius: 6,
+                            barPercentage: 0.5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            callbacks: {
+                                label: function(context) {
+                                    return `Contribution: ${context.parsed.y}%`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            max: Math.max(...contributions, 20) + 5,
+                            grid: { color: '#f1f5f9' },
+                            ticks: { 
+                                callback: function(value) { return value + "%"; },
+                                font: { size: 10 }, 
+                                color: '#64748b' 
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 10 }, color: '#64748b' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateDowChart() {
+            if (dowChart && selectedWeekKey) {
+                const thisWeek = globalWeeksMap[selectedWeekKey];
+                renderDowContributionBarChart(thisWeek);
+            }
+        }
+
+        // Compute rankings for active days of the week based on Conversion Rate and CPS
+        function renderDowRankingList(thisWeek) {
+            const container = document.getElementById('dow-ranking-container');
+            container.innerHTML = '';
+
+            // Map valid active days, calculate values
+            const activeDays = thisWeek.filter(day => day.hasData).map(day => {
+                const cvr = day.leads > 0 ? (day.sales / day.leads) * 100 : 0;
+                const cps = day.sales > 0 ? day.spend / day.sales : 999999;
+                return { ...day, cvr, cps };
+            });
+
+            if (activeDays.length === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-400 text-center py-10">No weekly data available to rank.</p>';
+                return;
+            }
+
+            // Sort descending by conversion rate, and ascending by cost per sale
+            activeDays.sort((a, b) => {
+                if (b.cvr !== a.cvr) return b.cvr - a.cvr;
+                return a.cps - b.cps;
+            });
+
+            activeDays.forEach((day, index) => {
+                const rank = index + 1;
+                
+                let rankStyle = "bg-slate-100 text-slate-800";
+                let containerStyle = "border-slate-100";
+                
+                if (rank === 1) {
+                    rankStyle = "bg-emerald-200/50 text-emerald-800";
+                    containerStyle = "bg-emerald-50/40 border-emerald-100";
+                } else if (rank === 2) {
+                    rankStyle = "bg-indigo-200/40 text-indigo-800";
+                    containerStyle = "bg-indigo-50/20 border-indigo-100/40";
+                }
+
+                const cvrStr = day.cvr.toFixed(1) + "% CVR";
+                const cpsStr = "CPS: " + formatDecimalZAR(day.cps);
+
+                const itemHtml = `
+                    <div class="flex items-center justify-between p-2 rounded-xl border ${containerStyle} transition-all">
+                        <div class="flex items-center gap-3">
+                            <span class="w-6 h-6 flex items-center justify-center text-xs font-extrabold rounded-full ${rankStyle}">${rank}</span>
+                            <div>
+                                <span class="text-xs font-bold text-slate-800">${day.dow}</span>
+                                <span class="block text-[10px] text-slate-400">${day.date}</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs font-bold text-slate-800 block">${cvrStr}</span>
+                            <span class="text-[10px] text-slate-500 font-medium">${cpsStr}</span>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', itemHtml);
+            });
+        }
+
+        // Render cumulative projection chart matching current month
+        function renderProjectionMonthlyTrend() {
+            const ctx = document.getElementById('monthlyProjectionChart').getContext('2d');
+            
+            if (projectionChart) {
+                projectionChart.destroy();
+            }
+
+            const currentWeekDate = new Date(selectedWeekKey);
+            const activeYear = currentWeekDate.getFullYear();
+            const activeMonthNum = currentWeekDate.getMonth();
+
+            // Establish days in the month (e.g. 31 for July)
+            const daysInMonth = new Date(activeYear, activeMonthNum + 1, 0).getDate();
+            const daysLabels = Array.from({length: daysInMonth}, (_, i) => i + 1);
+
+            // Filter all calendar month dates
+            const monthEntries = globalProcessedData.filter(row => {
+                const rDate = parseCustomDate(row.date);
+                return rDate && rDate.getFullYear() === activeYear && rDate.getMonth() === activeMonthNum;
+            });
+
+            // Calculate cumulative actual track
+            const actualCumulative = [];
+            let rollingSum = 0;
+            
+            // Loop day-by-day (1 to daysInMonth)
+            for (let d = 1; d <= daysInMonth; d++) {
+                // Find matching entry in dataset
+                const dayMatch = monthEntries.find(row => parseCustomDate(row.date).getDate() === d);
+                if (dayMatch) {
+                    rollingSum += parseInt(dayMatch.sales) || 0;
+                    actualCumulative.push(rollingSum);
+                } else {
+                    // Stop drawing actual lines when we hit future unrecorded dates
+                    break;
+                }
+            }
+
+            const activeDaysRecordCount = actualCumulative.length;
+
+            // Compute standard average baseline slope (from historical average run or default)
+            const averageDailyTarget = 30; // default target
+            const baselineCumulative = daysLabels.map(d => d * averageDailyTarget);
+
+            // Calculate expected projected performance trail starting from current cumulative point
+            const modifierPercent = parseInt(document.getElementById('projectionModifier').value);
+            const adjustedDailyRate = averageDailyTarget * (1 + (modifierPercent / 100));
+            
+            const projectedTrend = [];
+            let rollingProjSum = 0;
+
+            for (let d = 1; d <= daysInMonth; d++) {
+                if (d <= activeDaysRecordCount) {
+                    projectedTrend.push(actualCumulative[d - 1]);
+                    rollingProjSum = actualCumulative[d - 1];
+                } else {
+                    rollingProjSum += adjustedDailyRate;
+                    projectedTrend.push(Math.round(rollingProjSum));
+                }
+            }
+
+            // Draw line projection
+            projectionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: daysLabels.map(d => `Day ${d}`),
+                    datasets: [
+                        {
+                            label: 'Cumulative Actual Sales',
+                            data: actualCumulative,
+                            borderColor: '#0d9488',
+                            backgroundColor: '#0d9488',
+                            borderWidth: 3,
+                            fill: false,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Standard Target Baseline Model',
+                            data: baselineCumulative,
+                            borderColor: '#94a3b8',
+                            borderWidth: 2,
+                            borderDash: [6, 6],
+                            fill: false,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'Simulated Month-End Projection Line',
+                            data: projectedTrend,
+                            borderColor: '#4f46e5',
+                            borderWidth: 2,
+                            fill: false,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                boxWidth: 12,
+                                usePointStyle: true,
+                                font: { size: 11, weight: '500' }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: Math.max(...projectedTrend, ...baselineCumulative, 500) + 100,
+                            grid: { color: '#f1f5f9' },
+                            ticks: { font: { size: 10 }, color: '#64748b' }
+                        },
+                        x: {
+                            grid: { color: '#f8fafc' },
+                            ticks: { font: { size: 10 }, color: '#64748b' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateProjectionTrend() {
+            const modifierPercent = parseInt(document.getElementById('projectionModifier').value);
+            document.getElementById('modifierValue').innerText = (modifierPercent >= 0 ? '+' : '') + modifierPercent + '%';
+            renderProjectionMonthlyTrend();
+        }
+
+        // Captures and downloads dashboard container as PNG
+        async function downloadPNG() {
+            const button = document.getElementById('downloadPngBtn');
+            const originalText = button.innerHTML;
+            
+            // Visual loading state
+            button.disabled = true;
+            button.className = "bg-slate-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shadow-sm cursor-not-allowed";
+            button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating PNG...';
+
+            setTimeout(() => {
+                const targetElement = document.getElementById('infographic-container');
+                
+                html2canvas(targetElement, {
+                    scale: 2, // Retain high resolution vector crispness
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#f8fafc',
+                    windowWidth: 1400 // locks capture viewport width to standard desktop
+                }).then(canvas => {
+                    const dataUrl = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.download = `weekly_performance_infographic_${selectedWeekKey || 'export'}.png`;
+                    link.href = dataUrl;
+                    link.click();
+
+                    // Restore visibility & styles
+                    button.disabled = false;
+                    button.className = "bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shadow-sm";
+                    button.innerHTML = originalText;
+                }).catch(err => {
+                    console.error('Failed to generate high-res infographic:', err);
+                    button.disabled = false;
+                    button.className = "bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-2 shadow-sm";
+                    button.innerHTML = originalText;
+                });
+            }, 300);
+        }
+
+        // On page load, fetch weeklydata.csv directly from server/GitHub folder
+        window.onload = function() {
+            fetchWeeklyCsv();
+        }
+    </script>
+</body>
+</html>
